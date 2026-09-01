@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0E141B">
+<title>강릉 노암초 킨볼 대회 스코어보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0E141B;
+    --bg-court: radial-gradient(circle at 50% -10%, #17222C 0%, #0E141B 55%);
+    --surface: #161F28;
+    --surface-2: #1D2A36;
+    --surface-3: #24323F;
+    --line: #2A3947;
+    --line-soft: #1E2A35;
+    --text: #F3F6F8;
+    --text-dim: #8FA0AD;
+    --text-faint: #5C6E7B;
+    --gold: #F2B441;
+    --gold-dim: #6B5628;
+    --pink: #FF6FA0;
+    --pink-deep: #7A2E48;
+    --gray-team: #B7C0C8;
+    --gray-team-deep: #3A434A;
+    --black-team: #3A4048;
+    --black-team-line: #545E67;
+    --green: #52D18A;
+    --red: #FF6B6B;
+    --radius: 18px;
+    --radius-sm: 12px;
+    --shadow: 0 8px 24px rgba(0,0,0,0.35);
+    font-size: 16px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg-court);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 92px;
+    overscroll-behavior-y: none;
+  }
+  .display{ font-family:'Black Han Sans', 'Noto Sans KR', sans-serif; letter-spacing: 0.5px; }
+
+  /* ---------- header ---------- */
+  header.top{
+    position: sticky; top:0; z-index: 40;
+    background: rgba(14,20,27,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line-soft);
+    padding: 14px 16px 12px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px; margin-bottom:12px;
+  }
+  .brand h1{
+    font-size: 15px; margin:0; line-height:1.25; font-weight:700; color:var(--text);
+  }
+  .brand small{ display:block; font-size:11px; color:var(--text-dim); font-weight:500; margin-top:1px;}
+
+  .division-switch{
+    display:flex; background: var(--surface); border-radius: 999px; padding:4px; gap:4px;
+    border: 1px solid var(--line-soft);
+  }
+  .division-switch button{
+    flex:1; border:none; background:transparent; color: var(--text-dim);
+    font-family:'Noto Sans KR'; font-weight:700; font-size:13.5px; padding:9px 6px; border-radius:999px;
+    transition: all .18s ease; cursor:pointer;
+  }
+  .division-switch button.active{
+    background: linear-gradient(135deg, var(--gold), #C98A1F); color:#241705;
+    box-shadow: 0 4px 10px rgba(242,180,65,0.25);
+  }
+
+  /* ---------- layout ---------- */
+  main{ padding: 16px 14px 8px; max-width: 720px; margin: 0 auto; }
+  .section-title{
+    display:flex; align-items:baseline; justify-content:space-between; margin: 4px 2px 10px;
+  }
+  .section-title h2{ font-size:16px; margin:0; font-weight:800; }
+  .section-title .meta{ font-size:12px; color:var(--text-dim); font-weight:600; }
+
+  .progress-wrap{
+    display:flex; align-items:center; gap:10px; background:var(--surface);
+    border:1px solid var(--line-soft); border-radius: var(--radius-sm); padding:10px 14px; margin-bottom:14px;
+  }
+  .progress-bar{ flex:1; height:7px; border-radius:999px; background:var(--surface-3); overflow:hidden; }
+  .progress-fill{ height:100%; background: linear-gradient(90deg, var(--gold), #ffd88a); border-radius:999px; transition: width .3s ease; }
+  .progress-wrap span{ font-size:12px; color:var(--text-dim); font-weight:700; white-space:nowrap; }
+
+  /* ---------- match card ---------- */
+  .match-card{
+    background: var(--surface); border:1px solid var(--line-soft); border-radius: var(--radius);
+    padding: 14px 14px 12px; margin-bottom:12px; box-shadow: var(--shadow); position:relative; overflow:hidden;
+  }
+  .match-card.done{ border-color: rgba(82,209,138,0.35); }
+  .match-card.has-noam::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background: linear-gradient(180deg, var(--gold), #C98A1F);
+  }
+  .match-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px; }
+  .match-head .glabel{ font-size:14px; font-weight:800; }
+  .time-input{
+    font-size:11.5px; color:var(--text-dim); font-weight:600; background:var(--surface-2);
+    border:1px solid var(--line-soft); border-radius:7px; padding:4px 8px; width:150px;
+    font-family:'Noto Sans KR'; outline:none;
+  }
+  .time-input::placeholder{ color:var(--text-faint); }
+  .time-input:focus{ border-color: var(--gold); background: var(--surface-3); }
+  .status-chip{
+    font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px; letter-spacing:0.2px;
+  }
+  .status-chip.wait{ background: var(--surface-3); color: var(--text-dim); }
+  .status-chip.done{ background: rgba(82,209,138,0.15); color: var(--green); }
+
+  .team-row{
+    display:grid; grid-template-columns: 10px 1fr 74px 46px; align-items:center; gap:10px;
+    padding: 8px 4px; border-bottom: 1px solid var(--line-soft);
+  }
+  .team-row:last-of-type{ border-bottom:none; }
+  .swatch{ width:10px; height:10px; border-radius:3px; }
+  .swatch.PINK{ background: var(--pink); }
+  .swatch.GRAY{ background: var(--gray-team); }
+  .swatch.BLACK{ background: var(--black-team); border:1px solid var(--black-team-line); }
+  .team-name{ font-size:13.5px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:5px; min-width:0; }
+  .team-name .tn{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .team-name .star{ color:var(--gold); font-size:12px; flex:none; }
+  .team-tag{ font-size:9.5px; font-weight:800; color:var(--text-faint); letter-spacing:0.5px; }
+
+  .score-input{
+    width:74px; height:40px; border-radius: 10px; border:1.5px solid var(--line);
+    background: var(--surface-2); color: var(--text); font-family:'Black Han Sans';
+    font-size:17px; text-align:center; outline:none; -moz-appearance:textfield;
+  }
+  .score-input::-webkit-outer-spin-button, .score-input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  .score-input:focus{ border-color: var(--gold); background: var(--surface-3); }
+  .score-input.win{ border-color: var(--green); color: var(--green); }
+
+  .pts-pill{
+    justify-self:end; min-width:38px; text-align:center; font-family:'Black Han Sans'; font-size:13px;
+    padding:6px 0; border-radius:8px; background: var(--surface-3); color: var(--text-faint);
+  }
+  .pts-pill.p10{ background: rgba(242,180,65,0.18); color: var(--gold); }
+  .pts-pill.p6{ background: rgba(183,192,200,0.16); color: var(--gray-team); }
+  .pts-pill.p2{ background: rgba(255,107,107,0.12); color: var(--red); }
+
+  .match-foot{ display:flex; justify-content:flex-end; margin-top:8px; }
+  .clear-btn{
+    background:none; border:none; color:var(--text-faint); font-size:11.5px; font-weight:700;
+    padding:4px 6px; cursor:pointer; text-decoration:underline; text-underline-offset:2px;
+  }
+
+  /* ---------- standings ---------- */
+  .rank-card{
+    background: var(--surface); border:1px solid var(--line-soft); border-radius: var(--radius);
+    overflow:hidden; box-shadow: var(--shadow); margin-bottom:16px;
+  }
+  .rank-row{
+    display:grid; grid-template-columns: 32px 1fr auto; align-items:center;
+    gap:10px; padding: 12px 12px; border-bottom:1px solid var(--line-soft);
+  }
+  .rank-row:last-child{ border-bottom:none; }
+  .rank-row.noam{ background: linear-gradient(90deg, rgba(242,180,65,0.14), transparent 70%); }
+  .rank-num{ font-family:'Black Han Sans'; font-size:19px; color:var(--text-dim); text-align:center; }
+  .rank-row.r1 .rank-num{ color: var(--gold); }
+  .rank-row.r2 .rank-num{ color: #D7DEE3; }
+  .rank-row.r3 .rank-num{ color: #CD8A5C; }
+  .rank-team{ display:flex; flex-direction:column; min-width:0; }
+  .rank-team .nm{ font-size:14px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:flex; align-items:center; gap:5px;}
+  .rank-team .tag{ font-size:10.5px; color:var(--red); font-weight:700; margin-top:1px; }
+  .rank-stats{ display:flex; gap:12px; }
+  .rank-val{ text-align:center; min-width:32px; }
+  .rank-val .num{ font-family:'Black Han Sans'; font-size:15px; }
+  .rank-val .num.pos{ color: var(--green); }
+  .rank-val .num.neg{ color: var(--red); }
+  .rank-val .lbl{ font-size:9px; color:var(--text-faint); font-weight:700; margin-top:1px; }
+
+  /* ---------- strategy ---------- */
+  .noam-summary{
+    background: linear-gradient(135deg, #2A2011, #1A140A 60%);
+    border: 1px solid var(--gold-dim); border-radius: var(--radius);
+    padding:18px; margin-bottom:16px; box-shadow: var(--shadow);
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .noam-summary .left h3{ margin:0 0 2px; font-size:13px; color: #E4C989; font-weight:700; }
+  .noam-summary .left p{ margin:0; font-size:11.5px; color:#B79C63; }
+  .noam-summary .right{ text-align:right; }
+  .noam-summary .right .big{ font-family:'Black Han Sans'; font-size:34px; color: var(--gold); line-height:1; }
+  .noam-summary .right .sub{ font-size:11px; color:#D8BE85; font-weight:700; margin-top:3px;}
+
+  .chip-row{ display:flex; gap:8px; overflow-x:auto; padding: 2px 2px 12px; -ms-overflow-style:none; scrollbar-width:none;}
+  .chip-row::-webkit-scrollbar{ display:none; }
+  .game-chip{
+    flex:none; padding:9px 14px; border-radius:999px; border:1.5px solid var(--line);
+    background: var(--surface); color: var(--text-dim); font-size:12.5px; font-weight:700; cursor:pointer;
+    white-space:nowrap;
+  }
+  .game-chip.active{ background: var(--gold); border-color: var(--gold); color:#241705; }
+  .game-chip .dot{ display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:6px; }
+  .game-chip .dot.played{ background: var(--green); }
+  .game-chip .dot.upcoming{ background: var(--text-faint); }
+
+  .sim-card{
+    background: var(--surface); border:1px solid var(--line-soft); border-radius: var(--radius);
+    padding:16px; margin-bottom:14px; box-shadow: var(--shadow);
+  }
+  .sim-title{ font-size:13px; font-weight:700; color:var(--text-dim); margin-bottom:12px; }
+  .sim-team{
+    display:grid; grid-template-columns: 10px 1fr 100px 46px; align-items:center; gap:10px;
+    padding:10px 2px;
+  }
+  .stepper{ display:flex; align-items:center; gap:6px; justify-self:end; }
+  .step-btn{
+    width:30px; height:30px; border-radius:8px; border:1px solid var(--line);
+    background: var(--surface-3); color:var(--text); font-size:16px; font-weight:800; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; line-height:1;
+  }
+  .step-btn:active{ background: var(--gold); color:#241705; }
+  .sim-num{
+    width:40px; text-align:center; font-family:'Black Han Sans'; font-size:16px; background:none; border:none; color:var(--text); outline:none;
+  }
+
+  .proj-box{
+    margin-top:10px; padding-top:14px; border-top:1px dashed var(--line-soft);
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+  }
+  .proj-item{ text-align:center; }
+  .proj-item .v{ font-family:'Black Han Sans'; font-size:22px; }
+  .proj-item .l{ font-size:10px; color:var(--text-faint); font-weight:700; margin-top:2px; }
+  .proj-item .v.gold{ color:var(--gold); }
+  .proj-item .v.up{ color: var(--green); }
+  .proj-item .v.down{ color: var(--red); }
+
+  .tip-card{
+    background: var(--surface-2); border:1px solid var(--line-soft); border-radius: var(--radius-sm);
+    padding:14px 16px; font-size:12px; color: var(--text-dim); line-height:1.6; margin-bottom:14px;
+  }
+  .tip-card b{ color: var(--text); }
+  .tip-card .rule-line{ display:flex; align-items:center; gap:8px; margin-top:6px; }
+  .rule-badge{ font-family:'Black Han Sans'; font-size:12px; padding:2px 8px; border-radius:6px; }
+
+  .empty-note{ text-align:center; color:var(--text-faint); font-size:12.5px; padding: 26px 10px; }
+
+  /* ---------- bottom nav ---------- */
+  nav.bottom{
+    position: fixed; left:0; right:0; bottom:0; z-index:50;
+    background: rgba(17,24,32,0.96); backdrop-filter: blur(14px);
+    border-top:1px solid var(--line-soft);
+    display:flex; padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  }
+  nav.bottom button{
+    flex:1; background:none; border:none; color:var(--text-faint); display:flex; flex-direction:column;
+    align-items:center; gap:3px; padding:6px 2px; font-family:'Noto Sans KR'; font-size:10.5px; font-weight:700; cursor:pointer;
+  }
+  nav.bottom button svg{ width:21px; height:21px; }
+  nav.bottom button.active{ color: var(--gold); }
+
+  .sync-note{ text-align:center; font-size:10.5px; color:var(--text-faint); padding: 6px 0 2px; }
+
+  @media (min-width: 560px){
+    .team-row{ grid-template-columns: 12px 1fr 90px 52px; }
+    .score-input{ width:90px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div>
+      <h1>2026 킨볼 전국대회 스코어보드</h1>
+      <small>강릉 노암초 · 기록 &amp; 전략</small>
+    </div>
+  </div>
+  <div class="division-switch" id="divisionSwitch">
+    <button data-div="boys">초등 남자부</button>
+    <button data-div="girls">초등 여자부</button>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<nav class="bottom" id="bottomNav">
+  <button data-tab="matches" class="active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 4v3M16 4v3"/></svg>
+    경기 기록
+  </button>
+  <button data-tab="standings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+    순위
+  </button>
+  <button data-tab="strategy">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg>
+    전략 시뮬레이터
+  </button>
+</nav>
+
+<script>
+(function(){
+  "use strict";
+
+  const NOAM = "강릉 노암초";
+
+  const DATA = {
+    boys: {
+      label: "초등 남자부",
+      matches: [
+        {id:1, label:"초등남자 #1", time:"9/5(토) 09:15~09:30", p:"춘천 신남초", g:"강릉 노암초", b:"철원 청양초"},
+        {id:2, label:"초등남자 #2", time:null, p:"원주 만대초", g:"철원 청양초", b:"태백 함태초"},
+        {id:3, label:"초등남자 #3", time:"9/5(토) 10:15~10:30", p:"강릉 노암초", g:"원주 만대초", b:"홍천 남산초"},
+        {id:4, label:"초등남자 #4", time:"9/5(토) 10:45~11:00", p:"태백 함태초", g:"화천 유촌초", b:"강릉 노암초"},
+        {id:5, label:"초등남자 #5", time:null, p:"철원 청양초", g:"홍천 남산초", b:"화천 유촌초"},
+        {id:6, label:"초등남자 #6", time:null, p:"홍천 남산초", g:"태백 함태초", b:"춘천 신남초"},
+        {id:7, label:"초등남자 #7", time:null, p:"화천 유촌초", g:"춘천 신남초", b:"원주 만대초"}
+      ]
+    },
+    girls: {
+      label: "초등 여자부",
+      matches: [
+        {id:1, label:"초등여자 #1", time:null, p:"강릉 노암초", g:"태백 함태초", b:"고성 공현진초"},
+        {id:2, label:"초등여자 #2", time:null, p:"철원 청양초", g:"춘천 신남초", b:"강릉 노암초"},
+        {id:3, label:"초등여자 #3", time:null, p:"원주 학성초", g:"철원 청양초", b:"홍천 남산초"},
+        {id:4, label:"초등여자 #4", time:null, p:"강릉 노암초", g:"화천 유촌초", b:"원주 학성초"},
+        {id:5, label:"초등여자 #5", time:null, p:"태백 함태초", g:"고성 공현진초", b:"철원 청양초"},
+        {id:6, label:"초등여자 #6", time:null, p:"춘천 신남초", g:"홍천 남산초", b:"화천 유촌초"},
+        {id:7, label:"초등여자 #7", time:null, p:"고성 공현진초", g:"원주 학성초", b:"춘천 신남초"},
+        {id:8, label:"초등여자 #8", time:null, p:"화천 유촌초", g:"홍천 남산초", b:"태백 함태초"}
+      ]
+    }
+  };
+
+  function teamsOf(div){
+    const set = [];
+    DATA[div].matches.forEach(m => { [m.p,m.g,m.b].forEach(t => { if(!set.includes(t)) set.push(t); }); });
+    return set;
+  }
+  DATA.boys.teams = teamsOf("boys");
+  DATA.girls.teams = teamsOf("girls");
+
+  let state = {
+    div: "boys",
+    tab: "matches",
+    scores: { boys: {}, girls: {} },   // {matchId: {p,g,b}}
+    times: { boys: {}, girls: {} },    // {matchId: "시간 문자열"} — 사용자가 직접 수정 가능
+    simMatch: { boys: null, girls: null },
+    simScore: { boys: {}, girls: {} }  // {matchId: {p,g,b}} local what-if, per division
+  };
+
+  function timeOf(div, matchId, fallback){
+    const t = state.times[div][matchId];
+    return (t!==undefined && t!==null) ? t : (fallback || '');
+  }
+
+  // ---------- storage ----------
+  async function loadTimes(div){
+    try{
+      const res = await window.storage.get("times:" + div, true);
+      if(res && res.value){ state.times[div] = JSON.parse(res.value); }
+    }catch(e){ /* not set yet — fine */ }
+  }
+  let saveTimeTimer = null;
+  function saveTimes(div){
+    clearTimeout(saveTimeTimer);
+    saveTimeTimer = setTimeout(async () => {
+      try{
+        await window.storage.set("times:" + div, JSON.stringify(state.times[div]), true);
+      }catch(e){ console.error("시간 저장 실패", e); }
+    }, 250);
+  }
+
+  async function loadScores(div){
+    try{
+      const res = await window.storage.get("scores:" + div, true);
+      if(res && res.value){ state.scores[div] = JSON.parse(res.value); }
+    }catch(e){ /* key not found yet — fine */ }
+  }
+  let saveTimer = null;
+  function saveScores(div){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      try{
+        await window.storage.set("scores:" + div, JSON.stringify(state.scores[div]), true);
+      }catch(e){ console.error("저장 실패", e); }
+    }, 250);
+  }
+
+  // ---------- scoring logic (matches original spreadsheet formula) ----------
+  function calcPoints(p,g,b){
+    if(p==null || g==null || b==null || p==="" || g==="" || b==="") return {p:null,g:null,b:null};
+    const vals = [Number(p), Number(g), Number(b)];
+    const max = Math.max(...vals);
+    const sorted = [...vals].sort((a,b)=>a-b);
+    const median = sorted[1];
+    function pts(v){ if(v===max) return 10; if(v===median) return 6; return 2; }
+    return { p: pts(vals[0]), g: pts(vals[1]), b: pts(vals[2]) };
+  }
+
+  function standingsFor(div){
+    const teams = DATA[div].teams;
+    const matches = DATA[div].matches;
+    const scores = state.scores[div];
+    const tbl = {};
+    teams.forEach(t => tbl[t] = { team:t, win:0, pts:0, played:0 });
+
+    matches.forEach(m => {
+      const s = scores[m.id];
+      if(!s) return;
+      const r = calcPoints(s.p, s.g, s.b);
+      if(r.p==null) return;
+      const sp = Number(s.p), sg = Number(s.g), sb = Number(s.b);
+      tbl[m.p].win += r.p; tbl[m.p].pts += sp; tbl[m.p].played++;
+      tbl[m.g].win += r.g; tbl[m.g].pts += sg; tbl[m.g].played++;
+      tbl[m.b].win += r.b; tbl[m.b].pts += sb; tbl[m.b].played++;
+    });
+
+    const list = Object.values(tbl);
+    list.forEach(row => {
+      row.rank = 1 + list.filter(o => o!==row && (o.win > row.win || (o.win===row.win && o.pts>row.pts))).length;
+      row.tie = list.filter(o => o.win===row.win && o.pts===row.pts).length > 1;
+    });
+    list.sort((a,b) => a.rank - b.rank || a.team.localeCompare(b.team,'ko'));
+    return list;
+  }
+
+  function completedCount(div){
+    const scores = state.scores[div];
+    return DATA[div].matches.filter(m => scores[m.id] && scores[m.id].p!=="" && scores[m.id].g!=="" && scores[m.id].b!=="" && scores[m.id].p!=null).length;
+  }
+
+  // ---------- render: matches tab ----------
+  function renderMatches(){
+    const div = state.div;
+    const matches = DATA[div].matches;
+    const done = completedCount(div);
+    let html = `
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" style="width:${(done/matches.length*100).toFixed(0)}%"></div></div>
+        <span>${done} / ${matches.length} 경기 완료</span>
+      </div>
+    `;
+    matches.forEach(m => {
+      const s = state.scores[div][m.id] || {p:"",g:"",b:""};
+      const r = calcPoints(s.p, s.g, s.b);
+      const isDone = r.p!=null;
+      const hasNoam = m.p===NOAM || m.g===NOAM || m.b===NOAM;
+      html += `
+        <div class="match-card ${isDone?'done':''} ${hasNoam?'has-noam':''}">
+          <div class="match-head">
+            <div>
+              <div class="glabel">${m.label}</div>
+              <input class="time-input" type="text" placeholder="시간 입력 (예: 9/5 09:15~09:30)"
+                value="${timeOf(div, m.id, m.time)}" data-timediv="${div}" data-timematch="${m.id}">
+            </div>
+            <div class="status-chip ${isDone?'done':'wait'}">${isDone?'완료':'입력 대기'}</div>
+          </div>
+          ${teamRow('PINK', m.p, s.p, r.p, div, m.id)}
+          ${teamRow('GRAY', m.g, s.g, r.g, div, m.id)}
+          ${teamRow('BLACK', m.b, s.b, r.b, div, m.id)}
+          ${isDone ? `<div class="match-foot"><button class="clear-btn" data-clear="${m.id}">점수 지우기</button></div>` : ''}
+        </div>
+      `;
+    });
+    return html;
+  }
+
+  function teamRow(color, name, val, pts, div, matchId){
+    const isNoam = name===NOAM;
+    const key = color==='PINK'?'p':color==='GRAY'?'g':'b';
+    const winClass = pts===10 ? 'win' : '';
+    const ptsClass = pts===10?'p10':pts===6?'p6':pts===2?'p2':'';
+    return `
+      <div class="team-row">
+        <span class="swatch ${color}"></span>
+        <div class="team-name">
+          ${isNoam?'<span class="star">★</span>':''}
+          <span class="tn">${name}</span>
+        </div>
+        <input class="score-input ${winClass}" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="-"
+          value="${val===undefined || val===null ? '' : val}"
+          data-div="${div}" data-match="${matchId}" data-key="${key}">
+        <div class="pts-pill ${ptsClass}">${pts==null?'—':pts+'점'}</div>
+      </div>
+    `;
+  }
+
+  // ---------- render: standings tab ----------
+  function renderStandings(){
+    const div = state.div;
+    const list = standingsFor(div);
+    let rows = list.map(row => {
+      const rc = row.rank===1?'r1':row.rank===2?'r2':row.rank===3?'r3':'';
+      return `
+        <div class="rank-row ${row.team===NOAM?'noam':''} ${rc}">
+          <div class="rank-num">${row.rank}</div>
+          <div class="rank-team">
+            <div class="nm">${row.team===NOAM?'<span style="color:var(--gold)">★</span>':''} ${row.team}</div>
+            ${row.tie?'<div class="tag">타이브레이크 필요</div>':`<div class="tag" style="color:var(--text-faint)">${row.played}경기 반영</div>`}
+          </div>
+          <div class="rank-stats">
+            <div class="rank-val"><div class="num">${row.win}</div><div class="lbl">승점</div></div>
+            <div class="rank-val"><div class="num" style="color:var(--text-dim)">${row.pts}</div><div class="lbl">총득점</div></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    return `
+      <div class="tip-card">
+        <b>승점 계산 방식</b> — 매 경기 3팀의 점수를 비교해 <b style="color:var(--gold)">1위 10점</b> · <b style="color:var(--gray-team)">2위 6점</b> · <b style="color:var(--red)">3위 2점</b>을 받아요. 순위는 총 승점 → (동점 시) 총득점 순으로 정렬됩니다.
+      </div>
+      <div class="rank-card">${rows}</div>
+    `;
+  }
+
+  // ---------- render: strategy tab ----------
+  function renderStrategy(){
+    const div = state.div;
+    const matches = DATA[div].matches;
+    const noamGames = matches.filter(m => m.p===NOAM || m.g===NOAM || m.b===NOAM);
+    if(noamGames.length===0){
+      return `<div class="empty-note">이 부문에는 강릉 노암초 경기가 없습니다.</div>`;
+    }
+
+    const list = standingsFor(div);
+    const noamRow = list.find(r => r.team===NOAM);
+
+    if(state.simMatch[div]==null){
+      state.simMatch[div] = noamGames.find(m => {
+        const s = state.scores[div][m.id];
+        return !(s && s.p!=="" && s.g!=="" && s.b!=="" && s.p!=null);
+      }) ? noamGames.find(m => {
+        const s = state.scores[div][m.id];
+        return !(s && s.p!=="" && s.g!=="" && s.b!=="" && s.p!=null);
+      }).id : noamGames[0].id;
+    }
+    const curId = state.simMatch[div];
+    const curMatch = noamGames.find(m => m.id===curId);
+
+    // init sim score for this match if absent
+    if(!state.simScore[div][curId]){
+      const actual = state.scores[div][curId];
+      state.simScore[div][curId] = actual && actual.p!=="" ? {...actual} :
+        { p: curMatch.p===NOAM?9:6, g: curMatch.g===NOAM?9:6, b: curMatch.b===NOAM?9:6 };
+    }
+    const sim = state.simScore[div][curId];
+    const r = calcPoints(sim.p, sim.g, sim.b);
+    const noamKey = curMatch.p===NOAM?'p':curMatch.g===NOAM?'g':'b';
+    const noamSimPts = r[noamKey];
+
+    // projected total: sum of noam's *other* completed matches + this simulated match
+    let otherWin = 0;
+    noamGames.forEach(m => {
+      if(m.id===curId) return;
+      const s = state.scores[div][m.id];
+      if(s && s.p!=="" && s.p!=null){
+        const rr = calcPoints(s.p,s.g,s.b);
+        const k = m.p===NOAM?'p':m.g===NOAM?'g':'b';
+        otherWin += rr[k];
+      }
+    });
+    const projTotal = otherWin + (noamSimPts||0);
+
+    // projected rank: replace noam's win total with projTotal, keep others as currently recorded (actual), rank among all teams
+    const others = list.filter(r2 => r2.team!==NOAM);
+    const projRank = 1 + others.filter(o => o.win > projTotal || (o.win===projTotal && o.pts >= noamRow.pts)).length;
+
+    const chips = noamGames.map(m => {
+      const s = state.scores[div][m.id];
+      const played = !!(s && s.p!=="" && s.p!=null);
+      return `<button class="game-chip ${m.id===curId?'active':''}" data-simsel="${m.id}">
+        <span class="dot ${played?'played':'upcoming'}"></span>${m.label}
+      </button>`;
+    }).join('');
+
+    const rankDelta = noamRow ? projRank - noamRow.rank : 0;
+    const deltaClass = rankDelta<0 ? 'up' : rankDelta>0 ? 'down' : '';
+    const deltaText = rankDelta===0 ? '변동 없음' : rankDelta<0 ? `${Math.abs(rankDelta)}단계 상승` : `${rankDelta}단계 하락`;
+
+    return `
+      <div class="noam-summary">
+        <div class="left">
+          <h3>강릉 노암초 · ${DATA[div].label}</h3>
+          <p>현재 확정 승점 기준 순위</p>
+        </div>
+        <div class="right">
+          <div class="big">${noamRow ? noamRow.rank : '-'}<span style="font-size:16px;">위</span></div>
+          <div class="sub">확정 승점 ${noamRow ? noamRow.win : 0}점</div>
+        </div>
+      </div>
+
+      <div class="section-title"><h2>경기별 시뮬레이션</h2></div>
+      <div class="chip-row">${chips}</div>
+
+      <div class="sim-card">
+        <div class="sim-title">${curMatch.label} · ${timeOf(div, curMatch.id, curMatch.time) || '시간 미정'} — 점수를 조정해 결과를 예상해보세요</div>
+        ${simTeamRow('PINK', curMatch.p, sim.p, r.p, div, curId, 'p')}
+        ${simTeamRow('GRAY', curMatch.g, sim.g, r.g, div, curId, 'g')}
+        ${simTeamRow('BLACK', curMatch.b, sim.b, r.b, div, curId, 'b')}
+
+        <div class="proj-box">
+          <div class="proj-item">
+            <div class="v gold">${noamSimPts==null?'—':noamSimPts}</div>
+            <div class="l">이 경기 예상 승점</div>
+          </div>
+          <div class="proj-item">
+            <div class="v">${projTotal}</div>
+            <div class="l">예상 누적 승점</div>
+          </div>
+          <div class="proj-item">
+            <div class="v ${deltaClass}">${projRank}위</div>
+            <div class="l">${deltaText}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <b>전략 팁</b>
+        <div class="rule-line"><span class="rule-badge" style="background:rgba(242,180,65,.18);color:var(--gold)">10점</span> 3팀 중 <b>가장 높은 점수</b>를 받아야 획득</div>
+        <div class="rule-line"><span class="rule-badge" style="background:rgba(183,192,200,.16);color:var(--gray-team)">6점</span> 3팀 중 <b>중간 점수</b>일 때 획득</div>
+        <div class="rule-line"><span class="rule-badge" style="background:rgba(255,107,107,.12);color:var(--red)">2점</span> 3팀 중 <b>가장 낮은 점수</b>면 이 점수</div>
+        <div style="margin-top:8px;">→ 큰 점수차로 이기는 것보다, <b style="color:var(--text)">한 팀만이라도 앞서는 것</b>이 중요해요. 예상 시나리오는 실제 기록에는 저장되지 않는 연습용 계산입니다.
+      </div>
+    `;
+  }
+
+  function simTeamRow(color, name, val, pts, div, matchId, key){
+    const isNoam = name===NOAM;
+    return `
+      <div class="sim-team">
+        <span class="swatch ${color}"></span>
+        <div class="team-name">${isNoam?'<span class="star">★</span>':''}<span class="tn">${name}</span></div>
+        <div class="stepper">
+          <button class="step-btn" data-simstep="-1" data-div="${div}" data-match="${matchId}" data-key="${key}">−</button>
+          <input class="sim-num" type="text" inputmode="numeric" pattern="[0-9]*" value="${val}" data-simnum data-div="${div}" data-match="${matchId}" data-key="${key}">
+          <button class="step-btn" data-simstep="1" data-div="${div}" data-match="${matchId}" data-key="${key}">+</button>
+        </div>
+        <div class="pts-pill ${pts===10?'p10':pts===6?'p6':pts===2?'p2':''}">${pts==null?'—':pts}</div>
+      </div>
+    `;
+  }
+
+  // ---------- main render ----------
+  function render(){
+    const main = document.getElementById('main');
+    const div = state.div;
+    let titleTab = state.tab==='matches' ? '경기 기록' : state.tab==='standings' ? '순위' : '전략 시뮬레이터';
+    let body = state.tab==='matches' ? renderMatches() : state.tab==='standings' ? renderStandings() : renderStrategy();
+    main.innerHTML = `
+      <div class="section-title"><h2>${DATA[div].label} · ${titleTab}</h2><span class="meta">${DATA[div].teams.length}개 팀</span></div>
+      ${body}
+      ${state.tab==='matches' ? '<div class="sync-note">점수는 이 기기와 이 링크를 여는 모든 사람에게 함께 저장돼요</div>' : ''}
+    `;
+    bindMainEvents();
+
+    document.querySelectorAll('#divisionSwitch button').forEach(b => b.classList.toggle('active', b.dataset.div===div));
+    document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('active', b.dataset.tab===state.tab));
+  }
+
+  function bindMainEvents(){
+    document.querySelectorAll('.time-input').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const {timediv, timematch} = e.target.dataset;
+        state.times[timediv][timematch] = e.target.value;
+        saveTimes(timediv);
+      });
+    });
+    document.querySelectorAll('.score-input').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const {div, match, key} = e.target.dataset;
+        if(!state.scores[div][match]) state.scores[div][match] = {p:"",g:"",b:""};
+        const v = e.target.value.replace(/[^0-9]/g, '').slice(0,3);
+        e.target.value = v;
+        state.scores[div][match][key] = v===""? "": Number(v);
+        saveScores(div);
+        renderPreserveFocus(e.target);
+      });
+    });
+    document.querySelectorAll('[data-clear]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const id = e.target.dataset.clear;
+        delete state.scores[state.div][id];
+        saveScores(state.div);
+        render();
+      });
+    });
+    document.querySelectorAll('[data-simsel]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        state.simMatch[state.div] = Number(e.currentTarget.dataset.simsel);
+        render();
+      });
+    });
+    document.querySelectorAll('[data-simstep]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const {div, match, key} = e.currentTarget.dataset;
+        const delta = Number(e.currentTarget.dataset.simstep);
+        const cur = state.simScore[div][match];
+        cur[key] = Math.max(0, (Number(cur[key])||0) + delta);
+        render();
+      });
+    });
+    document.querySelectorAll('[data-simnum]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const {div, match, key} = e.target.dataset;
+        const v = e.target.value.replace(/[^0-9]/g, '').slice(0,3);
+        e.target.value = v;
+        state.simScore[div][match][key] = v===""?0:Math.max(0, Number(v));
+        renderPreserveFocus(e.target, true);
+      });
+    });
+  }
+
+  // avoid losing input focus/caret while typing scores rapidly
+  function renderPreserveFocus(el, isSim){
+    const activeSel = el.dataset.match + '|' + el.dataset.key + (isSim?'|sim':'');
+    render();
+    const again = document.querySelector(
+      isSim ? `[data-simnum][data-match="${el.dataset.match}"][data-key="${el.dataset.key}"]`
+            : `.score-input[data-match="${el.dataset.match}"][data-key="${el.dataset.key}"]`
+    );
+    if(again){
+      again.focus();
+      try{ const val = again.value; again.setSelectionRange(val.length, val.length); }catch(e){ /* selection range unsupported — ignore */ }
+    }
+  }
+
+  // ---------- nav bindings ----------
+  document.getElementById('divisionSwitch').addEventListener('click', e => {
+    const btn = e.target.closest('button'); if(!btn) return;
+    state.div = btn.dataset.div;
+    render();
+  });
+  document.getElementById('bottomNav').addEventListener('click', e => {
+    const btn = e.target.closest('button'); if(!btn) return;
+    state.tab = btn.dataset.tab;
+    render();
+  });
+
+  // ---------- boot ----------
+  async function boot(){
+    await Promise.all([loadScores('boys'), loadScores('girls'), loadTimes('boys'), loadTimes('girls')]);
+    render();
+    // light polling so multiple phones/tablets stay roughly in sync
+    setInterval(async () => {
+      const ae = document.activeElement;
+      if(ae && (ae.classList.contains('score-input') || ae.classList.contains('time-input'))) return;
+      await loadScores(state.div);
+      await loadTimes(state.div);
+      render();
+    }, 7000);
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

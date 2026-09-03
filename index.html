@@ -250,6 +250,175 @@
 
   .empty-note{ text-align:center; color:var(--text-faint); font-size:12.5px; padding: 26px 10px; }
 
+  /* ---------- player stats ---------- */
+  .player-match-chips{ display:flex; gap:6px; overflow-x:auto; padding:2px 2px 12px; -ms-overflow-style:none; scrollbar-width:none; }
+  .player-match-chips::-webkit-scrollbar{ display:none; }
+  .pm-chip{
+    flex:none; padding:8px 14px; border-radius:999px; border:1.5px solid var(--line);
+    background:var(--surface); color:var(--text-dim); font-size:12px; font-weight:700; cursor:pointer;
+    white-space:nowrap; transition: all .15s ease;
+  }
+  .pm-chip.active{ background:var(--gold); border-color:var(--gold); color:#241705; }
+  .pm-chip.total{ background: linear-gradient(135deg, #2A2011, #1A140A); border-color: var(--gold-dim); color: var(--gold); }
+  .pm-chip.total.active{ background: var(--gold); color:#241705; }
+
+  .roster-card{
+    background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--radius);
+    padding:14px; margin-bottom:14px; box-shadow:var(--shadow);
+  }
+  .roster-title{ font-size:13px; font-weight:700; color:var(--text-dim); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+  .roster-title .cnt{ font-family:'Black Han Sans'; color:var(--gold); }
+  .add-player-row{ display:flex; gap:8px; }
+  .add-player-row input{
+    flex:1; height:40px; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--surface-2); color:var(--text); font-family:'Noto Sans KR';
+    font-size:13px; padding:0 12px; outline:none;
+  }
+  .add-player-row input:focus{ border-color:var(--gold); background:var(--surface-3); }
+  .add-player-row input.num-input{ width:64px; flex:none; text-align:center; font-weight:700; }
+  .add-player-btn{
+    flex:none; width:40px; height:40px; border-radius:10px; border:1.5px solid var(--gold-dim);
+    background: rgba(242,180,65,0.12); color:var(--gold); font-size:22px; font-weight:700;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all .12s ease;
+  }
+  .add-player-btn:active{ background:var(--gold); color:#241705; }
+
+  /* ---------- inline player stats (in match card) ---------- */
+  .roster-toggle{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    width:100%; padding:10px; margin-top:8px; border:1.5px dashed var(--gold-dim);
+    border-radius:var(--radius-sm); background:rgba(242,180,65,0.06);
+    color:var(--gold); font-family:'Noto Sans KR'; font-size:12px; font-weight:700;
+    cursor:pointer; transition: all .15s ease;
+  }
+  .roster-toggle:hover{ background:rgba(242,180,65,0.12); }
+  .roster-toggle svg{ width:16px; height:16px; }
+
+  .player-stats-area{
+    margin-top:10px; padding-top:10px; border-top:1px solid var(--line-soft);
+  }
+  .player-stats-area.hidden{
+    display: none !important;
+  }
+  .player-stats-area .ps-title{
+    font-size:12px; font-weight:700; color:var(--gold); margin-bottom:8px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .match-add-card{
+    background:var(--surface-2); border:1px solid var(--line-soft); border-radius:var(--radius-sm);
+    padding:10px; margin-bottom:10px;
+  }
+  .match-add-title{
+    font-size:11.5px; font-weight:700; color:var(--text-dim); margin-bottom:6px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .school-quick-chips{ display:flex; gap:4px; margin-bottom:6px; flex-wrap:wrap; }
+  .sq-chip{
+    font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px;
+    background:var(--surface-3); border:1px solid var(--line); color:var(--text-dim);
+    cursor:pointer; transition: all .12s ease;
+  }
+  .sq-chip:hover, .sq-chip:active{ border-color:var(--gold); color:var(--gold); }
+
+  .ps-row{
+    display:grid; grid-template-columns: 30px 1fr auto; align-items:center; gap:6px;
+    padding:7px 0; border-bottom:1px solid var(--line-soft);
+  }
+  .ps-row:last-child{ border-bottom:none; }
+  .ps-no{ font-family:'Black Han Sans'; font-size:14px; color:var(--gold); text-align:center; }
+  .ps-name{ font-size:12.5px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ps-school{ font-size:10.5px; color:var(--text-faint); margin-left:4px; font-weight:normal; }
+  .ps-stats{ display:flex; gap:4px; }
+  .ps-stat-group{
+    display:flex; align-items:center; gap:1px; background:var(--surface-2); border-radius:8px;
+    border:1px solid var(--line-soft); overflow:hidden;
+  }
+  .ps-stat-group .ps-label{
+    font-size:9px; font-weight:800; padding:0 4px; letter-spacing:0.3px;
+  }
+  .ps-stat-group.op-g .ps-label{ color:#FF9F43; }
+  .ps-stat-group.adp-g .ps-label{ color:#54A0FF; }
+  .ps-stat-group.dp-g .ps-label{ color:var(--green); }
+  .ps-step-btn{
+    width:28px; height:28px; border:none; background:var(--surface-3);
+    color:var(--text); font-size:15px; font-weight:800; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition: background .1s ease;
+  }
+  .ps-step-btn:active{ background:var(--gold); color:#241705; }
+  .ps-stat-group.op-g .ps-step-btn:active{ background:#FF9F43; color:#fff; }
+  .ps-stat-group.adp-g .ps-step-btn:active{ background:#54A0FF; color:#fff; }
+  .ps-stat-group.dp-g .ps-step-btn:active{ background:var(--green); color:#fff; }
+  .ps-val{
+    font-family:'Black Han Sans'; font-size:14px; min-width:20px; text-align:center;
+    padding:0 2px;
+  }
+  .ps-stat-group.op-g .ps-val{ color:#FF9F43; }
+  .ps-stat-group.adp-g .ps-val{ color:#54A0FF; }
+  .ps-stat-group.dp-g .ps-val{ color:var(--green); }
+
+  .del-player-btn{
+    background:none; border:none; color:var(--text-faint); font-size:14px; cursor:pointer;
+    padding:2px 4px; border-radius:4px; transition: color .12s ease; margin-left:4px;
+  }
+  .del-player-btn:hover{ color:var(--red); }
+
+  .add-player-row{ display:flex; gap:6px; flex-wrap:wrap; }
+  .add-player-row input{
+    height:36px; border-radius:8px; border:1.5px solid var(--line);
+    background:var(--surface); color:var(--text); font-family:'Noto Sans KR';
+    font-size:12px; padding:0 8px; outline:none;
+  }
+  .add-player-row input:focus{ border-color:var(--gold); background:var(--surface-3); }
+  .add-player-row input.num-input{ width:48px; flex:none; text-align:center; font-weight:700; }
+  .add-player-row input.name-input{ flex:1; min-width:70px; }
+  .add-player-row input.school-input{ flex:1.2; min-width:90px; }
+  .add-player-btn{
+    flex:none; width:36px; height:36px; border-radius:8px; border:1.5px solid var(--gold-dim);
+    background: rgba(242,180,65,0.12); color:var(--gold); font-size:18px; font-weight:700;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all .12s ease;
+  }
+  .add-player-btn:active{ background:var(--gold); color:#241705; }
+
+  /* ---------- match memo ---------- */
+  .match-memo-wrap{
+    margin-top:10px; padding-top:10px; border-top:1px dashed var(--line-soft);
+  }
+  .match-memo-title{
+    font-size:11.5px; font-weight:700; color:var(--text-dim); margin-bottom:6px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .match-memo-input{
+    width:100%; height:52px; border-radius:8px; border:1.5px solid var(--line);
+    background:var(--surface-2); color:var(--text); font-family:'Noto Sans KR';
+    font-size:12px; padding:8px 10px; outline:none; resize:none; line-height:1.4;
+  }
+  .match-memo-input:focus{ border-color:var(--gold); background:var(--surface-3); }
+
+  /* ---------- match chips for sheet tab ---------- */
+  .sheet-match-chips{
+    display:flex; gap:6px; overflow-x:auto; padding-bottom:10px; margin-bottom:14px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .sm-chip{
+    flex:none; padding:8px 14px; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--surface); color:var(--text-dim); font-family:'Noto Sans KR'; font-size:12px; font-weight:700;
+    cursor:pointer; transition: all .15s ease; white-space:nowrap;
+  }
+  .sm-chip:hover{ border-color:var(--gold); color:var(--text); }
+  .sm-chip.active{
+    border-color:var(--gold); background:rgba(242,180,65,0.14); color:var(--gold);
+  }
+  .sheet-card{
+    background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--radius);
+    padding:16px; margin-bottom:14px; box-shadow:var(--shadow);
+  }
+  .sheet-header{
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;
+    padding-bottom:10px; border-bottom:1px solid var(--line-soft);
+  }
+  .sheet-header .title{ font-size:15px; font-weight:800; color:var(--gold); }
+  .sheet-header .sub{ font-size:12px; color:var(--text-dim); }
+
   /* ---------- bottom nav ---------- */
   nav.bottom{
     position: fixed; left:0; right:0; bottom:0; z-index:50;
@@ -344,7 +513,7 @@
   </button>
   <button data-tab="strategy">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg>
-    전략 시뮬레이터
+    전략
   </button>
 </nav>
 
@@ -358,26 +527,27 @@
     boys: {
       label: "초등 남자부",
       matches: [
-        {id:1, label:"초등남자 #1", time:"9/5(토) 09:15~09:30", p:"춘천 신남초", g:"강릉 노암초", b:"철원 청양초"},
-        {id:2, label:"초등남자 #2", time:null, p:"원주 만대초", g:"철원 청양초", b:"태백 함태초"},
+        {id:1, label:"초등남자 #1", time:"9/5(토) 09:15~09:30", p:"춘천 신남초", g:"강릉 노암초", b:"철원 정양초"},
+        {id:2, label:"초등남자 #2", time:"9/5(토) 09:45~10:00", p:"원주 만대초", g:"철원 정양초", b:"태백 함태초"},
         {id:3, label:"초등남자 #3", time:"9/5(토) 10:15~10:30", p:"강릉 노암초", g:"원주 만대초", b:"홍천 남산초"},
-        {id:4, label:"초등남자 #4", time:"9/5(토) 10:45~11:00", p:"태백 함태초", g:"화천 유촌초", b:"강릉 노암초"},
-        {id:5, label:"초등남자 #5", time:null, p:"철원 청양초", g:"홍천 남산초", b:"화천 유촌초"},
-        {id:6, label:"초등남자 #6", time:null, p:"홍천 남산초", g:"태백 함태초", b:"춘천 신남초"},
-        {id:7, label:"초등남자 #7", time:null, p:"화천 유촌초", g:"춘천 신남초", b:"원주 만대초"}
+        {id:4, label:"초등남자 #4", time:"9/5(토) 10:30~10:45", p:"강릉 노암초", g:"태백 함태초", b:"철원 정양초"},
+        {id:5, label:"초등남자 #5", time:"9/5(토) 11:15~11:30", p:"철원 정양초", g:"홍천 남산초", b:"화천 유촌초"},
+        {id:6, label:"초등남자 #6", time:"9/5(토) 11:45~12:00", p:"홍천 남산초", g:"태백 함태초", b:"춘천 신남초"},
+        {id:7, label:"초등남자 #7", time:"9/5(토) 12:15~12:30", p:"화천 유촌초", g:"춘천 신남초", b:"원주 만대초"},
+        {id:8, label:"초등남자 #8", time:"9/5(토) 12:45~13:00", p:"고성 공현진초", g:"강릉 노암초", b:"원주 학성초"}
       ]
     },
     girls: {
       label: "초등 여자부",
       matches: [
-        {id:1, label:"초등여자 #1", time:null, p:"강릉 노암초", g:"태백 함태초", b:"고성 공현진초"},
-        {id:2, label:"초등여자 #2", time:null, p:"철원 청양초", g:"춘천 신남초", b:"강릉 노암초"},
-        {id:3, label:"초등여자 #3", time:null, p:"원주 학성초", g:"철원 청양초", b:"홍천 남산초"},
-        {id:4, label:"초등여자 #4", time:null, p:"강릉 노암초", g:"화천 유촌초", b:"원주 학성초"},
-        {id:5, label:"초등여자 #5", time:null, p:"태백 함태초", g:"고성 공현진초", b:"철원 청양초"},
-        {id:6, label:"초등여자 #6", time:null, p:"춘천 신남초", g:"홍천 남산초", b:"화천 유촌초"},
-        {id:7, label:"초등여자 #7", time:null, p:"고성 공현진초", g:"원주 학성초", b:"춘천 신남초"},
-        {id:8, label:"초등여자 #8", time:null, p:"화천 유촌초", g:"홍천 남산초", b:"태백 함태초"}
+        {id:1, label:"초등여자 #1", time:"9/5(토) 09:00~09:15", p:"태백 함태초", g:"고성 공현진초", b:"화천 유촌초"},
+        {id:2, label:"초등여자 #2", time:"9/5(토) 09:30~09:45", p:"원주 학성초", g:"철원 정양초", b:"홍천 남산초"},
+        {id:3, label:"초등여자 #3", time:"9/5(토) 10:00~10:15", p:"인제 부평초", g:"춘천 신남초", b:"강릉 노암초"},
+        {id:4, label:"초등여자 #4", time:"9/5(토) 10:45~11:00", p:"태백 함태초", g:"화천 유촌초", b:"강릉 노암초"},
+        {id:5, label:"초등여자 #5", time:"9/5(토) 11:00~11:15", p:"화천 유촌초", g:"원주 학성초", b:"춘천 신남초"},
+        {id:6, label:"초등여자 #6", time:"9/5(토) 11:30~11:45", p:"홍천 남산초", g:"인제 부평초", b:"고성 공현진초"},
+        {id:7, label:"초등여자 #7", time:"9/5(토) 12:00~12:15", p:"철원 정양초", g:"화천 유촌초", b:"인제 부평초"},
+        {id:8, label:"초등여자 #8", time:"9/5(토) 12:30~12:45", p:"춘천 신남초", g:"홍천 남산초", b:"태백 함태초"}
       ]
     }
   };
@@ -396,7 +566,12 @@
     scores: { boys: {}, girls: {} },   // {matchId: {p,g,b}}
     times: { boys: {}, girls: {} },    // {matchId: "시간 문자열"} — 사용자가 직접 수정 가능
     simMatch: { boys: null, girls: null },
-    simScore: { boys: {}, girls: {} }  // {matchId: {p,g,b}} local what-if, per division
+    simScore: { boys: {}, girls: {} },  // {matchId: {p,g,b}} local what-if, per division
+    sheetMatch: { boys: 1, girls: 1 },  // selected match in sheet tab
+    roster: { boys: {}, girls: {} },  // {matchId: [{no:1, name:"홍길동", school:"노암초"}]}
+    playerStats: { boys: {}, girls: {} },  // {matchId: {playerNo: {op:0, adp:0, dp:0}}}
+    expandedPlayerMatch: { boys: null, girls: null },  // which match card has player stats open
+    memos: { boys: {}, girls: {} }  // {matchId: "메모 내용"}
   };
 
   function timeOf(div, matchId, fallback){
@@ -450,6 +625,61 @@
       try{
         await store.set("scores:" + div, JSON.stringify(state.scores[div]), true);
       }catch(e){ console.error("저장 실패", e); }
+    }, 250);
+  }
+
+  async function loadRoster(div){
+    try{
+      const res = await store.get("roster:" + div, true);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        if(parsed && typeof parsed === 'object' && !Array.isArray(parsed)){
+          state.roster[div] = parsed;
+        } else {
+          state.roster[div] = {};
+        }
+      }
+    }catch(e){ state.roster[div] = {}; }
+  }
+  let saveRosterTimer = null;
+  function saveRoster(div){
+    clearTimeout(saveRosterTimer);
+    saveRosterTimer = setTimeout(async () => {
+      try{
+        await store.set("roster:" + div, JSON.stringify(state.roster[div]), true);
+      }catch(e){ console.error("명단 저장 실패", e); }
+    }, 250);
+  }
+
+  async function loadPlayerStats(div){
+    try{
+      const res = await store.get("pstats:" + div, true);
+      if(res && res.value){ state.playerStats[div] = JSON.parse(res.value); }
+    }catch(e){}
+  }
+  let savePStatsTimer = null;
+  function savePlayerStats(div){
+    clearTimeout(savePStatsTimer);
+    savePStatsTimer = setTimeout(async () => {
+      try{
+        await store.set("pstats:" + div, JSON.stringify(state.playerStats[div]), true);
+      }catch(e){ console.error("선수 기록 저장 실패", e); }
+    }, 250);
+  }
+
+  async function loadMemos(div){
+    try{
+      const res = await store.get("memos:" + div, true);
+      if(res && res.value){ state.memos[div] = JSON.parse(res.value); }
+    }catch(e){}
+  }
+  let saveMemoTimer = null;
+  function saveMemos(div){
+    clearTimeout(saveMemoTimer);
+    saveMemoTimer = setTimeout(async () => {
+      try{
+        await store.set("memos:" + div, JSON.stringify(state.memos[div]), true);
+      }catch(e){ console.error("메모 저장 실패", e); }
     }, 250);
   }
 
@@ -515,11 +745,48 @@
         <span class="import-msg" id="importMsg"></span>
       </div>
     `;
+
     matches.forEach(m => {
       const s = state.scores[div][m.id] || {p:"",g:"",b:""};
       const r = calcPoints(s.p, s.g, s.b);
       const isDone = r.p!=null;
       const hasNoam = m.p===NOAM || m.g===NOAM || m.b===NOAM;
+      const isExpanded = state.expandedPlayerMatch[div] === m.id;
+      const displayPlayers = (state.roster[div] && state.roster[div][m.id]) ? state.roster[div][m.id] : [];
+
+      let psRows = displayPlayers.map(pl => {
+        const ms = state.playerStats[div][m.id];
+        const ps = (ms && ms[pl.no]) ? ms[pl.no] : {op:0,adp:0,dp:0};
+        const schoolText = pl.school ? `<span class="ps-school">(${pl.school})</span>` : '';
+        return `
+          <div class="ps-row">
+            <div class="ps-no">${pl.no}</div>
+            <div class="ps-name">${pl.name}${schoolText}</div>
+            <div class="ps-stats">
+              <div class="ps-stat-group op-g">
+                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'op', -1)">−</button>
+                <span class="ps-val" id="pval_${m.id}_${pl.no}_op">${ps.op}</span>
+                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'op', 1)">+</button>
+                <span class="ps-label">공격</span>
+              </div>
+              <div class="ps-stat-group adp-g">
+                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'adp', -1)">−</button>
+                <span class="ps-val" id="pval_${m.id}_${pl.no}_adp">${ps.adp}</span>
+                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'adp', 1)">+</button>
+                <span class="ps-label">협력</span>
+              </div>
+              <div class="ps-stat-group dp-g">
+                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'dp', -1)">−</button>
+                <span class="ps-val" id="pval_${m.id}_${pl.no}_dp">${ps.dp}</span>
+                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'dp', 1)">+</button>
+                <span class="ps-label">수비</span>
+              </div>
+              <button class="del-player-btn" onclick="deleteMatchPlayer(${m.id}, ${pl.no})" title="삭제">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
       html += `
         <div class="match-card ${isDone?'done':''} ${hasNoam?'has-noam':''}">
           <div class="match-head">
@@ -534,6 +801,43 @@
           ${teamRow('GRAY', m.g, s.g, r.g, div, m.id)}
           ${teamRow('BLACK', m.b, s.b, r.b, div, m.id)}
           ${isDone ? `<div class="match-foot"><button class="clear-btn" data-clear="${m.id}">점수 지우기</button></div>` : ''}
+
+          <button class="roster-toggle" onclick="togglePlayerStats(${m.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            선수 기록 / 선수 추가 ${displayPlayers.length > 0 ? `(${displayPlayers.length}명)` : ''}
+          </button>
+
+          <div class="player-stats-area ${isExpanded ? '' : 'hidden'}" id="ps_area_${m.id}">
+            <div class="match-add-card">
+              <div class="match-add-title">
+                <span>선수 추가</span>
+                <span style="font-size:10px; color:var(--text-faint);">학교 선택:</span>
+              </div>
+              <div class="school-quick-chips">
+                <button class="sq-chip" onclick="fillSchoolInput(${m.id}, '${m.p}')">${m.p}</button>
+                <button class="sq-chip" onclick="fillSchoolInput(${m.id}, '${m.g}')">${m.g}</button>
+                <button class="sq-chip" onclick="fillSchoolInput(${m.id}, '${m.b}')">${m.b}</button>
+              </div>
+              <div class="add-player-row">
+                <input class="num-input" type="text" inputmode="numeric" placeholder="번호" id="matchAddNo_${m.id}" maxlength="3" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
+                <input class="name-input" type="text" placeholder="선수 이름" id="matchAddName_${m.id}" maxlength="10" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
+                <input class="school-input" type="text" placeholder="학교명" id="matchAddSchool_${m.id}" value="${hasNoam ? NOAM : m.p}" maxlength="15" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
+                <button class="add-player-btn" onclick="addMatchPlayer(${m.id})" title="등록">+</button>
+              </div>
+            </div>
+
+            <div class="ps-title">선수별 기록 현황 (${displayPlayers.length}명)</div>
+            ${displayPlayers.length > 0 ? psRows : '<div style="font-size:11.5px; color:var(--text-faint); padding:10px 0; text-align:center;">등록된 선수가 없습니다. 위에서 선수를 추가해주세요.</div>'}
+
+            <div class="match-memo-wrap">
+              <div class="match-memo-title">
+                <span>경기 메모</span>
+                <span style="font-size:10px; color:var(--text-faint);">자동 저장</span>
+              </div>
+              <textarea class="match-memo-input" placeholder="전술 메모, 특이사항, 파울/주의사항 메모..."
+                data-memodiv="${div}" data-memomatch="${m.id}">${state.memos[div][m.id] || ''}</textarea>
+            </div>
+          </div>
         </div>
       `;
     });
@@ -715,12 +1019,19 @@
     `;
   }
 
+
+
   // ---------- main render ----------
   function render(){
     const main = document.getElementById('main');
     const div = state.div;
-    let titleTab = state.tab==='matches' ? '경기 기록' : state.tab==='standings' ? '순위' : '전략 시뮬레이터';
-    let body = state.tab==='matches' ? renderMatches() : state.tab==='standings' ? renderStandings() : renderStrategy();
+    const tabLabels = { matches:'경기 기록', standings:'순위', strategy:'전략 시뮬레이터' };
+    let titleTab = tabLabels[state.tab] || state.tab;
+    let body;
+    if(state.tab==='matches') body = renderMatches();
+    else if(state.tab==='standings') body = renderStandings();
+    else body = renderStrategy();
+
     main.innerHTML = `
       <div class="section-title"><h2>${DATA[div].label} · ${titleTab}</h2><span class="meta">${DATA[div].teams.length}개 팀</span></div>
       ${body}
@@ -733,11 +1044,21 @@
   }
 
   function bindMainEvents(){
+    const div = state.div;
+    const matches = DATA[div].matches;
+
     document.querySelectorAll('.time-input').forEach(inp => {
       inp.addEventListener('input', e => {
         const {timediv, timematch} = e.target.dataset;
         state.times[timediv][timematch] = e.target.value;
         saveTimes(timediv);
+      });
+    });
+    document.querySelectorAll('.match-memo-input').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const {memodiv, memomatch} = e.target.dataset;
+        state.memos[memodiv][memomatch] = e.target.value;
+        saveMemos(memodiv);
       });
     });
     document.querySelectorAll('.score-input').forEach(inp => {
@@ -792,6 +1113,87 @@
       fileInput.addEventListener('change', handleExcelImport);
     }
   }
+
+  // ---------- global action handlers for 100% reliable clicks ----------
+  window.togglePlayerStats = function(matchId){
+    const div = state.div;
+    const mId = Number(matchId);
+    if(state.expandedPlayerMatch[div] === mId){
+      state.expandedPlayerMatch[div] = null;
+    } else {
+      state.expandedPlayerMatch[div] = mId;
+    }
+    const el = document.getElementById(`ps_area_${mId}`);
+    if(el){
+      el.classList.toggle('hidden');
+    }
+  };
+
+  window.fillSchoolInput = function(matchId, schoolName){
+    const schoolInp = document.getElementById(`matchAddSchool_${matchId}`);
+    if(schoolInp){ schoolInp.value = schoolName; }
+  };
+
+  window.addMatchPlayer = function(matchId){
+    const div = state.div;
+    const mId = Number(matchId);
+    const noInp = document.getElementById(`matchAddNo_${mId}`);
+    const nameInp = document.getElementById(`matchAddName_${mId}`);
+    const schoolInp = document.getElementById(`matchAddSchool_${mId}`);
+    const no = (noInp ? noInp.value || '' : '').trim();
+    const name = (nameInp ? nameInp.value || '' : '').trim();
+    const school = (schoolInp ? schoolInp.value || '' : '').trim();
+    if(!no || !name){
+      if(noInp && !no) noInp.focus();
+      else if(nameInp && !name) nameInp.focus();
+      return;
+    }
+    const noNum = Number(no);
+    if(isNaN(noNum)) return;
+
+    if(!state.roster[div] || Array.isArray(state.roster[div])) state.roster[div] = {};
+    if(!state.roster[div][mId]) state.roster[div][mId] = [];
+    const matchRoster = state.roster[div][mId];
+
+    const existingIdx = matchRoster.findIndex(p => p.no === noNum);
+    if(existingIdx >= 0){
+      matchRoster[existingIdx] = { no: noNum, name, school };
+    } else {
+      matchRoster.push({ no: noNum, name, school });
+    }
+    matchRoster.sort((a,b) => a.no - b.no);
+    saveRoster(div);
+    state.expandedPlayerMatch[div] = mId;
+    render();
+  };
+
+  window.deleteMatchPlayer = function(matchId, pno){
+    const div = state.div;
+    const mId = Number(matchId);
+    const no = Number(pno);
+    if(state.roster[div] && !Array.isArray(state.roster[div]) && state.roster[div][mId]){
+      state.roster[div][mId] = state.roster[div][mId].filter(p => p.no !== no);
+      saveRoster(div);
+      state.expandedPlayerMatch[div] = mId;
+      render();
+    }
+  };
+
+  window.changePlayerStat = function(matchId, pno, ptype, delta){
+    const div = state.div;
+    const mId = Number(matchId);
+    const playerNo = Number(pno);
+    const step = Number(delta);
+    if(!state.playerStats[div][mId]) state.playerStats[div][mId] = {};
+    if(!state.playerStats[div][mId][playerNo]) state.playerStats[div][mId][playerNo] = { op:0, adp:0, dp:0 };
+    const cur = state.playerStats[div][mId][playerNo];
+    cur[ptype] = Math.max(0, (cur[ptype] || 0) + step);
+    savePlayerStats(div);
+    const valEl = document.getElementById(`pval_${mId}_${playerNo}_${ptype}`);
+    if(valEl){
+      valEl.textContent = cur[ptype];
+    }
+  };
 
   // ---------- excel import ----------
   function handleExcelImport(e){
@@ -893,14 +1295,22 @@
 
   // ---------- boot ----------
   async function boot(){
-    await Promise.all([loadScores('boys'), loadScores('girls'), loadTimes('boys'), loadTimes('girls')]);
+    await Promise.all([
+      loadScores('boys'), loadScores('girls'),
+      loadTimes('boys'), loadTimes('girls'),
+      loadRoster('boys'), loadRoster('girls'),
+      loadPlayerStats('boys'), loadPlayerStats('girls'),
+      loadMemos('boys'), loadMemos('girls')
+    ]);
     render();
-    // light polling so multiple phones/tablets stay roughly in sync
     setInterval(async () => {
       const ae = document.activeElement;
-      if(ae && (ae.classList.contains('score-input') || ae.classList.contains('time-input'))) return;
+      if(ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
       await loadScores(state.div);
       await loadTimes(state.div);
+      await loadRoster(state.div);
+      await loadPlayerStats(state.div);
+      await loadMemos(state.div);
       render();
     }, 7000);
   }

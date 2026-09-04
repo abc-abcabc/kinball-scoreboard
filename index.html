@@ -57,13 +57,206 @@
     border-bottom: 1px solid var(--line-soft);
     padding: 14px 16px 12px;
   }
+  /* ---------- Toss Style Light Mode Overrides ---------- */
+  [data-theme="light"] {
+    --bg: #F2F4F6;
+    --bg-court: #F2F4F6;
+    --surface: #FFFFFF;
+    --surface-2: #F9FAFB;
+    --surface-3: #E5E8EB;
+    --line: #E5E8EB;
+    --line-soft: #F2F4F6;
+    --text: #191F28;
+    --text-dim: #4E5968;
+    --text-faint: #8B95A1;
+    --gold: #3182F6;
+    --gold-dim: #1B64DA;
+    --pink: #FF2D75;
+    --pink-deep: #E11D48;
+    --gray-team: #8B95A1;
+    --gray-team-deep: #4E5968;
+    --black-team: #191F28;
+    --black-team-line: #333D4B;
+    --green: #22C55E;
+    --red: #F04452;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+  [data-theme="light"] body{
+    background: #F2F4F6;
+    color: #191F28;
+  }
+  [data-theme="light"] header.top{
+    background: rgba(242, 244, 246, 0.94);
+    border-bottom: 1px solid #E5E8EB;
+  }
+  [data-theme="light"] nav.bottom{
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid #E5E8EB;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+  }
+  [data-theme="light"] .division-switch{
+    background: #E5E8EB;
+    border-color: #E5E8EB;
+  }
+  [data-theme="light"] .division-switch button{
+    color: #6B7684;
+    font-weight: 700;
+  }
+  [data-theme="light"] .division-switch button.active{
+    background: #3182F6;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(49, 130, 246, 0.3);
+  }
+  [data-theme="light"] .theme-toggle-btn{
+    background: #FFFFFF;
+    border: 1.5px solid #3182F6;
+    color: #3182F6;
+    box-shadow: 0 2px 8px rgba(49, 130, 246, 0.15);
+  }
+  [data-theme="light"] .theme-toggle-btn:hover,
+  [data-theme="light"] .theme-toggle-btn:active{
+    background: #E8F3FF;
+    border-color: #1B64DA;
+    color: #1B64DA;
+  }
+  [data-theme="light"] .match-card{
+    background: #FFFFFF;
+    border: 1px solid #E5E8EB;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.035), 0 1px 3px rgba(0, 0, 0, 0.02);
+  }
+  [data-theme="light"] .match-card.has-noam::before{
+    background: linear-gradient(180deg, #3182F6, #1B64DA);
+  }
+  [data-theme="light"] .score-input,
+  [data-theme="light"] .time-input,
+  [data-theme="light"] .match-memo-input,
+  [data-theme="light"] .add-player-row input{
+    background: #F9FAFB;
+    border: 1.5px solid #E5E8EB;
+    color: #191F28;
+    border-radius: 10px;
+  }
+  [data-theme="light"] .score-input:focus,
+  [data-theme="light"] .time-input:focus,
+  [data-theme="light"] .match-memo-input:focus,
+  [data-theme="light"] .add-player-row input:focus{
+    border-color: #3182F6;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.12);
+  }
+  [data-theme="light"] .pts-pill.p10{ background: rgba(49, 130, 246, 0.12); color: #3182F6; }
+  [data-theme="light"] .pts-pill.p6{ background: #F2F4F6; color: #4E5968; }
+  [data-theme="light"] .pts-pill.p2{ background: rgba(240, 68, 82, 0.1); color: #F04452; }
+  [data-theme="light"] .roster-toggle{
+    background: #F2F4F6;
+    border: 1px solid #E5E8EB;
+    color: #3182F6;
+  }
+  [data-theme="light"] .noam-summary{
+    background: linear-gradient(135deg, #E8F3FF, #D0E5FF);
+    border-color: #3182F6;
+  }
+  [data-theme="light"] .noam-summary .left h3{ color: #1B64DA; }
+  [data-theme="light"] .noam-summary .left p{ color: #3182F6; }
+  [data-theme="light"] .noam-summary .right .big{ color: #1B64DA; }
+  [data-theme="light"] .noam-summary .right .sub{ color: #3182F6; }
+  [data-theme="light"] .game-chip.active{
+    background: #3182F6; border-color: #3182F6; color: #FFFFFF;
+  }
+  [data-theme="light"] .pm-chip.active{
+    background: #3182F6; border-color: #3182F6; color: #FFFFFF;
+  }
+  [data-theme="light"] .team-badge-btn.PINK{
+    background: #FF2D75;
+    border: 1.5px solid #FF75A0;
+    box-shadow: 0 0 8px rgba(255, 45, 117, 0.4);
+  }
+  [data-theme="light"] .team-badge-btn.GRAY{
+    background: #8B95A1;
+    border: 1.5px solid #6B7684;
+    box-shadow: 0 0 6px rgba(139, 149, 161, 0.3);
+  }
+  [data-theme="light"] .team-badge-btn.BLACK{
+    background: #191F28;
+    border: 1.5px solid #333D4B;
+    box-shadow: 0 0 6px rgba(25, 31, 40, 0.3);
+  }
+
+  /* High contrast player stats in Light Mode with clean font-weight */
+  [data-theme="light"] .ps-row{
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+  [data-theme="light"] .ps-no{
+    background: #F1F5F9;
+    color: #334155;
+    border: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 700;
+  }
+  [data-theme="light"] .ps-name{
+    color: #0F172A;
+    font-weight: 700;
+  }
+  [data-theme="light"] .ps-school{
+    color: #64748B;
+    font-weight: 500;
+  }
+  [data-theme="light"] .ps-stat-group{
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+  }
+  [data-theme="light"] .ps-stat-group.op-g .ps-label{ color: #D97706; font-weight: 700; }
+  [data-theme="light"] .ps-stat-group.op-g .ps-val{ color: #EA580C; font-weight: 700; }
+
+  [data-theme="light"] .ps-stat-group.adp-g .ps-label{ color: #2563EB; font-weight: 700; }
+  [data-theme="light"] .ps-stat-group.adp-g .ps-val{ color: #2563EB; font-weight: 700; }
+
+  [data-theme="light"] .ps-stat-group.dp-g .ps-label{ color: #16A34A; font-weight: 700; }
+  [data-theme="light"] .ps-stat-group.dp-g .ps-val{ color: #16A34A; font-weight: 700; }
+
+  [data-theme="light"] .ps-step-btn{
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #334155;
+    font-weight: 700;
+  }
+  [data-theme="light"] .ps-step-btn:hover{
+    background: #F1F5F9;
+  }
+
+  /* Header brand & theme button right next to title */
   .brand{
-    display:flex; align-items:center; gap:10px; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:flex-start; gap:8px; margin-bottom:10px;
   }
   .brand h1{
-    font-size: 15px; margin:0; line-height:1.25; font-weight:700; color:var(--text);
+    font-size: 16px; margin:0; line-height:1.25; font-weight:800; color:var(--text);
   }
-  .brand small{ display:block; font-size:11px; color:var(--text-dim); font-weight:500; margin-top:1px;}
+  .theme-corner-btn{
+    flex:none; width:30px; height:30px; border-radius:999px;
+    border:1px solid var(--line-soft); background:var(--surface-2);
+    color:var(--text); font-size:14px; cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center;
+    transition: all .18s ease; box-shadow:var(--shadow);
+  }
+  .theme-corner-btn:hover, .theme-corner-btn:active{
+    background:var(--surface-3); border-color:var(--gold);
+    transform:scale(1.08);
+  }
+
+  [data-theme="light"] .theme-corner-btn{
+    background: #FFFFFF;
+    border-color: #E2E8F0;
+    color: #191F28;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  [data-theme="light"] .theme-corner-btn:hover,
+  [data-theme="light"] .theme-corner-btn:active{
+    background: #F1F5F9;
+    border-color: #3182F6;
+  }
 
   .division-switch{
     display:flex; background: var(--surface); border-radius: 999px; padding:4px; gap:4px;
@@ -72,7 +265,7 @@
   .division-switch button{
     flex:1; border:none; background:transparent; color: var(--text-dim);
     font-family:'Noto Sans KR'; font-weight:700; font-size:13.5px; padding:9px 6px; border-radius:999px;
-    transition: all .18s ease; cursor:pointer;
+    transition: all .18s ease; cursor:pointer; text-align:center;
   }
   .division-switch button.active{
     background: linear-gradient(135deg, var(--gold), #C98A1F); color:#241705;
@@ -122,10 +315,60 @@
   .status-chip.done{ background: rgba(82,209,138,0.15); color: var(--green); }
 
   .team-row{
-    display:grid; grid-template-columns: 10px 1fr 74px 46px; align-items:center; gap:10px;
-    padding: 8px 4px; border-bottom: 1px solid var(--line-soft);
+    display:grid; grid-template-columns: 16px 1fr 74px 46px; align-items:center; gap:10px;
+    padding: 9px 4px; border-bottom: 1px solid var(--line-soft);
   }
   .team-row:last-of-type{ border-bottom:none; }
+
+  .team-badge-btn{
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    display: inline-block;
+    flex: none;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+  }
+  .team-badge-btn:hover{
+    transform: scale(1.22);
+  }
+  .team-badge-btn:active{
+    transform: scale(0.92);
+  }
+  .team-badge-btn.PINK{
+    background: #FF007F;
+    border: 1.5px solid #FF66B2;
+    box-shadow: 0 0 8px rgba(255, 0, 127, 0.6);
+  }
+  .team-badge-btn.GRAY{
+    background: #CBD5E1;
+    border: 1.5px solid #64748B;
+    box-shadow: 0 0 6px rgba(203, 213, 225, 0.4);
+  }
+  .team-badge-btn.BLACK{
+    background: #000000;
+    border: 2px solid #F8FAFC;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+  }
+
+  [data-theme="light"] .team-badge-btn.PINK{
+    background: #FF007F;
+    border: 1.5px solid #E11D48;
+    box-shadow: 0 0 6px rgba(255, 0, 127, 0.4);
+  }
+  [data-theme="light"] .team-badge-btn.GRAY{
+    background: #94A3B8;
+    border: 1.5px solid #475569;
+    box-shadow: 0 0 6px rgba(148, 163, 184, 0.4);
+  }
+  [data-theme="light"] .team-badge-btn.BLACK{
+    background: #0F172A;
+    border: 2px solid #000000;
+    box-shadow: 0 0 6px rgba(15, 23, 42, 0.4);
+  }
+
   .swatch{ width:10px; height:10px; border-radius:3px; }
   .swatch.PINK{ background: var(--pink); }
   .swatch.GRAY{ background: var(--gray-team); }
@@ -344,8 +587,9 @@
     flex: 1;
   }
   .ps-no{
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
     color: var(--gold);
     background: rgba(242,180,65,0.15);
     padding: 2px 7px;
@@ -398,7 +642,7 @@
   .ps-stat-group.adp-g .ps-step-btn:active{ background:#54A0FF; color:#fff; }
   .ps-stat-group.dp-g .ps-step-btn:active{ background:var(--green); color:#fff; }
   .ps-val{
-    font-family: 'Black Han Sans'; font-size: 13.5px; min-width: 16px; text-align: center;
+    font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 13.5px; min-width: 16px; text-align: center;
     padding: 0 1px; flex: 1;
   }
   .ps-stat-group.op-g .ps-val{ color:#FF9F43; }
@@ -508,12 +752,12 @@
   /* ---------- small screens (iPhone SE, 320px~) ---------- */
   @media (max-width: 374px){
     :root{ font-size:14px; }
-    .brand h1{ font-size:13.5px; }
-    .division-switch button{ font-size:12.5px; padding:8px 4px; }
-    .team-row{ grid-template-columns: 8px 1fr 60px 38px; gap:6px; }
+    .theme-switch button,
+    .division-switch button{ font-size:12.5px; padding:7px 3px; }
+    .team-row{ grid-template-columns: 14px 1fr 60px 38px; gap:6px; }
     .score-input{ width:60px; height:38px; font-size:15px; }
     .pts-pill{ min-width:32px; font-size:11px; padding:5px 0; }
-    .sim-team{ grid-template-columns: 8px 1fr auto 38px; gap:6px; }
+    .sim-team{ grid-template-columns: 14px 1fr auto 38px; gap:6px; }
     .step-btn{ width:38px; height:38px; font-size:16px; }
     .sim-num{ width:30px; font-size:14px; }
     .match-head .glabel{ font-size:13px; }
@@ -527,9 +771,9 @@
 
   /* ---------- medium+ screens ---------- */
   @media (min-width: 560px){
-    .team-row{ grid-template-columns: 12px 1fr 90px 52px; }
+    .team-row{ grid-template-columns: 16px 1fr 90px 52px; }
     .score-input{ width:90px; }
-    .sim-team{ grid-template-columns: 12px 1fr 140px 52px; }
+    .sim-team{ grid-template-columns: 16px 1fr 140px 52px; }
   }
 </style>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -538,9 +782,10 @@
 
 <header class="top">
   <div class="brand">
-    <div>
-      <h1>킨볼 스코어보드</h1>
-    </div>
+    <h1>킨볼 스코어보드</h1>
+    <button class="theme-corner-btn" id="themeToggleBtn" aria-label="화면 모드 변경" title="다크/라이트 모드 전환">
+      <span class="theme-icon">☀️</span>
+    </button>
   </div>
   <div class="division-switch" id="divisionSwitch">
     <button data-div="boys">초등 남자부</button>
@@ -570,43 +815,46 @@
 (function(){
   "use strict";
 
-  const NOAM = "강릉 노암초";
+  const MY_TEAMS = ["강릉 노암초", "강릉 경포중"];
+  function isMyTeam(name){
+    return MY_TEAMS.includes(name);
+  }
 
   const DATA = {
     boys: {
       label: "초등 남자부",
       matches: [
-        {id:1, label:"초등남자 #1", time:"9/5(토) 09:15~09:30", p:"춘천 신남초", g:"강릉 노암초", b:"철원 정양초"},
-        {id:2, label:"초등남자 #2", time:"9/5(토) 09:45~10:00", p:"원주 만대초", g:"철원 정양초", b:"태백 함태초"},
-        {id:3, label:"초등남자 #3", time:"9/5(토) 10:15~10:30", p:"강릉 노암초", g:"원주 만대초", b:"홍천 남산초"},
-        {id:4, label:"초등남자 #4", time:"9/5(토) 10:30~10:45", p:"강릉 노암초", g:"태백 함태초", b:"철원 정양초"},
-        {id:5, label:"초등남자 #5", time:"9/5(토) 11:15~11:30", p:"철원 정양초", g:"홍천 남산초", b:"화천 유촌초"},
-        {id:6, label:"초등남자 #6", time:"9/5(토) 11:45~12:00", p:"홍천 남산초", g:"태백 함태초", b:"춘천 신남초"},
-        {id:7, label:"초등남자 #7", time:"9/5(토) 12:15~12:30", p:"화천 유촌초", g:"춘천 신남초", b:"원주 만대초"},
-        {id:8, label:"초등남자 #8", time:"9/5(토) 12:45~13:00", p:"고성 공현진초", g:"강릉 노암초", b:"원주 학성초"}
+        {id:1, label:"초등남자 1경기", time:"9/5(토) 09:15~09:30", p:"춘천 신남초", g:"강릉 노암초", b:"철원 정양초"},
+        {id:2, label:"초등남자 2경기", time:"9/5(토) 09:45~10:00", p:"원주 만대초", g:"철원 정양초", b:"태백 함태초"},
+        {id:3, label:"초등남자 3경기", time:"9/5(토) 10:15~10:30", p:"강릉 노암초", g:"원주 만대초", b:"홍천 남산초"},
+        {id:4, label:"초등남자 4경기", time:"9/5(토) 10:45~11:00", p:"태백 함태초", g:"화천 유촌초", b:"강릉 노암초"},
+        {id:5, label:"초등남자 5경기", time:"9/5(토) 11:15~11:30", p:"철원 정양초", g:"홍천 남산초", b:"화천 유촌초"},
+        {id:6, label:"초등남자 6경기", time:"9/5(토) 11:45~12:00", p:"홍천 남산초", g:"태백 함태초", b:"춘천 신남초"},
+        {id:7, label:"초등남자 7경기", time:"9/5(토) 12:15~12:30", p:"화천 유촌초", g:"춘천 신남초", b:"원주 만대초"}
       ]
     },
     girls: {
       label: "초등 여자부",
       matches: [
-        {id:1, label:"초등여자 #1", time:"9/5(토) 09:00~09:15", p:"태백 함태초", g:"고성 공현진초", b:"화천 유촌초"},
-        {id:2, label:"초등여자 #2", time:"9/5(토) 09:30~09:45", p:"원주 학성초", g:"철원 정양초", b:"홍천 남산초"},
-        {id:3, label:"초등여자 #3", time:"9/5(토) 10:00~10:15", p:"인제 부평초", g:"춘천 신남초", b:"강릉 노암초"},
-        {id:4, label:"초등여자 #4", time:"9/5(토) 10:45~11:00", p:"태백 함태초", g:"화천 유촌초", b:"강릉 노암초"},
-        {id:5, label:"초등여자 #5", time:"9/5(토) 11:00~11:15", p:"화천 유촌초", g:"원주 학성초", b:"춘천 신남초"},
-        {id:6, label:"초등여자 #6", time:"9/5(토) 11:30~11:45", p:"홍천 남산초", g:"인제 부평초", b:"고성 공현진초"},
-        {id:7, label:"초등여자 #7", time:"9/5(토) 12:00~12:15", p:"철원 정양초", g:"화천 유촌초", b:"인제 부평초"},
-        {id:8, label:"초등여자 #8", time:"9/5(토) 12:30~12:45", p:"춘천 신남초", g:"홍천 남산초", b:"태백 함태초"}
+        {id:1, label:"초등여자 1경기", time:"9/5(토) 09:00~09:15", p:"태백 함태초", g:"고성 공현진초", b:"화천 유촌초"},
+        {id:2, label:"초등여자 2경기", time:"9/5(토) 09:30~09:45", p:"원주 학성초", g:"철원 정양초", b:"홍천 남산초"},
+        {id:3, label:"초등여자 3경기", time:"9/5(토) 10:00~10:15", p:"인제 부평초", g:"춘천 신남초", b:"강릉 노암초"},
+        {id:4, label:"초등여자 4경기", time:"9/5(토) 10:30~10:45", p:"강릉 노암초", g:"태백 함태초", b:"철원 정양초"},
+        {id:5, label:"초등여자 5경기", time:"9/5(토) 11:00~11:15", p:"화천 유촌초", g:"원주 학성초", b:"춘천 신남초"},
+        {id:6, label:"초등여자 6경기", time:"9/5(토) 11:30~11:45", p:"홍천 남산초", g:"인제 부평초", b:"고성 공현진초"},
+        {id:7, label:"초등여자 7경기", time:"9/5(토) 12:00~12:15", p:"철원 정양초", g:"화천 유촌초", b:"인제 부평초"},
+        {id:8, label:"초등여자 8경기", time:"9/5(토) 12:30~12:45", p:"춘천 신남초", g:"홍천 남산초", b:"태백 함태초"},
+        {id:9, label:"초등여자 9경기", time:"9/5(토) 12:45~13:00", p:"고성 공현진초", g:"강릉 노암초", b:"원주 학성초"}
       ]
     },
     midGirls: {
       label: "중등 여자부",
       matches: [
-        {id:1, label:"중등여자 #1", time:"9/5(토) 13:45~14:00", p:"동해 묵호중", g:"춘천 가정중", b:"태백 함태중"},
-        {id:2, label:"중등여자 #2", time:"9/5(토) 14:00~14:15", p:"강릉 경포중", g:"홍천 홍천여중", b:"동해 묵호중"},
-        {id:3, label:"중등여자 #3", time:"9/5(토) 14:15~14:30", p:"춘천 가정중", g:"태백 함태중", b:"강릉 경포중"},
-        {id:4, label:"중등여자 #4", time:"9/5(토) 14:30~14:45", p:"홍천 홍천여중", g:"동해 묵호중", b:"춘천 가정중"},
-        {id:5, label:"중등여자 #5", time:"9/5(토) 14:45~15:00", p:"태백 함태중", g:"강릉 경포중", b:"홍천 홍천여중"}
+        {id:1, label:"중등여자 1경기", time:"9/5(토) 13:45~14:00", p:"동해 묵호중", g:"춘천 가정중", b:"태백 함태중"},
+        {id:2, label:"중등여자 2경기", time:"9/5(토) 14:00~14:15", p:"강릉 경포중", g:"홍천 홍천여중", b:"동해 묵호중"},
+        {id:3, label:"중등여자 3경기", time:"9/5(토) 14:15~14:30", p:"춘천 가정중", g:"태백 함태중", b:"강릉 경포중"},
+        {id:4, label:"중등여자 4경기", time:"9/5(토) 14:30~14:45", p:"홍천 홍천여중", g:"동해 묵호중", b:"춘천 가정중"},
+        {id:5, label:"중등여자 5경기", time:"9/5(토) 14:45~15:00", p:"태백 함태중", g:"강릉 경포중", b:"홍천 홍천여중"}
       ]
     }
   };
@@ -625,6 +873,7 @@
     tab: "matches",
     scores: { boys: {}, girls: {}, midGirls: {} },   // {matchId: {p,g,b}}
     times: { boys: {}, girls: {}, midGirls: {} },    // {matchId: "시간 문자열"} — 사용자가 직접 수정 가능
+    teamColors: { boys: {}, girls: {}, midGirls: {} }, // {matchId: ['PINK', 'GRAY', 'BLACK']}
     simMatch: { boys: null, girls: null, midGirls: null },
     simScore: { boys: {}, girls: {}, midGirls: {} },  // {matchId: {p,g,b}} local what-if, per division
     sheetMatch: { boys: 1, girls: 1, midGirls: 1 },  // selected match in sheet tab
@@ -633,6 +882,12 @@
     expandedPlayerMatch: { boys: null, girls: null, midGirls: null },  // which match card has player stats open
     memos: { boys: {}, girls: {}, midGirls: {} }  // {matchId: "메모 내용"}
   };
+
+  function colorsOf(div, matchId){
+    const saved = state.teamColors[div] && state.teamColors[div][matchId];
+    if(saved && Array.isArray(saved) && saved.length === 3) return saved;
+    return ['PINK', 'GRAY', 'BLACK'];
+  }
 
   function timeOf(div, matchId, fallback){
     const t = state.times[div][matchId];
@@ -669,6 +924,22 @@
       try{
         await store.set("times:" + div, JSON.stringify(state.times[div]), true);
       }catch(e){ console.error("시간 저장 실패", e); }
+    }, 250);
+  }
+
+  async function loadTeamColors(div){
+    try{
+      const res = await store.get("tcolors:" + div, true);
+      if(res && res.value){ state.teamColors[div] = JSON.parse(res.value); }
+    }catch(e){}
+  }
+  let saveTColorsTimer = null;
+  function saveTeamColors(div){
+    clearTimeout(saveTColorsTimer);
+    saveTColorsTimer = setTimeout(async () => {
+      try{
+        await store.set("tcolors:" + div, JSON.stringify(state.teamColors[div]), true);
+      }catch(e){ console.error("팀 색상 저장 실패", e); }
     }, 250);
   }
 
@@ -796,23 +1067,17 @@
         <div class="progress-bar"><div class="progress-fill" style="width:${(done/matches.length*100).toFixed(0)}%"></div></div>
         <span>${done} / ${matches.length} 경기 완료</span>
       </div>
-      <div class="import-bar">
-        <button class="import-btn" id="importExcelBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          엑셀에서 불러오기
-        </button>
-        <input type="file" id="excelFileInput" accept=".xlsx,.xls" style="display:none">
-        <span class="import-msg" id="importMsg"></span>
-      </div>
     `;
 
     matches.forEach(m => {
       const s = state.scores[div][m.id] || {p:"",g:"",b:""};
       const r = calcPoints(s.p, s.g, s.b);
       const isDone = r.p!=null;
-      const hasNoam = m.p===NOAM || m.g===NOAM || m.b===NOAM;
+      const hasMyTeam = isMyTeam(m.p) || isMyTeam(m.g) || isMyTeam(m.b);
       const isExpanded = state.expandedPlayerMatch[div] === m.id;
       const displayPlayers = (state.roster[div] && state.roster[div][m.id]) ? state.roster[div][m.id] : [];
+      const colors = colorsOf(div, m.id);
+      const defaultSchool = isMyTeam(m.p) ? m.p : isMyTeam(m.g) ? m.g : isMyTeam(m.b) ? m.b : m.p;
 
       let psRows = displayPlayers.map(pl => {
         const ms = state.playerStats[div][m.id];
@@ -853,7 +1118,7 @@
       }).join('');
 
       html += `
-        <div class="match-card ${isDone?'done':''} ${hasNoam?'has-noam':''}">
+        <div class="match-card ${isDone?'done':''} ${hasMyTeam?'has-noam':''}">
           <div class="match-head">
             <div>
               <div class="glabel">${m.label}</div>
@@ -862,9 +1127,9 @@
             </div>
             <div class="status-chip ${isDone?'done':'wait'}">${isDone?'완료':'입력 대기'}</div>
           </div>
-          ${teamRow('PINK', m.p, s.p, r.p, div, m.id)}
-          ${teamRow('GRAY', m.g, s.g, r.g, div, m.id)}
-          ${teamRow('BLACK', m.b, s.b, r.b, div, m.id)}
+          ${teamRow(colors[0], m.p, s.p, r.p, div, m.id, 0)}
+          ${teamRow(colors[1], m.g, s.g, r.g, div, m.id, 1)}
+          ${teamRow(colors[2], m.b, s.b, r.b, div, m.id, 2)}
           ${isDone ? `<div class="match-foot"><button class="clear-btn" data-clear="${m.id}">점수 지우기</button></div>` : ''}
 
           <button class="roster-toggle" onclick="togglePlayerStats(${m.id})">
@@ -886,7 +1151,7 @@
               <div class="add-player-row">
                 <input class="num-input" type="text" inputmode="numeric" placeholder="번호" id="matchAddNo_${m.id}" maxlength="3" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
                 <input class="name-input" type="text" placeholder="선수 이름" id="matchAddName_${m.id}" maxlength="10" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
-                <input class="school-input" type="text" placeholder="학교명" id="matchAddSchool_${m.id}" value="${hasNoam ? NOAM : m.p}" maxlength="15" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
+                <input class="school-input" type="text" placeholder="학교명" id="matchAddSchool_${m.id}" value="${defaultSchool}" maxlength="15" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
                 <button class="add-player-btn" onclick="addMatchPlayer(${m.id})" title="등록">+</button>
               </div>
             </div>
@@ -909,16 +1174,17 @@
     return html;
   }
 
-  function teamRow(color, name, val, pts, div, matchId){
-    const isNoam = name===NOAM;
-    const key = color==='PINK'?'p':color==='GRAY'?'g':'b';
+  function teamRow(color, name, val, pts, div, matchId, teamIdx){
+    const isMy = isMyTeam(name);
+    const key = teamIdx===0?'p':teamIdx===1?'g':'b';
     const winClass = pts===10 ? 'win' : '';
     const ptsClass = pts===10?'p10':pts===6?'p6':pts===2?'p2':'';
+    const colorName = color==='PINK'?'핑크':color==='GRAY'?'그레이':'블랙';
     return `
-      <div class="team-row">
-        <span class="swatch ${color}"></span>
+      <div class="team-row team-row-${color}">
+        <button class="team-badge-btn ${color}" onclick="cycleTeamColor(${matchId}, ${teamIdx})" title="클릭하여 팀 색상 변경 (현재: ${colorName})"></button>
         <div class="team-name">
-          ${isNoam?'<span class="star">★</span>':''}
+          ${isMy?'<span class="star">★</span>':''}
           <span class="tn">${name}</span>
         </div>
         <input class="score-input ${winClass}" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="-"
@@ -935,11 +1201,12 @@
     const list = standingsFor(div);
     let rows = list.map(row => {
       const rc = row.rank===1?'r1':row.rank===2?'r2':row.rank===3?'r3':'';
+      const isMy = isMyTeam(row.team);
       return `
-        <div class="rank-row ${row.team===NOAM?'noam':''} ${rc}">
+        <div class="rank-row ${isMy?'noam':''} ${rc}">
           <div class="rank-num">${row.rank}</div>
           <div class="rank-team">
-            <div class="nm">${row.team===NOAM?'<span style="color:var(--gold)">★</span>':''} ${row.team}</div>
+            <div class="nm">${isMy?'<span style="color:var(--gold)">★</span>':''} ${row.team}</div>
             ${row.tie?'<div class="tag">타이브레이크 필요</div>':`<div class="tag" style="color:var(--text-faint)">${row.played}경기 반영</div>`}
           </div>
           <div class="rank-stats">
@@ -961,13 +1228,14 @@
   function renderStrategy(){
     const div = state.div;
     const matches = DATA[div].matches;
-    const noamGames = matches.filter(m => m.p===NOAM || m.g===NOAM || m.b===NOAM);
+    const noamGames = matches.filter(m => isMyTeam(m.p) || isMyTeam(m.g) || isMyTeam(m.b));
     if(noamGames.length===0){
-      return `<div class="empty-note">이 부문에는 강릉 노암초 경기가 없습니다.</div>`;
+      return `<div class="empty-note">이 부문에는 관심 팀 경기가 없습니다.</div>`;
     }
 
     const list = standingsFor(div);
-    const noamRow = list.find(r => r.team===NOAM);
+    const noamRow = list.find(r => isMyTeam(r.team));
+    const targetTeamName = noamRow ? noamRow.team : (isMyTeam(noamGames[0].p)?noamGames[0].p:isMyTeam(noamGames[0].g)?noamGames[0].g:noamGames[0].b);
 
     if(state.simMatch[div]==null){
       state.simMatch[div] = noamGames.find(m => {
@@ -985,29 +1253,29 @@
     if(!state.simScore[div][curId]){
       const actual = state.scores[div][curId];
       state.simScore[div][curId] = actual && actual.p!=="" ? {...actual} :
-        { p: curMatch.p===NOAM?9:6, g: curMatch.g===NOAM?9:6, b: curMatch.b===NOAM?9:6 };
+        { p: isMyTeam(curMatch.p)?9:6, g: isMyTeam(curMatch.g)?9:6, b: isMyTeam(curMatch.b)?9:6 };
     }
     const sim = state.simScore[div][curId];
     const r = calcPoints(sim.p, sim.g, sim.b);
-    const noamKey = curMatch.p===NOAM?'p':curMatch.g===NOAM?'g':'b';
+    const noamKey = isMyTeam(curMatch.p)?'p':isMyTeam(curMatch.g)?'g':'b';
     const noamSimPts = r[noamKey];
 
-    // projected total: sum of noam's *other* completed matches + this simulated match
+    // projected total: sum of team's *other* completed matches + this simulated match
     let otherWin = 0;
     noamGames.forEach(m => {
       if(m.id===curId) return;
       const s = state.scores[div][m.id];
       if(s && s.p!=="" && s.p!=null){
         const rr = calcPoints(s.p,s.g,s.b);
-        const k = m.p===NOAM?'p':m.g===NOAM?'g':'b';
+        const k = isMyTeam(m.p)?'p':isMyTeam(m.g)?'g':'b';
         otherWin += rr[k];
       }
     });
     const projTotal = otherWin + (noamSimPts||0);
 
-    // projected rank: replace noam's win total with projTotal, keep others as currently recorded (actual), rank among all teams
-    const others = list.filter(r2 => r2.team!==NOAM);
-    const projRank = 1 + others.filter(o => o.win > projTotal || (o.win===projTotal && o.pts >= noamRow.pts)).length;
+    // projected rank
+    const others = list.filter(r2 => !isMyTeam(r2.team));
+    const projRank = 1 + others.filter(o => o.win > projTotal || (o.win===projTotal && o.pts >= (noamRow?noamRow.pts:0))).length;
 
     const chips = noamGames.map(m => {
       const s = state.scores[div][m.id];
@@ -1024,7 +1292,7 @@
     return `
       <div class="noam-summary">
         <div class="left">
-          <h3>강릉 노암초 · ${DATA[div].label}</h3>
+          <h3>${targetTeamName} · ${DATA[div].label}</h3>
           <p>현재 확정 승점 기준 순위</p>
         </div>
         <div class="right">
@@ -1038,9 +1306,9 @@
 
       <div class="sim-card">
         <div class="sim-title">${curMatch.label} · ${timeOf(div, curMatch.id, curMatch.time) || '시간 미정'} — 점수를 조정해 결과를 예상해보세요</div>
-        ${simTeamRow('PINK', curMatch.p, sim.p, r.p, div, curId, 'p')}
-        ${simTeamRow('GRAY', curMatch.g, sim.g, r.g, div, curId, 'g')}
-        ${simTeamRow('BLACK', curMatch.b, sim.b, r.b, div, curId, 'b')}
+        ${simTeamRow(colorsOf(div, curId)[0], curMatch.p, sim.p, r.p, div, curId, 'p', 0)}
+        ${simTeamRow(colorsOf(div, curId)[1], curMatch.g, sim.g, r.g, div, curId, 'g', 1)}
+        ${simTeamRow(colorsOf(div, curId)[2], curMatch.b, sim.b, r.b, div, curId, 'b', 2)}
 
         <div class="proj-box">
           <div class="proj-item">
@@ -1068,12 +1336,13 @@
     `;
   }
 
-  function simTeamRow(color, name, val, pts, div, matchId, key){
-    const isNoam = name===NOAM;
+  function simTeamRow(color, name, val, pts, div, matchId, key, teamIdx){
+    const isMy = isMyTeam(name);
+    const colorName = color==='PINK'?'핑크':color==='GRAY'?'그레이':'블랙';
     return `
-      <div class="sim-team">
-        <span class="swatch ${color}"></span>
-        <div class="team-name">${isNoam?'<span class="star">★</span>':''}<span class="tn">${name}</span></div>
+      <div class="sim-team sim-team-${color}">
+        <button class="team-badge-btn ${color}" onclick="cycleTeamColor(${matchId}, ${teamIdx})" title="클릭하여 팀 색상 변경 (현재: ${colorName})"></button>
+        <div class="team-name">${isMy?'<span class="star">★</span>':''}<span class="tn">${name}</span></div>
         <div class="stepper">
           <button class="step-btn" data-simstep="-1" data-div="${div}" data-match="${matchId}" data-key="${key}">−</button>
           <input class="sim-num" type="text" inputmode="numeric" pattern="[0-9]*" value="${val}" data-simnum data-div="${div}" data-match="${matchId}" data-key="${key}">
@@ -1180,6 +1449,28 @@
   }
 
   // ---------- global action handlers for 100% reliable clicks ----------
+  window.cycleTeamColor = function(matchId, teamIdx){
+    const div = state.div;
+    const mId = Number(matchId);
+    const tIdx = Number(teamIdx);
+    const curColors = [...colorsOf(div, mId)];
+    const colorOrder = ['PINK', 'GRAY', 'BLACK'];
+    const oldColor = curColors[tIdx];
+    const nextColorIdx = (colorOrder.indexOf(oldColor) + 1) % 3;
+    const newColor = colorOrder[nextColorIdx];
+
+    const otherIdx = curColors.findIndex((c, i) => i !== tIdx && c === newColor);
+    if(otherIdx >= 0){
+      curColors[otherIdx] = oldColor;
+    }
+    curColors[tIdx] = newColor;
+
+    if(!state.teamColors[div]) state.teamColors[div] = {};
+    state.teamColors[div][mId] = curColors;
+    saveTeamColors(div);
+    render();
+  };
+
   window.togglePlayerStats = function(matchId){
     const div = state.div;
     const mId = Number(matchId);
@@ -1364,6 +1655,26 @@
     }
   }
 
+  // ---------- theme bindings ----------
+  function initTheme(){
+    const saved = localStorage.getItem('kb_theme') || 'dark';
+    applyTheme(saved);
+  }
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('kb_theme', t);
+    const btn = document.getElementById('themeToggleBtn');
+    if(btn){
+      const icon = btn.querySelector('.theme-icon');
+      if(icon) icon.textContent = t === 'dark' ? '☀️' : '🌙';
+      btn.setAttribute('title', t === 'dark' ? '밝은 모드로 전환' : '어두운 모드로 전환');
+    }
+  }
+  document.getElementById('themeToggleBtn').addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
   // ---------- nav bindings ----------
   document.getElementById('divisionSwitch').addEventListener('click', e => {
     const btn = e.target.closest('button'); if(!btn) return;
@@ -1378,9 +1689,11 @@
 
   // ---------- boot ----------
   async function boot(){
+    initTheme();
     await Promise.all([
       loadScores('boys'), loadScores('girls'), loadScores('midGirls'),
       loadTimes('boys'), loadTimes('girls'), loadTimes('midGirls'),
+      loadTeamColors('boys'), loadTeamColors('girls'), loadTeamColors('midGirls'),
       loadRoster('boys'), loadRoster('girls'), loadRoster('midGirls'),
       loadPlayerStats('boys'), loadPlayerStats('girls'), loadPlayerStats('midGirls'),
       loadMemos('boys'), loadMemos('girls'), loadMemos('midGirls')
@@ -1391,6 +1704,7 @@
       if(ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
       await loadScores(state.div);
       await loadTimes(state.div);
+      await loadTeamColors(state.div);
       await loadRoster(state.div);
       await loadPlayerStats(state.div);
       await loadMemos(state.div);

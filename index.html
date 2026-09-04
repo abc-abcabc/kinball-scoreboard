@@ -321,46 +321,95 @@
   .sq-chip:hover, .sq-chip:active{ border-color:var(--gold); color:var(--gold); }
 
   .ps-row{
-    display:grid; grid-template-columns: 30px 1fr auto; align-items:center; gap:6px;
-    padding:7px 0; border-bottom:1px solid var(--line-soft);
+    background: var(--surface-2);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
-  .ps-row:last-child{ border-bottom:none; }
-  .ps-no{ font-family:'Black Han Sans'; font-size:14px; color:var(--gold); text-align:center; }
-  .ps-name{ font-size:12.5px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .ps-school{ font-size:10.5px; color:var(--text-faint); margin-left:4px; font-weight:normal; }
-  .ps-stats{ display:flex; gap:4px; }
+  .ps-row-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .ps-info{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+  }
+  .ps-no{
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 13px;
+    color: var(--gold);
+    background: rgba(242,180,65,0.15);
+    padding: 2px 7px;
+    border-radius: 6px;
+    flex: none;
+  }
+  .ps-name{
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ps-school{
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: normal;
+    flex: none;
+  }
+  .ps-stats{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
   .ps-stat-group{
-    display:flex; align-items:center; gap:1px; background:var(--surface-2); border-radius:8px;
-    border:1px solid var(--line-soft); overflow:hidden;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-3);
+    border-radius: 8px;
+    border: 1px solid var(--line-soft);
+    overflow: hidden;
   }
   .ps-stat-group .ps-label{
-    font-size:9px; font-weight:800; padding:0 4px; letter-spacing:0.3px;
+    font-size: 9.5px; font-weight: 800; padding: 0 5px 0 2px; letter-spacing: 0.3px; flex: none;
   }
   .ps-stat-group.op-g .ps-label{ color:#FF9F43; }
   .ps-stat-group.adp-g .ps-label{ color:#54A0FF; }
   .ps-stat-group.dp-g .ps-label{ color:var(--green); }
   .ps-step-btn{
-    width:28px; height:28px; border:none; background:var(--surface-3);
-    color:var(--text); font-size:15px; font-weight:800; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; transition: background .1s ease;
+    width: 26px; height: 26px; border: none; background: var(--surface);
+    color: var(--text); font-size: 14px; font-weight: 800; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: background .1s ease;
+    flex: none;
   }
   .ps-step-btn:active{ background:var(--gold); color:#241705; }
   .ps-stat-group.op-g .ps-step-btn:active{ background:#FF9F43; color:#fff; }
   .ps-stat-group.adp-g .ps-step-btn:active{ background:#54A0FF; color:#fff; }
   .ps-stat-group.dp-g .ps-step-btn:active{ background:var(--green); color:#fff; }
   .ps-val{
-    font-family:'Black Han Sans'; font-size:14px; min-width:20px; text-align:center;
-    padding:0 2px;
+    font-family: 'Black Han Sans'; font-size: 13.5px; min-width: 16px; text-align: center;
+    padding: 0 1px; flex: 1;
   }
   .ps-stat-group.op-g .ps-val{ color:#FF9F43; }
   .ps-stat-group.adp-g .ps-val{ color:#54A0FF; }
   .ps-stat-group.dp-g .ps-val{ color:var(--green); }
 
   .del-player-btn{
-    background:none; border:none; color:var(--text-faint); font-size:14px; cursor:pointer;
-    padding:2px 4px; border-radius:4px; transition: color .12s ease; margin-left:4px;
+    background: none; border: none; color: var(--text-faint); font-size: 15px; cursor: pointer;
+    padding: 2px 6px; border-radius: 4px; transition: color .12s ease; flex: none;
   }
-  .del-player-btn:hover{ color:var(--red); }
+  .del-player-btn:hover{ color: var(--red); }
 
   .add-player-row{ display:flex; gap:6px; flex-wrap:wrap; }
   .add-player-row input{
@@ -497,6 +546,7 @@
   <div class="division-switch" id="divisionSwitch">
     <button data-div="boys">초등 남자부</button>
     <button data-div="girls">초등 여자부</button>
+    <button data-div="midGirls">중등 여자부</button>
   </div>
 </header>
 
@@ -549,6 +599,16 @@
         {id:7, label:"초등여자 #7", time:"9/5(토) 12:00~12:15", p:"철원 정양초", g:"화천 유촌초", b:"인제 부평초"},
         {id:8, label:"초등여자 #8", time:"9/5(토) 12:30~12:45", p:"춘천 신남초", g:"홍천 남산초", b:"태백 함태초"}
       ]
+    },
+    midGirls: {
+      label: "중등 여자부",
+      matches: [
+        {id:1, label:"중등여자 #1", time:"9/5(토) 13:45~14:00", p:"동해 묵호중", g:"춘천 가정중", b:"태백 함태중"},
+        {id:2, label:"중등여자 #2", time:"9/5(토) 14:00~14:15", p:"강릉 경포중", g:"홍천 홍천여중", b:"동해 묵호중"},
+        {id:3, label:"중등여자 #3", time:"9/5(토) 14:15~14:30", p:"춘천 가정중", g:"태백 함태중", b:"강릉 경포중"},
+        {id:4, label:"중등여자 #4", time:"9/5(토) 14:30~14:45", p:"홍천 홍천여중", g:"동해 묵호중", b:"춘천 가정중"},
+        {id:5, label:"중등여자 #5", time:"9/5(토) 14:45~15:00", p:"태백 함태중", g:"강릉 경포중", b:"홍천 홍천여중"}
+      ]
     }
   };
 
@@ -559,19 +619,20 @@
   }
   DATA.boys.teams = teamsOf("boys");
   DATA.girls.teams = teamsOf("girls");
+  DATA.midGirls.teams = teamsOf("midGirls");
 
   let state = {
     div: "boys",
     tab: "matches",
-    scores: { boys: {}, girls: {} },   // {matchId: {p,g,b}}
-    times: { boys: {}, girls: {} },    // {matchId: "시간 문자열"} — 사용자가 직접 수정 가능
-    simMatch: { boys: null, girls: null },
-    simScore: { boys: {}, girls: {} },  // {matchId: {p,g,b}} local what-if, per division
-    sheetMatch: { boys: 1, girls: 1 },  // selected match in sheet tab
-    roster: { boys: {}, girls: {} },  // {matchId: [{no:1, name:"홍길동", school:"노암초"}]}
-    playerStats: { boys: {}, girls: {} },  // {matchId: {playerNo: {op:0, adp:0, dp:0}}}
-    expandedPlayerMatch: { boys: null, girls: null },  // which match card has player stats open
-    memos: { boys: {}, girls: {} }  // {matchId: "메모 내용"}
+    scores: { boys: {}, girls: {}, midGirls: {} },   // {matchId: {p,g,b}}
+    times: { boys: {}, girls: {}, midGirls: {} },    // {matchId: "시간 문자열"} — 사용자가 직접 수정 가능
+    simMatch: { boys: null, girls: null, midGirls: null },
+    simScore: { boys: {}, girls: {}, midGirls: {} },  // {matchId: {p,g,b}} local what-if, per division
+    sheetMatch: { boys: 1, girls: 1, midGirls: 1 },  // selected match in sheet tab
+    roster: { boys: {}, girls: {}, midGirls: {} },  // {matchId: [{no:1, name:"홍길동", school:"노암초"}]}
+    playerStats: { boys: {}, girls: {}, midGirls: {} },  // {matchId: {playerNo: {op:0, adp:0, dp:0}}}
+    expandedPlayerMatch: { boys: null, girls: null, midGirls: null },  // which match card has player stats open
+    memos: { boys: {}, girls: {}, midGirls: {} }  // {matchId: "메모 내용"}
   };
 
   function timeOf(div, matchId, fallback){
@@ -760,8 +821,14 @@
         const schoolText = pl.school ? `<span class="ps-school">(${pl.school})</span>` : '';
         return `
           <div class="ps-row">
-            <div class="ps-no">${pl.no}</div>
-            <div class="ps-name">${pl.name}${schoolText}</div>
+            <div class="ps-row-header">
+              <div class="ps-info">
+                <span class="ps-no">#${pl.no}</span>
+                <span class="ps-name">${pl.name}</span>
+                ${schoolText}
+              </div>
+              <button class="del-player-btn" onclick="deleteMatchPlayer(${m.id}, ${pl.no})" title="삭제">✕</button>
+            </div>
             <div class="ps-stats">
               <div class="ps-stat-group op-g">
                 <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'op', -1)">−</button>
@@ -781,7 +848,6 @@
                 <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'dp', 1)">+</button>
                 <span class="ps-label">수비</span>
               </div>
-              <button class="del-player-btn" onclick="deleteMatchPlayer(${m.id}, ${pl.no})" title="삭제">✕</button>
             </div>
           </div>
         `;
@@ -1140,20 +1206,28 @@
     const noInp = document.getElementById(`matchAddNo_${mId}`);
     const nameInp = document.getElementById(`matchAddName_${mId}`);
     const schoolInp = document.getElementById(`matchAddSchool_${mId}`);
-    const no = (noInp ? noInp.value || '' : '').trim();
+    let noStr = (noInp ? noInp.value || '' : '').trim();
     const name = (nameInp ? nameInp.value || '' : '').trim();
     const school = (schoolInp ? schoolInp.value || '' : '').trim();
-    if(!no || !name){
-      if(noInp && !no) noInp.focus();
-      else if(nameInp && !name) nameInp.focus();
+
+    if(!name){
+      if(nameInp){
+        nameInp.focus();
+        nameInp.style.borderColor = 'var(--red)';
+        setTimeout(() => { nameInp.style.borderColor = ''; }, 1500);
+      }
       return;
     }
-    const noNum = Number(no);
-    if(isNaN(noNum)) return;
 
     if(!state.roster[div] || Array.isArray(state.roster[div])) state.roster[div] = {};
     if(!state.roster[div][mId]) state.roster[div][mId] = [];
     const matchRoster = state.roster[div][mId];
+
+    let noNum = Number(noStr);
+    if(!noStr || isNaN(noNum) || noNum <= 0){
+      const maxNo = matchRoster.reduce((max, p) => (p.no > max ? p.no : max), 0);
+      noNum = maxNo + 1;
+    }
 
     const existingIdx = matchRoster.findIndex(p => p.no === noNum);
     if(existingIdx >= 0){
@@ -1165,6 +1239,16 @@
     saveRoster(div);
     state.expandedPlayerMatch[div] = mId;
     render();
+
+    setTimeout(() => {
+      const nextNameInp = document.getElementById(`matchAddName_${mId}`);
+      const nextNoInp = document.getElementById(`matchAddNo_${mId}`);
+      if(nextNoInp) nextNoInp.value = '';
+      if(nextNameInp){
+        nextNameInp.value = '';
+        nextNameInp.focus();
+      }
+    }, 50);
   };
 
   window.deleteMatchPlayer = function(matchId, pno){
@@ -1221,7 +1305,7 @@
             if(!label) return;
 
             // Determine division and match from label
-            ['boys','girls'].forEach(div => {
+            ['boys','girls','midGirls'].forEach(div => {
               DATA[div].matches.forEach(m => {
                 if(m.label === String(label).trim()){
                   // Import time
@@ -1243,8 +1327,8 @@
         });
 
         if(imported > 0){
-          saveTimes('boys'); saveTimes('girls');
-          saveScores('boys'); saveScores('girls');
+          saveTimes('boys'); saveTimes('girls'); saveTimes('midGirls');
+          saveScores('boys'); saveScores('girls'); saveScores('midGirls');
           showImportMsg(msgEl, `✓ ${imported}건 불러옴`, false);
         } else {
           showImportMsg(msgEl, '일치하는 경기를 찾지 못했어요', true);
@@ -1296,11 +1380,11 @@
   // ---------- boot ----------
   async function boot(){
     await Promise.all([
-      loadScores('boys'), loadScores('girls'),
-      loadTimes('boys'), loadTimes('girls'),
-      loadRoster('boys'), loadRoster('girls'),
-      loadPlayerStats('boys'), loadPlayerStats('girls'),
-      loadMemos('boys'), loadMemos('girls')
+      loadScores('boys'), loadScores('girls'), loadScores('midGirls'),
+      loadTimes('boys'), loadTimes('girls'), loadTimes('midGirls'),
+      loadRoster('boys'), loadRoster('girls'), loadRoster('midGirls'),
+      loadPlayerStats('boys'), loadPlayerStats('girls'), loadPlayerStats('midGirls'),
+      loadMemos('boys'), loadMemos('girls'), loadMemos('midGirls')
     ]);
     render();
     setInterval(async () => {

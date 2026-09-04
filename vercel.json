@@ -1,7 +1,4 @@
 {
-  "version": 2,
-  "name": "kinball-scoreboard",
-  "cleanUrls": true,
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

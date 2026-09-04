@@ -272,6 +272,82 @@
     box-shadow: 0 4px 10px rgba(242,180,65,0.25);
   }
 
+  /* Cloud sync badge & header actions */
+  .sync-status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(82, 209, 138, 0.15);
+    color: var(--green);
+    border: 1px solid rgba(82, 209, 138, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+  .sync-status-badge.saving {
+    background: rgba(242, 180, 65, 0.15);
+    color: var(--gold);
+    border-color: rgba(242, 180, 65, 0.3);
+  }
+  .sync-status-badge.err {
+    background: rgba(255, 107, 107, 0.15);
+    color: var(--red);
+    border-color: rgba(255, 107, 107, 0.3);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .header-actions::-webkit-scrollbar { display: none; }
+  .action-btn-sm {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+    flex: none;
+  }
+  .action-btn-sm:hover {
+    background: var(--surface-3);
+    border-color: var(--gold);
+  }
+  .action-btn-sm:active {
+    transform: scale(0.96);
+  }
+  .action-btn-sm.danger {
+    color: var(--red);
+    border-color: rgba(255, 107, 107, 0.3);
+  }
+  .action-btn-sm.danger:hover {
+    background: rgba(255, 107, 107, 0.15);
+  }
+  [data-theme="light"] .action-btn-sm {
+    background: #FFFFFF;
+    border-color: #E5E8EB;
+    color: #333D4B;
+  }
+  [data-theme="light"] .action-btn-sm:hover {
+    background: #F2F4F6;
+    border-color: #3182F6;
+    color: #1B64DA;
+  }
+
   /* ---------- layout ---------- */
   main{ padding: 16px 14px 8px; max-width: 720px; margin: 0 auto; }
   .section-title{
@@ -782,10 +858,20 @@
 
 <header class="top">
   <div class="brand">
-    <h1>킨볼 스코어보드</h1>
+    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+      <h1>킨볼 스코어보드</h1>
+      <span id="cloudSyncBadge" class="sync-status-badge ok">🟢 실시간 동기화 됨</span>
+    </div>
     <button class="theme-corner-btn" id="themeToggleBtn" aria-label="화면 모드 변경" title="다크/라이트 모드 전환">
       <span class="theme-icon">☀️</span>
     </button>
+  </div>
+  <div class="header-actions">
+    <button class="action-btn-sm" onclick="copyShareLink()">🔗 실시간 공유 링크</button>
+    <button class="action-btn-sm" onclick="exportDataJSON()">💾 백업 (내보내기)</button>
+    <button class="action-btn-sm" onclick="triggerImportJSON()">📂 복구 (불러오기)</button>
+    <button class="action-btn-sm danger" onclick="resetAllData()">🗑️ 초기화</button>
+    <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="handleJSONImport(event)">
   </div>
   <div class="division-switch" id="divisionSwitch">
     <button data-div="boys">초등 남자부</button>
@@ -894,42 +980,223 @@
     return (t!==undefined && t!==null) ? t : (fallback || '');
   }
 
-  // ---------- storage (with localStorage fallback) ----------
-  const store = {
-    async get(key, shared){
-      if(window.storage && typeof window.storage.get === 'function'){
-        return window.storage.get(key, shared);
-      }
-      const v = localStorage.getItem(key);
-      return v !== null ? { value: v } : null;
-    },
-    async set(key, value, shared){
-      if(window.storage && typeof window.storage.set === 'function'){
-        return window.storage.set(key, value, shared);
-      }
-      localStorage.setItem(key, value);
+  // ---------- cloud & local storage engine ----------
+  const CLOUD_MASTER_ID = "ff808181a067127101a06c9eb5d010f3";
+  const CLOUD_API_BASE = "https://api.restful-api.dev/objects/";
+
+  function getCloudRoomId(){
+    const hash = window.location.hash || window.location.search || '';
+    const m = hash.match(/room=([a-zA-Z0-9_-]+)/);
+    return m ? m[1] : (localStorage.getItem('kb_cloud_room_id') || CLOUD_MASTER_ID);
+  }
+  let currentCloudRoomId = getCloudRoomId();
+
+  function updateSyncBadge(statusText, isErr){
+    const badge = document.getElementById('cloudSyncBadge');
+    if(badge){
+      badge.textContent = statusText;
+      badge.className = 'sync-status-badge ' + (isErr ? 'err' : 'ok');
     }
+  }
+
+  function saveAllToLocal(){
+    ['boys','girls','midGirls'].forEach(div => {
+      try {
+        localStorage.setItem("times:"+div, JSON.stringify(state.times[div] || {}));
+        localStorage.setItem("tcolors:"+div, JSON.stringify(state.teamColors[div] || {}));
+        localStorage.setItem("scores:"+div, JSON.stringify(state.scores[div] || {}));
+        localStorage.setItem("roster:"+div, JSON.stringify(state.roster[div] || {}));
+        localStorage.setItem("pstats:"+div, JSON.stringify(state.playerStats[div] || {}));
+        localStorage.setItem("memos:"+div, JSON.stringify(state.memos[div] || {}));
+      } catch(e){}
+    });
+  }
+
+  const store = {
+    async get(key){
+      try{
+        const v = localStorage.getItem(key);
+        return v !== null ? { value: v } : null;
+      }catch(e){ return null; }
+    },
+    async set(key, value){
+      try{
+        localStorage.setItem(key, value);
+      }catch(e){}
+      scheduleCloudPush();
+    }
+  };
+
+  let cloudPushTimer = null;
+  function scheduleCloudPush(){
+    updateSyncBadge("🔄 동기화 중...", false);
+    clearTimeout(cloudPushTimer);
+    cloudPushTimer = setTimeout(async () => {
+      await pushFullStateToCloud();
+    }, 400);
+  }
+
+  async function pushFullStateToCloud(){
+    const payload = {
+      name: "Kinball Scoreboard Data",
+      data: {
+        times: state.times,
+        teamColors: state.teamColors,
+        scores: state.scores,
+        roster: state.roster,
+        playerStats: state.playerStats,
+        memos: state.memos,
+        lastUpdated: Date.now()
+      }
+    };
+    try {
+      const res = await fetch(CLOUD_API_BASE + currentCloudRoomId, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if(res.ok){
+        updateSyncBadge("🟢 실시간 동기화 됨", false);
+      } else {
+        updateSyncBadge("💾 로컬 저장됨", false);
+      }
+    } catch(e) {
+      updateSyncBadge("💾 로컬 저장됨 (오프라인)", false);
+    }
+  }
+
+  async function pullFullStateFromCloud(){
+    try {
+      const res = await fetch(CLOUD_API_BASE + currentCloudRoomId);
+      if(!res.ok) return false;
+      const json = await res.json();
+      if(json && json.data){
+        const d = json.data;
+        let hasNewer = false;
+        ['boys','girls','midGirls'].forEach(div => {
+          if(d.times && d.times[div]) state.times[div] = d.times[div];
+          if(d.teamColors && d.teamColors[div]) state.teamColors[div] = d.teamColors[div];
+          if(d.scores && d.scores[div]) state.scores[div] = d.scores[div];
+          if(d.roster && d.roster[div]) state.roster[div] = d.roster[div];
+          if(d.playerStats && d.playerStats[div]) state.playerStats[div] = d.playerStats[div];
+          if(d.memos && d.memos[div]) state.memos[div] = d.memos[div];
+        });
+        saveAllToLocal();
+        updateSyncBadge("🟢 실시간 동기화 됨", false);
+        return true;
+      }
+    } catch(e) {
+      updateSyncBadge("💾 로컬 저장됨 (오프라인)", false);
+    }
+    return false;
+  }
+
+  window.copyShareLink = function(){
+    const url = window.location.origin + window.location.pathname + '#room=' + currentCloudRoomId;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(() => {
+        alert("✅ 실시간 공유 링크가 복사되었습니다!\n이 링크를 전달하면 다른 사람도 동일한 점수판을 실시간으로 확인 및 수정할 수 있습니다.\n\n" + url);
+      }).catch(() => {
+        prompt("아래 링크를 복사하여 전달하세요:", url);
+      });
+    } else {
+      prompt("아래 링크를 복사하여 전달하세요:", url);
+    }
+  };
+
+  window.exportDataJSON = function(){
+    const exportObj = {
+      version: 1,
+      appName: "킨볼 스코어보드",
+      exportedAt: new Date().toISOString(),
+      times: state.times,
+      teamColors: state.teamColors,
+      scores: state.scores,
+      roster: state.roster,
+      playerStats: state.playerStats,
+      memos: state.memos
+    };
+    const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const dateStr = new Date().toISOString().slice(0,10);
+    a.download = `킨볼_스코어보드_백업_${dateStr}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  window.triggerImportJSON = function(){
+    const inp = document.getElementById('jsonFileInput');
+    if(inp) inp.click();
+  };
+
+  window.handleJSONImport = function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async function(evt){
+      try {
+        const json = JSON.parse(evt.target.result);
+        if(json && (json.scores || json.times || json.roster)){
+          ['boys','girls','midGirls'].forEach(div => {
+            if(json.times && json.times[div]) state.times[div] = json.times[div];
+            if(json.teamColors && json.teamColors[div]) state.teamColors[div] = json.teamColors[div];
+            if(json.scores && json.scores[div]) state.scores[div] = json.scores[div];
+            if(json.roster && json.roster[div]) state.roster[div] = json.roster[div];
+            if(json.playerStats && json.playerStats[div]) state.playerStats[div] = json.playerStats[div];
+            if(json.memos && json.memos[div]) state.memos[div] = json.memos[div];
+          });
+          saveAllToLocal();
+          await pushFullStateToCloud();
+          render();
+          alert("✅ 백업 데이터를 성공적으로 불러왔습니다!");
+        } else {
+          alert("⚠️ 유효한 킨볼 스코어보드 백업 파일이 아닙니다.");
+        }
+      } catch(err) {
+        alert("⚠️ 파일을 읽는 중 오류가 발생했습니다: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  window.resetAllData = function(){
+    if(!confirm("⚠️ 경고: 모든 경기 점수, 메모, 선수 기록이 초기화됩니다.\n정말 전체 데이터를 초기화하시겠습니까?")) return;
+    ['boys','girls','midGirls'].forEach(div => {
+      state.scores[div] = {};
+      state.times[div] = {};
+      state.teamColors[div] = {};
+      state.roster[div] = {};
+      state.playerStats[div] = {};
+      state.memos[div] = {};
+    });
+    saveAllToLocal();
+    pushFullStateToCloud();
+    render();
+    alert("모든 데이터가 초기화되었습니다.");
   };
 
   async function loadTimes(div){
     try{
-      const res = await store.get("times:" + div, true);
+      const res = await store.get("times:" + div);
       if(res && res.value){ state.times[div] = JSON.parse(res.value); }
-    }catch(e){ /* not set yet — fine */ }
+    }catch(e){}
   }
   let saveTimeTimer = null;
   function saveTimes(div){
     clearTimeout(saveTimeTimer);
     saveTimeTimer = setTimeout(async () => {
       try{
-        await store.set("times:" + div, JSON.stringify(state.times[div]), true);
-      }catch(e){ console.error("시간 저장 실패", e); }
+        await store.set("times:" + div, JSON.stringify(state.times[div]));
+      }catch(e){}
     }, 250);
   }
 
   async function loadTeamColors(div){
     try{
-      const res = await store.get("tcolors:" + div, true);
+      const res = await store.get("tcolors:" + div);
       if(res && res.value){ state.teamColors[div] = JSON.parse(res.value); }
     }catch(e){}
   }
@@ -938,30 +1205,30 @@
     clearTimeout(saveTColorsTimer);
     saveTColorsTimer = setTimeout(async () => {
       try{
-        await store.set("tcolors:" + div, JSON.stringify(state.teamColors[div]), true);
-      }catch(e){ console.error("팀 색상 저장 실패", e); }
+        await store.set("tcolors:" + div, JSON.stringify(state.teamColors[div]));
+      }catch(e){}
     }, 250);
   }
 
   async function loadScores(div){
     try{
-      const res = await store.get("scores:" + div, true);
+      const res = await store.get("scores:" + div);
       if(res && res.value){ state.scores[div] = JSON.parse(res.value); }
-    }catch(e){ /* key not found yet — fine */ }
+    }catch(e){}
   }
   let saveTimer = null;
   function saveScores(div){
     clearTimeout(saveTimer);
     saveTimer = setTimeout(async () => {
       try{
-        await store.set("scores:" + div, JSON.stringify(state.scores[div]), true);
-      }catch(e){ console.error("저장 실패", e); }
+        await store.set("scores:" + div, JSON.stringify(state.scores[div]));
+      }catch(e){}
     }, 250);
   }
 
   async function loadRoster(div){
     try{
-      const res = await store.get("roster:" + div, true);
+      const res = await store.get("roster:" + div);
       if(res && res.value){
         const parsed = JSON.parse(res.value);
         if(parsed && typeof parsed === 'object' && !Array.isArray(parsed)){
@@ -977,14 +1244,14 @@
     clearTimeout(saveRosterTimer);
     saveRosterTimer = setTimeout(async () => {
       try{
-        await store.set("roster:" + div, JSON.stringify(state.roster[div]), true);
-      }catch(e){ console.error("명단 저장 실패", e); }
+        await store.set("roster:" + div, JSON.stringify(state.roster[div]));
+      }catch(e){}
     }, 250);
   }
 
   async function loadPlayerStats(div){
     try{
-      const res = await store.get("pstats:" + div, true);
+      const res = await store.get("pstats:" + div);
       if(res && res.value){ state.playerStats[div] = JSON.parse(res.value); }
     }catch(e){}
   }
@@ -993,14 +1260,14 @@
     clearTimeout(savePStatsTimer);
     savePStatsTimer = setTimeout(async () => {
       try{
-        await store.set("pstats:" + div, JSON.stringify(state.playerStats[div]), true);
-      }catch(e){ console.error("선수 기록 저장 실패", e); }
+        await store.set("pstats:" + div, JSON.stringify(state.playerStats[div]));
+      }catch(e){}
     }, 250);
   }
 
   async function loadMemos(div){
     try{
-      const res = await store.get("memos:" + div, true);
+      const res = await store.get("memos:" + div);
       if(res && res.value){ state.memos[div] = JSON.parse(res.value); }
     }catch(e){}
   }
@@ -1009,8 +1276,8 @@
     clearTimeout(saveMemoTimer);
     saveMemoTimer = setTimeout(async () => {
       try{
-        await store.set("memos:" + div, JSON.stringify(state.memos[div]), true);
-      }catch(e){ console.error("메모 저장 실패", e); }
+        await store.set("memos:" + div, JSON.stringify(state.memos[div]));
+      }catch(e){}
     }, 250);
   }
 
@@ -1699,17 +1966,14 @@
       loadMemos('boys'), loadMemos('girls'), loadMemos('midGirls')
     ]);
     render();
+    await pullFullStateFromCloud();
+    render();
     setInterval(async () => {
       const ae = document.activeElement;
       if(ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
-      await loadScores(state.div);
-      await loadTimes(state.div);
-      await loadTeamColors(state.div);
-      await loadRoster(state.div);
-      await loadPlayerStats(state.div);
-      await loadMemos(state.div);
-      render();
-    }, 7000);
+      const updated = await pullFullStateFromCloud();
+      if(updated) render();
+    }, 3500);
   }
   boot();
 })();

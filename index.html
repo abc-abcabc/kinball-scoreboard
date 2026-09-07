@@ -991,6 +991,15 @@
   }
   let currentCloudRoomId = getCloudRoomId();
 
+  let localLastUpdated = Number(localStorage.getItem('kb_last_updated') || 0);
+
+  function markLocalUpdated(){
+    localLastUpdated = Date.now();
+    try { localStorage.setItem('kb_last_updated', String(localLastUpdated)); } catch(e){}
+    saveAllToLocal();
+    scheduleCloudPush();
+  }
+
   function updateSyncBadge(statusText, isErr){
     const badge = document.getElementById('cloudSyncBadge');
     if(badge){
@@ -1023,7 +1032,7 @@
       try{
         localStorage.setItem(key, value);
       }catch(e){}
-      scheduleCloudPush();
+      markLocalUpdated();
     }
   };
 
@@ -1046,7 +1055,7 @@
         roster: state.roster,
         playerStats: state.playerStats,
         memos: state.memos,
-        lastUpdated: Date.now()
+        lastUpdated: localLastUpdated || Date.now()
       }
     };
     try {
@@ -1072,18 +1081,78 @@
       const json = await res.json();
       if(json && json.data){
         const d = json.data;
-        let hasNewer = false;
+        const cloudTime = Number(d.lastUpdated || 0);
+
+        if (localLastUpdated > cloudTime && localLastUpdated > 0) {
+          pushFullStateToCloud();
+          return false;
+        }
+
+        let updatedAny = false;
         ['boys','girls','midGirls'].forEach(div => {
-          if(d.times && d.times[div]) state.times[div] = d.times[div];
-          if(d.teamColors && d.teamColors[div]) state.teamColors[div] = d.teamColors[div];
-          if(d.scores && d.scores[div]) state.scores[div] = d.scores[div];
-          if(d.roster && d.roster[div]) state.roster[div] = d.roster[div];
-          if(d.playerStats && d.playerStats[div]) state.playerStats[div] = d.playerStats[div];
-          if(d.memos && d.memos[div]) state.memos[div] = d.memos[div];
+          if(d.scores && d.scores[div]){
+            Object.keys(d.scores[div]).forEach(mId => {
+              const cs = d.scores[div][mId];
+              const ls = state.scores[div][mId];
+              if(cs && (cs.p !== "" || cs.g !== "" || cs.b !== "")){
+                if(!ls || JSON.stringify(ls) !== JSON.stringify(cs)){
+                  state.scores[div][mId] = cs;
+                  updatedAny = true;
+                }
+              }
+            });
+          }
+          if(d.times && d.times[div]){
+            Object.keys(d.times[div]).forEach(mId => {
+              if(d.times[div][mId] && state.times[div][mId] !== d.times[div][mId]){
+                state.times[div][mId] = d.times[div][mId];
+                updatedAny = true;
+              }
+            });
+          }
+          if(d.roster && d.roster[div]){
+            Object.keys(d.roster[div]).forEach(mId => {
+              if(Array.isArray(d.roster[div][mId]) && d.roster[div][mId].length > 0){
+                if(JSON.stringify(state.roster[div][mId]) !== JSON.stringify(d.roster[div][mId])){
+                  state.roster[div][mId] = d.roster[div][mId];
+                  updatedAny = true;
+                }
+              }
+            });
+          }
+          if(d.playerStats && d.playerStats[div]){
+            Object.keys(d.playerStats[div]).forEach(mId => {
+              if(d.playerStats[div][mId] && Object.keys(d.playerStats[div][mId]).length > 0){
+                if(JSON.stringify(state.playerStats[div][mId]) !== JSON.stringify(d.playerStats[div][mId])){
+                  state.playerStats[div][mId] = d.playerStats[div][mId];
+                  updatedAny = true;
+                }
+              }
+            });
+          }
+          if(d.memos && d.memos[div]){
+            Object.keys(d.memos[div]).forEach(mId => {
+              if(d.memos[div][mId] && state.memos[div][mId] !== d.memos[div][mId]){
+                state.memos[div][mId] = d.memos[div][mId];
+                updatedAny = true;
+              }
+            });
+          }
+          if(d.teamColors && d.teamColors[div]){
+            Object.keys(d.teamColors[div]).forEach(mId => {
+              if(d.teamColors[div][mId] && JSON.stringify(state.teamColors[div][mId]) !== JSON.stringify(d.teamColors[div][mId])){
+                state.teamColors[div][mId] = d.teamColors[div][mId];
+                updatedAny = true;
+              }
+            });
+          }
         });
-        saveAllToLocal();
-        updateSyncBadge("🟢 실시간 동기화 됨", false);
-        return true;
+
+        if(updatedAny){
+          saveAllToLocal();
+          updateSyncBadge("🟢 실시간 동기화 됨", false);
+          return true;
+        }
       }
     } catch(e) {
       updateSyncBadge("💾 로컬 저장됨 (오프라인)", false);

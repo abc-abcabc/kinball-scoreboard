@@ -227,35 +227,42 @@
     background: #F1F5F9;
   }
 
-  /* Header brand & theme button right next to title */
+  /* Header brand: title centered, actions grouped on right */
   .brand{
-    display:flex; align-items:center; justify-content:flex-start; gap:8px; margin-bottom:10px;
+    position:relative; display:flex; align-items:center; justify-content:center; min-height:32px; margin-bottom:10px;
   }
   .brand h1{
-    font-size: 16px; margin:0; line-height:1.25; font-weight:800; color:var(--text);
+    font-size: 16.5px; margin:0; line-height:1.25; font-weight:800; color:var(--text); text-align:center; white-space:nowrap;
+  }
+  .header-actions{
+    position:absolute; right:0; top:50%; transform:translateY(-50%); display:flex; align-items:center; gap:8px;
   }
   .theme-corner-btn{
-    flex:none; width:30px; height:30px; border-radius:999px;
+    flex:none; width:28px; height:28px; border-radius:50%;
     border:1px solid var(--line-soft); background:var(--surface-2);
-    color:var(--text); font-size:14px; cursor:pointer;
+    color:var(--text-dim); cursor:pointer;
     display:inline-flex; align-items:center; justify-content:center;
-    transition: all .18s ease; box-shadow:var(--shadow);
+    transition: all .2s ease; box-shadow:var(--shadow); padding:0;
   }
   .theme-corner-btn:hover, .theme-corner-btn:active{
-    background:var(--surface-3); border-color:var(--gold);
+    background:var(--surface-3); border-color:var(--gold); color:var(--gold);
     transform:scale(1.08);
+  }
+  .theme-svg{
+    width:14.5px; height:14.5px; display:block; stroke:currentColor;
   }
 
   [data-theme="light"] .theme-corner-btn{
     background: #FFFFFF;
     border-color: #E2E8F0;
-    color: #191F28;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    color: #475569;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
   [data-theme="light"] .theme-corner-btn:hover,
   [data-theme="light"] .theme-corner-btn:active{
-    background: #F1F5F9;
+    background: #F8FAFC;
     border-color: #3182F6;
+    color: #3182F6;
   }
 
   .division-switch{
@@ -775,7 +782,67 @@
     .score-input{ width:90px; }
     .sim-team{ grid-template-columns: 16px 1fr 140px 52px; }
   }
+
+  /* ---------- cloud sync status dot badge ---------- */
+  .header-actions{ display:flex; align-items:center; justify-content:flex-end; }
+  .cloud-status-badge{
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+    background: var(--surface-2); border: 1px solid var(--line-soft);
+    transition: all .2s ease; user-select: none; box-shadow: var(--shadow);
+  }
+  .cloud-status-badge:hover{ transform: scale(1.1); filter: brightness(1.1); }
+  .cloud-status-badge .cloud-dot{
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #94A3B8; display: block; transition: all .25s ease;
+  }
+  .cloud-status-badge.connecting .cloud-dot{
+    background: #3B82F6;
+    animation: pulseDot 1.4s infinite ease-in-out;
+  }
+  .cloud-status-badge.online{
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.45);
+  }
+  [data-theme="light"] .cloud-status-badge.online{
+    background: #ECFDF5;
+    border-color: #6EE7B7;
+  }
+  .cloud-status-badge.online .cloud-dot{
+    background: #10B981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.85);
+  }
+  .cloud-status-badge.local{
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.4);
+  }
+  [data-theme="light"] .cloud-status-badge.local{
+    background: #FFFBEB;
+    border-color: #FCD34D;
+  }
+  .cloud-status-badge.local .cloud-dot{
+    background: #F59E0B;
+  }
+  .cloud-status-badge.error{
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.45);
+  }
+  [data-theme="light"] .cloud-status-badge.error{
+    background: #FEF2F2;
+    border-color: #FCA5A5;
+  }
+  .cloud-status-badge.error .cloud-dot{
+    background: #EF4444;
+    animation: pulseDot 1s infinite ease-in-out;
+  }
+  @keyframes pulseDot{
+    0%, 100%{ transform: scale(1); opacity: 1; }
+    50%{ transform: scale(1.35); opacity: 0.5; }
+  }
 </style>
+<!-- Firebase App & Firestore Compat SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -783,9 +850,14 @@
 <header class="top">
   <div class="brand">
     <h1>킨볼 스코어보드</h1>
-    <button class="theme-corner-btn" id="themeToggleBtn" aria-label="화면 모드 변경" title="다크/라이트 모드 전환">
-      <span class="theme-icon">☀️</span>
-    </button>
+    <div class="header-actions">
+      <button class="theme-corner-btn" id="themeToggleBtn" aria-label="화면 모드 변경" title="다크/라이트 모드 전환">
+        <svg class="theme-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      </button>
+      <div id="cloudStatusBadge" class="cloud-status-badge connecting" title="클라우드 실시간 동기화 상태 (클릭하여 확인)">
+        <span class="cloud-dot"></span>
+      </div>
+    </div>
   </div>
   <div class="division-switch" id="divisionSwitch">
     <button data-div="boys">초등 남자부</button>
@@ -894,74 +966,122 @@
     return (t!==undefined && t!==null) ? t : (fallback || '');
   }
 
-  // ---------- storage (with localStorage fallback) ----------
+  // ---------- Firebase Configuration & Cloud Sync ----------
+  const firebaseConfig = {
+    apiKey: "AIzaSyCMLAiGEDehF8_Q70tggvgwFqhjFWTnhv8",
+    authDomain: "first-app-75a15.firebaseapp.com",
+    projectId: "first-app-75a15",
+    storageBucket: "first-app-75a15.firebasestorage.app",
+    messagingSenderId: "595692929185",
+    appId: "1:595692929185:web:8d12a3e798d2c084ecb0e0",
+    measurementId: "G-WRXWRRLEHD"
+  };
+
+  let firestoreDb = null;
+  let isFirestoreOnline = false;
+  let isIncomingRemoteUpdate = false;
+  let currentSyncStatus = 'connecting';
+  let syncRuleNotice = '';
+
+  function setSyncStatus(st, msg, tooltip){
+    currentSyncStatus = st;
+    const badge = document.getElementById('cloudStatusBadge');
+    if(!badge) return;
+    badge.className = 'cloud-status-badge ' + st;
+    const textEl = badge.querySelector('.cloud-text');
+    if(textEl) textEl.textContent = msg;
+    if(tooltip) badge.title = tooltip;
+  }
+
+  function handleBadgeClick(){
+    if(currentSyncStatus === 'error'){
+      alert(syncRuleNotice || 'Firebase Firestore 보안 규칙(Rules)을 확인해주세요.');
+    } else if(currentSyncStatus === 'online'){
+      alert('🟢 Firebase 실시간 클라우드 연동 성공!\n\n현재 스마트폰이나 다른 컴퓨터에서 이 스코어보드를 열어도 모든 점수와 기록이 실시간으로 함께 저장 및 공유됩니다.');
+    } else {
+      alert('🟡 로컬 저장 모드\n\n현재 브라우저(localStorage)에 안전하게 자동 저장되고 있습니다. 새로고침해도 점수가 유지됩니다.');
+    }
+  }
+
+  // ---------- storage (localStorage fallback) ----------
   const store = {
-    async get(key, shared){
-      if(window.storage && typeof window.storage.get === 'function'){
-        return window.storage.get(key, shared);
+    async get(key){
+      try {
+        const v = localStorage.getItem(key);
+        return v !== null ? { value: v } : null;
+      } catch(e){
+        return null;
       }
-      const v = localStorage.getItem(key);
-      return v !== null ? { value: v } : null;
     },
-    async set(key, value, shared){
-      if(window.storage && typeof window.storage.set === 'function'){
-        return window.storage.set(key, value, shared);
+    async set(key, value){
+      try {
+        localStorage.setItem(key, value);
+      } catch(e){
+        console.warn("로컬스토리지 저장 오류:", e);
       }
-      localStorage.setItem(key, value);
     }
   };
 
+  // Cloud push with debounce per field
+  const pushTimers = {};
+  function scheduleCloudPush(field, div){
+    if(!firestoreDb || !isFirestoreOnline || isIncomingRemoteUpdate) return;
+    const timerKey = `${field}_${div}`;
+    clearTimeout(pushTimers[timerKey]);
+    pushTimers[timerKey] = setTimeout(async () => {
+      try {
+        const docRef = firestoreDb.collection("kinball_db").doc("live_state");
+        const payload = {};
+        payload[`${field}.${div}`] = state[field][div];
+        payload.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
+        await docRef.set(payload, { merge: true });
+      } catch(err){
+        console.warn(`[Firebase] ${field}.${div} 저장 실패:`, err);
+        if(err.code === 'permission-denied'){
+          setSyncStatus('error', '규칙 확인 필요', 'Firebase 보안 규칙 허용이 필요합니다. 클릭하여 확인');
+          syncRuleNotice = '⚠️ Firebase Firestore 보안 규칙(Rules)이 읽기/쓰기를 차단하고 있습니다.\n\n해결 방법:\n1. Firebase 콘솔(console.firebase.google.com) 접속\n2. first-app-75a15 프로젝트 선택\n3. Firestore Database > [규칙(Rules)] 탭 클릭\n4. allow read, write: if true; 로 변경 후 [게시] 클릭';
+        }
+      }
+    }, 300);
+  }
+
+  // Load from local storage initially
   async function loadTimes(div){
     try{
-      const res = await store.get("times:" + div, true);
+      const res = await store.get("times:" + div);
       if(res && res.value){ state.times[div] = JSON.parse(res.value); }
-    }catch(e){ /* not set yet — fine */ }
+    }catch(e){}
   }
-  let saveTimeTimer = null;
   function saveTimes(div){
-    clearTimeout(saveTimeTimer);
-    saveTimeTimer = setTimeout(async () => {
-      try{
-        await store.set("times:" + div, JSON.stringify(state.times[div]), true);
-      }catch(e){ console.error("시간 저장 실패", e); }
-    }, 250);
+    store.set("times:" + div, JSON.stringify(state.times[div]));
+    scheduleCloudPush("times", div);
   }
 
   async function loadTeamColors(div){
     try{
-      const res = await store.get("tcolors:" + div, true);
+      const res = await store.get("tcolors:" + div);
       if(res && res.value){ state.teamColors[div] = JSON.parse(res.value); }
     }catch(e){}
   }
-  let saveTColorsTimer = null;
   function saveTeamColors(div){
-    clearTimeout(saveTColorsTimer);
-    saveTColorsTimer = setTimeout(async () => {
-      try{
-        await store.set("tcolors:" + div, JSON.stringify(state.teamColors[div]), true);
-      }catch(e){ console.error("팀 색상 저장 실패", e); }
-    }, 250);
+    store.set("tcolors:" + div, JSON.stringify(state.teamColors[div]));
+    scheduleCloudPush("teamColors", div);
   }
 
   async function loadScores(div){
     try{
-      const res = await store.get("scores:" + div, true);
+      const res = await store.get("scores:" + div);
       if(res && res.value){ state.scores[div] = JSON.parse(res.value); }
-    }catch(e){ /* key not found yet — fine */ }
+    }catch(e){}
   }
-  let saveTimer = null;
   function saveScores(div){
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(async () => {
-      try{
-        await store.set("scores:" + div, JSON.stringify(state.scores[div]), true);
-      }catch(e){ console.error("저장 실패", e); }
-    }, 250);
+    store.set("scores:" + div, JSON.stringify(state.scores[div]));
+    scheduleCloudPush("scores", div);
   }
 
   async function loadRoster(div){
     try{
-      const res = await store.get("roster:" + div, true);
+      const res = await store.get("roster:" + div);
       if(res && res.value){
         const parsed = JSON.parse(res.value);
         if(parsed && typeof parsed === 'object' && !Array.isArray(parsed)){
@@ -972,46 +1092,119 @@
       }
     }catch(e){ state.roster[div] = {}; }
   }
-  let saveRosterTimer = null;
   function saveRoster(div){
-    clearTimeout(saveRosterTimer);
-    saveRosterTimer = setTimeout(async () => {
-      try{
-        await store.set("roster:" + div, JSON.stringify(state.roster[div]), true);
-      }catch(e){ console.error("명단 저장 실패", e); }
-    }, 250);
+    store.set("roster:" + div, JSON.stringify(state.roster[div]));
+    scheduleCloudPush("roster", div);
   }
 
   async function loadPlayerStats(div){
     try{
-      const res = await store.get("pstats:" + div, true);
+      const res = await store.get("pstats:" + div);
       if(res && res.value){ state.playerStats[div] = JSON.parse(res.value); }
     }catch(e){}
   }
-  let savePStatsTimer = null;
   function savePlayerStats(div){
-    clearTimeout(savePStatsTimer);
-    savePStatsTimer = setTimeout(async () => {
-      try{
-        await store.set("pstats:" + div, JSON.stringify(state.playerStats[div]), true);
-      }catch(e){ console.error("선수 기록 저장 실패", e); }
-    }, 250);
+    store.set("pstats:" + div, JSON.stringify(state.playerStats[div]));
+    scheduleCloudPush("playerStats", div);
   }
 
   async function loadMemos(div){
     try{
-      const res = await store.get("memos:" + div, true);
+      const res = await store.get("memos:" + div);
       if(res && res.value){ state.memos[div] = JSON.parse(res.value); }
     }catch(e){}
   }
-  let saveMemoTimer = null;
   function saveMemos(div){
-    clearTimeout(saveMemoTimer);
-    saveMemoTimer = setTimeout(async () => {
-      try{
-        await store.set("memos:" + div, JSON.stringify(state.memos[div]), true);
-      }catch(e){ console.error("메모 저장 실패", e); }
-    }, 250);
+    store.set("memos:" + div, JSON.stringify(state.memos[div]));
+    scheduleCloudPush("memos", div);
+  }
+
+  // Firebase Realtime Firestore listener setup
+  function initFirebaseRealtime(){
+    if(typeof firebase === 'undefined' || !firebase.initializeApp){
+      console.warn("Firebase SDK not loaded. Operating in localStorage mode.");
+      setSyncStatus('local', '로컬 저장 모드', '클라우드 라이브러리를 불러오지 못해 로컬 저장소로 작동합니다.');
+      return;
+    }
+
+    try {
+      if(!firebase.apps.length){
+        firebase.initializeApp(firebaseConfig);
+      }
+      firestoreDb = firebase.firestore();
+
+      const docRef = firestoreDb.collection("kinball_db").doc("live_state");
+      docRef.onSnapshot(snapshot => {
+        isFirestoreOnline = true;
+        setSyncStatus('online', '실시간 공유됨', '모든 기기와 실시간으로 자동 동기화 중입니다.');
+
+        if(!snapshot.exists){
+          // 초기 클라우드 데이터가 없으면 현재 로컬 데이터를 클라우드에 1회 동기화
+          docRef.set({
+            scores: state.scores,
+            times: state.times,
+            teamColors: state.teamColors,
+            roster: state.roster,
+            playerStats: state.playerStats,
+            memos: state.memos,
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true }).catch(()=>{});
+          return;
+        }
+
+        const data = snapshot.data();
+        if(!data) return;
+
+        isIncomingRemoteUpdate = true;
+        let hasChanges = false;
+        const fields = [
+          { name: 'scores', keyPrefix: 'scores:' },
+          { name: 'times', keyPrefix: 'times:' },
+          { name: 'teamColors', keyPrefix: 'tcolors:' },
+          { name: 'roster', keyPrefix: 'roster:' },
+          { name: 'playerStats', keyPrefix: 'pstats:' },
+          { name: 'memos', keyPrefix: 'memos:' }
+        ];
+
+        fields.forEach(({name, keyPrefix}) => {
+          if(data[name] && typeof data[name] === 'object'){
+            ['boys', 'girls', 'midGirls'].forEach(d => {
+              if(data[name][d] !== undefined){
+                const remoteStr = JSON.stringify(data[name][d]);
+                const localStr = JSON.stringify(state[name][d]);
+                if(remoteStr !== localStr){
+                  state[name][d] = data[name][d];
+                  try { localStorage.setItem(keyPrefix + d, remoteStr); } catch(e){}
+                  hasChanges = true;
+                }
+              }
+            });
+          }
+        });
+
+        isIncomingRemoteUpdate = false;
+
+        if(hasChanges){
+          const ae = document.activeElement;
+          const isTyping = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
+          if(!isTyping){
+            render();
+          }
+        }
+      }, err => {
+        console.warn("Firestore onSnapshot error:", err);
+        isFirestoreOnline = false;
+        if(err.code === 'permission-denied'){
+          setSyncStatus('error', '규칙 확인 필요', 'Firebase 보안 규칙 허용이 필요합니다. 클릭하여 확인');
+          syncRuleNotice = '⚠️ Firebase Firestore 보안 규칙(Rules)이 읽기/쓰기를 차단하고 있습니다.\n\n해결 방법:\n1. Firebase 콘솔(console.firebase.google.com) 접속\n2. first-app-75a15 프로젝트 선택\n3. Firestore Database > [규칙(Rules)] 탭 클릭\n4. allow read, write: if true; 로 변경 후 [게시(Publish)] 클릭';
+        } else {
+          setSyncStatus('local', '로컬 저장 모드', '클라우드 연결 대기 중 (현재 기기에는 안전하게 저장됨)');
+        }
+      });
+    } catch(err){
+      console.warn("Firebase 초기화 에러:", err);
+      setSyncStatus('local', '로컬 저장 모드', '로컬 저장소(localStorage)로 작동 중입니다.');
+    }
   }
 
   // ---------- scoring logic (matches original spreadsheet formula) ----------
@@ -1369,7 +1562,7 @@
     main.innerHTML = `
       <div class="section-title"><h2>${DATA[div].label} · ${titleTab}</h2><span class="meta">${DATA[div].teams.length}개 팀</span></div>
       ${body}
-      ${state.tab==='matches' ? '<div class="sync-note">점수는 이 기기와 이 링크를 여는 모든 사람에게 함께 저장돼요</div>' : ''}
+      ${state.tab==='matches' ? '<div class="sync-note">🔥 Firebase 실시간 클라우드 동기화 (모든 기기에서 점수가 실시간으로 함께 저장돼요)</div>' : ''}
     `;
     bindMainEvents();
 
@@ -1660,13 +1853,15 @@
     const saved = localStorage.getItem('kb_theme') || 'dark';
     applyTheme(saved);
   }
+  const THEME_SUN_SVG = `<svg class="theme-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+  const THEME_MOON_SVG = `<svg class="theme-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+
   function applyTheme(t){
     document.documentElement.setAttribute('data-theme', t);
     localStorage.setItem('kb_theme', t);
     const btn = document.getElementById('themeToggleBtn');
     if(btn){
-      const icon = btn.querySelector('.theme-icon');
-      if(icon) icon.textContent = t === 'dark' ? '☀️' : '🌙';
+      btn.innerHTML = t === 'dark' ? THEME_SUN_SVG : THEME_MOON_SVG;
       btn.setAttribute('title', t === 'dark' ? '밝은 모드로 전환' : '어두운 모드로 전환');
     }
   }
@@ -1687,9 +1882,16 @@
     render();
   });
 
+  // ---------- cloud badge click event ----------
+  const badgeEl = document.getElementById('cloudStatusBadge');
+  if(badgeEl){
+    badgeEl.addEventListener('click', handleBadgeClick);
+  }
+
   // ---------- boot ----------
   async function boot(){
     initTheme();
+    // 1. Load from local cache first for instant UI response
     await Promise.all([
       loadScores('boys'), loadScores('girls'), loadScores('midGirls'),
       loadTimes('boys'), loadTimes('girls'), loadTimes('midGirls'),
@@ -1699,7 +1901,13 @@
       loadMemos('boys'), loadMemos('girls'), loadMemos('midGirls')
     ]);
     render();
+
+    // 2. Connect to Firebase Firestore for real-time cloud sync
+    initFirebaseRealtime();
+
+    // 3. Fallback periodic check for offline mode
     setInterval(async () => {
+      if(isFirestoreOnline) return; // Firebase realtime listener handles updates when online
       const ae = document.activeElement;
       if(ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
       await loadScores(state.div);

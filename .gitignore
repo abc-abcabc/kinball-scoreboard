@@ -1,0 +1,4 @@
+.agents/
+.system_generated/
+*.tmp
+.DS_Store

@@ -856,6 +856,7 @@
       </button>
       <div id="cloudStatusBadge" class="cloud-status-badge connecting" title="클라우드 실시간 동기화 상태 (클릭하여 확인)">
         <span class="cloud-dot"></span>
+        <span class="cloud-text" style="display:none;"></span>
       </div>
     </div>
   </div>
@@ -1022,19 +1023,32 @@
     }
   };
 
-  // Cloud push with debounce per field
+  // ---------- 클라우드 실시간 전송 (Debounce) ----------
+  // 사용자가 점수를 빠르게 연속 입력할 때마다 매번 서버에 요청을 보내면 과부하가 걸리므로,
+  // 입력이 멈춘 후 300밀리초(0.3초) 뒤에 1회만 클라우드로 안전하게 전송합니다.
   const pushTimers = {};
   function scheduleCloudPush(field, div){
-    if(!firestoreDb || !isFirestoreOnline || isIncomingRemoteUpdate) return;
+    // Firebase Firestore가 아직 준비되지 않았거나 오프라인 상태이면 전송하지 않음
+    if(!firestoreDb || !isFirestoreOnline) return;
+    // 다른 기기나 클라우드에서 최신 데이터를 내려받는 중에는 다시 서버로 튕겨내지 않음 (무한 루프 방지)
+    if(isIncomingRemoteUpdate) return;
+
     const timerKey = `${field}_${div}`;
     clearTimeout(pushTimers[timerKey]);
     pushTimers[timerKey] = setTimeout(async () => {
       try {
         const docRef = firestoreDb.collection("kinball_db").doc("live_state");
-        const payload = {};
-        payload[`${field}.${div}`] = state[field][div];
-        payload.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
+        // [중요 수정] 점(.) 표기법(예: scores.boys) 대신 중첩 객체(nested object) 형태로 전송합니다.
+        // 이렇게 해야 Firestore의 기존 scores 데이터 내부의 boys만 정확하게 덮어쓰고(merge),
+        // 엉뚱한 껍데기 필드가 생성되어 점수가 지워지는 문제를 완벽히 방지합니다.
+        const payload = {
+          [field]: {
+            [div]: state[field][div]
+          },
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
         await docRef.set(payload, { merge: true });
+        console.log(`[Firebase] ${field}.${div} 클라우드 저장 완료`);
       } catch(err){
         console.warn(`[Firebase] ${field}.${div} 저장 실패:`, err);
         if(err.code === 'permission-denied'){
@@ -1119,8 +1133,9 @@
     scheduleCloudPush("memos", div);
   }
 
-  // Firebase Realtime Firestore listener setup
+  // ---------- Firebase 실시간 Firestore 동기화 초기화 ----------
   function initFirebaseRealtime(){
+    // Firebase SDK 라이브러리가 로드되지 않은 경우 로컬 모드로 작동
     if(typeof firebase === 'undefined' || !firebase.initializeApp){
       console.warn("Firebase SDK not loaded. Operating in localStorage mode.");
       setSyncStatus('local', '로컬 저장 모드', '클라우드 라이브러리를 불러오지 못해 로컬 저장소로 작동합니다.');
@@ -1134,12 +1149,13 @@
       firestoreDb = firebase.firestore();
 
       const docRef = firestoreDb.collection("kinball_db").doc("live_state");
+      // onSnapshot: 클라우드 데이터가 변경될 때마다 실시간으로 이 콜백 함수가 호출됩니다.
       docRef.onSnapshot(snapshot => {
         isFirestoreOnline = true;
         setSyncStatus('online', '실시간 공유됨', '모든 기기와 실시간으로 자동 동기화 중입니다.');
 
         if(!snapshot.exists){
-          // 초기 클라우드 데이터가 없으면 현재 로컬 데이터를 클라우드에 1회 동기화
+          // 초기 클라우드 데이터가 없으면 현재 로컬 데이터를 클라우드에 최초 1회 전체 업로드
           docRef.set({
             scores: state.scores,
             times: state.times,
@@ -1167,23 +1183,37 @@
         ];
 
         fields.forEach(({name, keyPrefix}) => {
-          if(data[name] && typeof data[name] === 'object'){
-            ['boys', 'girls', 'midGirls'].forEach(d => {
-              if(data[name][d] !== undefined){
-                const remoteStr = JSON.stringify(data[name][d]);
-                const localStr = JSON.stringify(state[name][d]);
-                if(remoteStr !== localStr){
-                  state[name][d] = data[name][d];
-                  try { localStorage.setItem(keyPrefix + d, remoteStr); } catch(e){}
-                  hasChanges = true;
-                }
+          ['boys', 'girls', 'midGirls'].forEach(d => {
+            // 정상 중첩 객체(data[name][d]) 또는 혹시 남아있던 점표기 데이터(data[`${name}.${d}`]) 확인
+            const remoteVal = (data[name] && data[name][d] !== undefined)
+              ? data[name][d]
+              : (data[`${name}.${d}`] !== undefined ? data[`${name}.${d}`] : undefined);
+
+            if(remoteVal !== undefined){
+              const remoteStr = JSON.stringify(remoteVal);
+              const localStr = JSON.stringify(state[name][d] || {});
+
+              // [중요 로직] 클라우드 데이터가 비어있고({}) 로컬에 이미 작성된 데이터가 있는 경우:
+              // 로컬 데이터를 클라우드로 즉시 업로드하여 로컬 점수가 지워지지 않도록 보호합니다!
+              const isRemoteEmpty = !remoteVal || Object.keys(remoteVal).length === 0;
+              const isLocalHasData = state[name][d] && Object.keys(state[name][d]).length > 0;
+
+              if(isRemoteEmpty && isLocalHasData){
+                // 로컬의 소중한 데이터를 클라우드에 즉시 전송하여 보존
+                scheduleCloudPush(name, d);
+              } else if(remoteStr !== localStr){
+                // 클라우드에 변경사항이 있으면 로컬 상태와 localStorage에 동기화
+                state[name][d] = remoteVal;
+                try { localStorage.setItem(keyPrefix + d, remoteStr); } catch(e){}
+                hasChanges = true;
               }
-            });
-          }
+            }
+          });
         });
 
         isIncomingRemoteUpdate = false;
 
+        // 데이터가 변경되었고, 현재 사용자가 키보드로 타이핑 중이 아니라면 화면을 부드럽게 갱신
         if(hasChanges){
           const ae = document.activeElement;
           const isTyping = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');

@@ -550,134 +550,542 @@
   .player-stats-area.hidden{
     display: none !important;
   }
-  .player-stats-area .ps-title{
-    font-size:12px; font-weight:700; color:var(--gold); margin-bottom:8px;
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .match-add-card{
-    background:var(--surface-2); border:1px solid var(--line-soft); border-radius:var(--radius-sm);
-    padding:10px; margin-bottom:10px;
-  }
-  .match-add-title{
-    font-size:11.5px; font-weight:700; color:var(--text-dim); margin-bottom:6px;
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .school-quick-chips{ display:flex; gap:4px; margin-bottom:6px; flex-wrap:wrap; }
-  .sq-chip{
-    font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px;
-    background:var(--surface-3); border:1px solid var(--line); color:var(--text-dim);
-    cursor:pointer; transition: all .12s ease;
-  }
-  .sq-chip:hover, .sq-chip:active{ border-color:var(--gold); color:var(--gold); }
 
-  .ps-row{
+  /* ---------- tactics manager styling ---------- */
+  .tactics-box {
     background: var(--surface-2);
     border: 1px solid var(--line-soft);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
   }
-  .ps-row-header{
+  .tactics-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    margin-bottom: 10px;
   }
-  .ps-info{
+  .tactics-title-wrap {
     display: flex;
     align-items: center;
     gap: 6px;
-    min-width: 0;
-    flex: 1;
-  }
-  .ps-no{
-    font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    color: var(--gold);
-    background: rgba(242,180,65,0.15);
-    padding: 2px 7px;
-    border-radius: 6px;
-    flex: none;
-  }
-  .ps-name{
-    font-size: 13.5px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 800;
     color: var(--text);
+  }
+  .tactics-title-wrap svg {
+    width: 17px;
+    height: 17px;
+    color: var(--gold);
+  }
+
+  /* 현재 사용 전술 & 다음 전술 컨테이너 (깔끔한 2개 카드 나란히 배치) */
+  .tactics-current-board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  /* 현재 사용 전술 (다음 전술과 완벽히 동일한 깔끔한 카드 구조, 앰버/골드 테마, 중앙 정렬) */
+  .tactics-current-info {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(135deg, rgba(38, 28, 12, 0.9) 0%, rgba(20, 15, 6, 0.96) 100%);
+    border: 1.5px solid #F59E0B;
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35), 0 0 10px rgba(245, 158, 11, 0.22);
+    text-align: center;
+  }
+  .tactics-current-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #FBBF24;
+    letter-spacing: 0.6px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    text-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+  }
+  .tactics-current-label .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #00FF87;
+    box-shadow: 0 0 8px #00FF87;
+    display: inline-block;
+    animation: livePulse 1.5s infinite ease-in-out;
+  }
+  @keyframes livePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.75; }
+  }
+  .tactics-current-val {
+    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
+    font-size: 18px;
+    color: #FFFBEB;
+    letter-spacing: 0.4px;
+    line-height: 1.2;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    width: 100%;
+  }
+  .tactics-current-val.none {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #94A3B8;
+    text-shadow: none;
+  }
+
+  /* 다음 전술 (NEXT) 디스플레이 (사이안/블루 테마, 중앙 정렬) */
+  .tactics-next-info {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(135deg, rgba(14, 28, 48, 0.85) 0%, rgba(9, 18, 32, 0.95) 100%);
+    border: 1.5px solid #38BDF8;
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35), 0 0 10px rgba(56, 189, 248, 0.25);
+    text-align: center;
+  }
+  .tactics-next-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #38BDF8;
+    letter-spacing: 0.6px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+  }
+  .tactics-next-val {
+    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
+    font-size: 18px;
+    color: #F0F9FF;
+    letter-spacing: 0.4px;
+    line-height: 1.2;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    width: 100%;
+  }
+
+  /* 전술 버튼 그리드 하단 전용 액션 바 (추가 및 삭제) */
+  .tactics-grid-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+  }
+  .tactics-action-bar-btn {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12.5px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .tactics-action-bar-btn.add-btn {
+    border: 1.5px dashed rgba(245, 158, 11, 0.45);
+    background: rgba(245, 158, 11, 0.06);
+    color: var(--gold);
+  }
+  .tactics-action-bar-btn.add-btn:hover {
+    background: rgba(245, 158, 11, 0.16);
+    border-color: #F59E0B;
+    border-style: solid;
+    color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.22);
+  }
+  .tactics-action-bar-btn.del-btn {
+    border: 1.5px dashed rgba(239, 68, 68, 0.45);
+    background: rgba(239, 68, 68, 0.06);
+    color: #F87171;
+  }
+  .tactics-action-bar-btn.del-btn:hover {
+    background: rgba(239, 68, 68, 0.16);
+    border-color: #EF4444;
+    border-style: solid;
+    color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.22);
+  }
+  .tactics-action-bar-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* 전술 탭 바 (동적 탭 추가 지원 & 가로 스크롤) */
+  .tactics-tabs-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .tactics-tabs {
+    flex: 1;
+    display: flex;
+    gap: 6px;
+    background: var(--surface-3);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--line-soft);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tactics-tabs::-webkit-scrollbar { display: none; }
+  .tactics-tab-btn {
+    flex: none;
+    padding: 7px 14px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    user-select: none;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tactics-tab-btn.active {
+    background: var(--gold);
+    color: #1a140a;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .tactics-tab-count {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    background: rgba(255,255,255,0.16);
+    color: var(--text);
+  }
+  .tactics-tab-btn.active .tactics-tab-count {
+    background: rgba(0,0,0,0.22);
+    color: #1a140a;
+  }
+  .tactics-tab-add-btn {
+    flex: none;
+    height: 34px;
+    padding: 0 10px;
+    border: 1.5px dashed var(--gold-dim);
+    border-radius: 8px;
+    background: rgba(242, 180, 65, 0.08);
+    color: var(--gold);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .tactics-tab-add-btn:hover {
+    background: var(--gold);
+    color: #1a140a;
+    border-style: solid;
+  }
+
+  /* 전술 버튼 칸 그리드 */
+  .tactics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .tactic-btn {
+    height: 52px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    transition: transform 0.12s ease, opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tactic-btn:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(242,180,65,0.22);
+  }
+  .tactic-btn:active {
+    transform: scale(0.92);
+    background: var(--gold);
+    color: #1a140a;
+  }
+  .tactic-btn .tactic-num {
+    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
+    font-size: 18px;
+    line-height: 1.1;
+  }
+  .tactic-btn .tactic-sub {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--text-faint);
+  }
+  .tactic-btn:active .tactic-sub {
+    color: #1a140a;
+  }
+
+  .tactics-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 6px;
+    border-top: 1px dashed var(--line-soft);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .tactics-reset-btn {
+    background: var(--surface-3);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 4px 10px;
+    color: var(--text-dim);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .tactics-reset-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .tactics-reset-btn:active {
+    transform: scale(0.95);
+  }
+
+  .tactic-btn.tactic-add-btn {
+    border: 1.5px dashed var(--gold-dim);
+    background: rgba(242, 180, 65, 0.05);
+    color: var(--gold);
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+  .tactic-btn.tactic-add-btn:hover {
+    border-color: var(--gold);
+    background: rgba(242, 180, 65, 0.15);
+  }
+
+  /* 커스텀 전술명이 있는 버튼 강조 스타일 */
+  .tactic-btn.has-custom {
+    border-color: var(--gold-dim);
+    background: linear-gradient(135deg, rgba(242,180,65,0.06), var(--surface));
+  }
+  .tactic-btn .tactic-num {
+    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
+    font-size: 16px;
+    line-height: 1.15;
+    max-width: 90%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: center;
+    padding: 0 2px;
   }
-  .ps-school{
-    font-size: 11px;
-    color: var(--text-dim);
-    font-weight: normal;
-    flex: none;
+
+  @keyframes tacticPopIn {
+    0% { opacity: 0; transform: scale(0.65); }
+    70% { transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
   }
-  .ps-stats{
+  .tactic-pop {
+    animation: tacticPopIn 0.24s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* ---------- tactics rename modal ---------- */
+  .tactics-modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: modalFadeIn 0.2s ease-out;
+  }
+  .tactics-modal-content {
+    background: var(--surface);
+    border: 1.5px solid var(--gold);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 440px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+    overflow: hidden;
+  }
+  .tactics-modal-header {
+    padding: 14px 18px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .tactics-modal-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--gold);
     display: flex;
     align-items: center;
     gap: 6px;
   }
-  .ps-stat-group{
+  .tactics-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+  }
+  .tactics-modal-body {
+    padding: 16px 18px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .tactics-modal-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+    line-height: 1.45;
+  }
+  .tactics-rename-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface-2);
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+  }
+  .tactics-rename-badge {
+    width: 46px;
+    flex: none;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 14px;
+    color: var(--gold);
+    text-align: center;
+  }
+  .tactics-rename-input {
     flex: 1;
+    height: 36px;
+    background: var(--surface-3);
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    padding: 0 10px;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .tactics-rename-input:focus {
+    border-color: var(--gold);
+    background: var(--surface);
+  }
+  .tactics-modal-footer {
+    padding: 12px 18px;
+    background: var(--surface-2);
+    border-top: 1px solid var(--line-soft);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--surface-3);
+    gap: 8px;
+  }
+  .tactics-modal-btn {
+    padding: 8px 14px;
     border-radius: 8px;
-    border: 1px solid var(--line-soft);
-    overflow: hidden;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    transition: all 0.15s ease;
   }
-  .ps-stat-group .ps-label{
-    font-size: 9.5px; font-weight: 800; padding: 0 5px 0 2px; letter-spacing: 0.3px; flex: none;
+  .tactics-modal-btn.primary {
+    background: var(--gold);
+    color: #1a140a;
+    border-color: var(--gold);
   }
-  .ps-stat-group.op-g .ps-label{ color:#FF9F43; }
-  .ps-stat-group.adp-g .ps-label{ color:#54A0FF; }
-  .ps-stat-group.dp-g .ps-label{ color:var(--green); }
-  .ps-step-btn{
-    width: 26px; height: 26px; border: none; background: var(--surface);
-    color: var(--text); font-size: 14px; font-weight: 800; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; transition: background .1s ease;
-    flex: none;
+  .tactics-modal-btn.secondary {
+    background: var(--surface-3);
+    color: var(--text-dim);
   }
-  .ps-step-btn:active{ background:var(--gold); color:#241705; }
-  .ps-stat-group.op-g .ps-step-btn:active{ background:#FF9F43; color:#fff; }
-  .ps-stat-group.adp-g .ps-step-btn:active{ background:#54A0FF; color:#fff; }
-  .ps-stat-group.dp-g .ps-step-btn:active{ background:var(--green); color:#fff; }
-  .ps-val{
-    font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 13.5px; min-width: 16px; text-align: center;
-    padding: 0 1px; flex: 1;
+  .tactics-modal-btn.danger {
+    background: transparent;
+    color: var(--text-faint);
   }
-  .ps-stat-group.op-g .ps-val{ color:#FF9F43; }
-  .ps-stat-group.adp-g .ps-val{ color:#54A0FF; }
-  .ps-stat-group.dp-g .ps-val{ color:var(--green); }
+  .tactics-modal-btn:hover {
+    filter: brightness(1.1);
+  }
+  .tactics-modal-btn:active {
+    transform: scale(0.96);
+  }
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
 
-  .del-player-btn{
-    background: none; border: none; color: var(--text-faint); font-size: 15px; cursor: pointer;
-    padding: 2px 6px; border-radius: 4px; transition: color .12s ease; flex: none;
-  }
-  .del-player-btn:hover{ color: var(--red); }
-
-  .add-player-row{ display:flex; gap:6px; flex-wrap:wrap; }
-  .add-player-row input{
-    height:36px; border-radius:8px; border:1.5px solid var(--line);
-    background:var(--surface); color:var(--text); font-family:'Noto Sans KR';
-    font-size:12px; padding:0 8px; outline:none;
-  }
-  .add-player-row input:focus{ border-color:var(--gold); background:var(--surface-3); }
-  .add-player-row input.num-input{ width:48px; flex:none; text-align:center; font-weight:700; }
-  .add-player-row input.name-input{ flex:1; min-width:70px; }
-  .add-player-row input.school-input{ flex:1.2; min-width:90px; }
-  .add-player-btn{
-    flex:none; width:36px; height:36px; border-radius:8px; border:1.5px solid var(--gold-dim);
-    background: rgba(242,180,65,0.12); color:var(--gold); font-size:18px; font-weight:700;
-    cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all .12s ease;
-  }
-  .add-player-btn:active{ background:var(--gold); color:#241705; }
 
   /* ---------- match memo ---------- */
   .match-memo-wrap{
@@ -772,6 +1180,8 @@
     .noam-summary{ padding:14px; flex-direction:column; text-align:center; }
     .noam-summary .right{ text-align:center; }
     .proj-item .v{ font-size:18px; }
+    .tactics-current-board{ flex-direction:column; align-items:flex-start; gap:8px; }
+    .tactics-next-info{ width:100%; text-align:left; }
     nav.bottom button{ font-size:9.5px; }
     nav.bottom button svg{ width:19px; height:19px; }
   }
@@ -941,6 +1351,14 @@
   DATA.girls.teams = teamsOf("girls");
   DATA.midGirls.teams = teamsOf("midGirls");
 
+  function defaultTacticCategories(){
+    return [
+      { id: 'basic', label: '기본', items: [ {id:1, name:'1번'}, {id:2, name:'2번'}, {id:3, name:'3번'}, {id:4, name:'4번'}, {id:5, name:'5번'}, {id:6, name:'6번'}, {id:7, name:'7번'} ] },
+      { id: 'score11', label: '11점', items: [ {id:1, name:'1번'}, {id:2, name:'2번'}, {id:3, name:'3번'}, {id:4, name:'4번'} ] },
+      { id: 'side', label: '사이드', items: [ {id:1, name:'1번'}, {id:2, name:'2번'}, {id:3, name:'3번'} ] }
+    ];
+  }
+
   let state = {
     div: "boys",
     tab: "matches",
@@ -953,7 +1371,18 @@
     roster: { boys: {}, girls: {}, midGirls: {} },  // {matchId: [{no:1, name:"홍길동", school:"노암초"}]}
     playerStats: { boys: {}, girls: {}, midGirls: {} },  // {matchId: {playerNo: {op:0, adp:0, dp:0}}}
     expandedPlayerMatch: { boys: null, girls: null, midGirls: null },  // which match card has player stats open
-    memos: { boys: {}, girls: {}, midGirls: {} }  // {matchId: "메모 내용"}
+    memos: { boys: {}, girls: {}, midGirls: {} },  // {matchId: "메모 내용"}
+    tactics: { boys: {}, girls: {}, midGirls: {} }, // {matchId: {current: "기본 1번", activeTab: "basic", hidden: {basic:[], score11:[], side:[]}}}
+    tacticNames: {
+      boys: { basic: {}, score11: {}, side: {} },
+      girls: { basic: {}, score11: {}, side: {} },
+      midGirls: { basic: {}, score11: {}, side: {} }
+    },
+    tacticCategories: {
+      boys: null,
+      girls: null,
+      midGirls: null
+    }
   };
 
   function colorsOf(div, matchId){
@@ -1133,6 +1562,57 @@
     scheduleCloudPush("memos", div);
   }
 
+  async function loadTactics(div){
+    try{
+      const res = await store.get("tactics:" + div);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        if(parsed && typeof parsed === 'object'){
+          state.tactics[div] = parsed;
+        }
+      }
+    }catch(e){}
+  }
+  function saveTactics(div){
+    if(!state.tactics[div]) state.tactics[div] = {};
+    store.set("tactics:" + div, JSON.stringify(state.tactics[div]));
+    scheduleCloudPush("tactics", div);
+  }
+
+  async function loadTacticNames(div){
+    try{
+      const res = await store.get("tnames:" + div);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        if(parsed && typeof parsed === 'object'){
+          state.tacticNames[div] = parsed;
+        }
+      }
+    }catch(e){}
+  }
+  function saveTacticNames(div){
+    if(!state.tacticNames[div]) state.tacticNames[div] = { basic: {}, score11: {}, side: {} };
+    store.set("tnames:" + div, JSON.stringify(state.tacticNames[div]));
+    scheduleCloudPush("tacticNames", div);
+  }
+
+  async function loadTacticCategories(div){
+    try{
+      const res = await store.get("tcats:" + div);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        if(Array.isArray(parsed) && parsed.length > 0){
+          state.tacticCategories[div] = parsed;
+        }
+      }
+    }catch(e){}
+  }
+  function saveTacticCategories(div){
+    if(!state.tacticCategories[div]) state.tacticCategories[div] = defaultTacticCategories();
+    store.set("tcats:" + div, JSON.stringify(state.tacticCategories[div]));
+    scheduleCloudPush("tacticCategories", div);
+  }
+
   // ---------- Firebase 실시간 Firestore 동기화 초기화 ----------
   function initFirebaseRealtime(){
     // Firebase SDK 라이브러리가 로드되지 않은 경우 로컬 모드로 작동
@@ -1163,6 +1643,9 @@
             roster: state.roster,
             playerStats: state.playerStats,
             memos: state.memos,
+            tactics: state.tactics,
+            tacticNames: state.tacticNames,
+            tacticCategories: state.tacticCategories,
             lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
           }, { merge: true }).catch(()=>{});
           return;
@@ -1179,7 +1662,10 @@
           { name: 'teamColors', keyPrefix: 'tcolors:' },
           { name: 'roster', keyPrefix: 'roster:' },
           { name: 'playerStats', keyPrefix: 'pstats:' },
-          { name: 'memos', keyPrefix: 'memos:' }
+          { name: 'memos', keyPrefix: 'memos:' },
+          { name: 'tactics', keyPrefix: 'tactics:' },
+          { name: 'tacticNames', keyPrefix: 'tnames:' },
+          { name: 'tacticCategories', keyPrefix: 'tcats:' }
         ];
 
         fields.forEach(({name, keyPrefix}) => {
@@ -1280,6 +1766,160 @@
     return DATA[div].matches.filter(m => scores[m.id] && scores[m.id].p!=="" && scores[m.id].g!=="" && scores[m.id].b!=="" && scores[m.id].p!=null).length;
   }
 
+  // ---------- Tactics Logic & Renderer ----------
+  function getTacticCategories(div){
+    if(!state.tacticCategories[div] || !Array.isArray(state.tacticCategories[div]) || state.tacticCategories[div].length === 0){
+      state.tacticCategories[div] = defaultTacticCategories();
+      // 기존 tacticNames 마이그레이션 호환
+      if(state.tacticNames && state.tacticNames[div]){
+        state.tacticCategories[div].forEach(cat => {
+          const names = state.tacticNames[div][cat.id];
+          if(names){
+            cat.items.forEach(it => {
+              if(names[it.id] && names[it.id].trim()){
+                it.name = names[it.id].trim();
+              }
+            });
+          }
+        });
+      }
+    }
+    return state.tacticCategories[div];
+  }
+
+  function getMatchTactics(div, matchId){
+    if(!state.tactics[div]) state.tactics[div] = {};
+    if(!state.tactics[div][matchId]){
+      state.tactics[div][matchId] = {
+        current: null,
+        activeTab: "basic",
+        hidden: {}
+      };
+    }
+    const mt = state.tactics[div][matchId];
+    if(!mt.hidden || typeof mt.hidden !== 'object') mt.hidden = {};
+    if(!mt.activeTab) mt.activeTab = "basic";
+    return mt;
+  }
+
+  function renderTacticsBox(div, matchId){
+    const mt = getMatchTactics(div, matchId);
+    const cats = getTacticCategories(div);
+
+    let activeCat = cats.find(c => c.id === mt.activeTab);
+    if(!activeCat){
+      activeCat = cats[0] || { id: 'basic', label: '기본', items: [] };
+      mt.activeTab = activeCat.id;
+    }
+
+    const hiddenList = (mt.hidden && Array.isArray(mt.hidden[activeCat.id])) ? mt.hidden[activeCat.id] : [];
+    const remainingItems = activeCat.items.filter(it => !hiddenList.includes(it.id));
+    const remainingCount = remainingItems.length;
+
+    // 다음 전술 (NEXT) 계산
+    let nextTacticDisplay = '없음';
+    if(remainingItems.length > 0){
+      nextTacticDisplay = `${activeCat.label} ${remainingItems[0].name}`;
+    } else if(activeCat.items.length > 0){
+      nextTacticDisplay = `${activeCat.label} ${activeCat.items[0].name} (루프)`;
+    }
+
+    // 탭 바 HTML 생성 (동적 탭 렌더링)
+    const tabsHtml = cats.map(t => {
+      const isAct = t.id === activeCat.id;
+      return `
+        <button class="tactics-tab-btn ${isAct ? 'active' : ''}" onclick="selectTacticTab(${matchId}, '${t.id}')">
+          <span>${t.label}</span>
+        </button>
+      `;
+    }).join('');
+
+    // 전술 번호 버튼 그리드 생성
+    let buttonsHtml = '';
+    activeCat.items.forEach(it => {
+      if(!hiddenList.includes(it.id)){
+        const hasCustom = (it.name !== `${it.id}번`);
+        buttonsHtml += `
+          <button class="tactic-btn tactic-pop ${hasCustom ? 'has-custom' : ''}"
+            onclick="clickTactic(${matchId}, '${activeCat.id}', ${it.id})"
+            title="${activeCat.label} ${it.id}번 (${it.name}) 전술 사용">
+            <span class="tactic-num">${it.name}</span>
+            <span class="tactic-sub">${hasCustom ? `${activeCat.label} ${it.id}번` : activeCat.label}</span>
+          </button>
+        `;
+      }
+    });
+
+    return `
+      <div class="tactics-box" id="tactics_box_${matchId}">
+        <!-- 현재 사용 중인 전술 & 다음 전술 대형 전광판 배너 -->
+        <div class="tactics-current-board">
+          <div class="tactics-current-info">
+            <div class="tactics-current-label">
+              <span class="live-dot"></span>
+              <span>현재 사용 전술</span>
+            </div>
+            <div class="tactics-current-val ${mt.current ? '' : 'none'}">
+              ${mt.current || '전술을 터치해주세요'}
+            </div>
+          </div>
+
+          <div class="tactics-next-info">
+            <div class="tactics-next-label">
+              <span>⏭️ 다음 전술 (NEXT)</span>
+            </div>
+            <div class="tactics-next-val" title="${nextTacticDisplay}">
+              ${nextTacticDisplay}
+            </div>
+          </div>
+        </div>
+
+        <!-- 탭 바 (탭 추가 및 편집 지원) -->
+        <div class="tactics-tabs-wrap">
+          <div class="tactics-tabs">
+            ${tabsHtml}
+          </div>
+          <button class="tactics-tab-add-btn" onclick="addNewTacticCategory(${matchId})" title="새 전술 탭 추가">
+            + 탭 추가
+          </button>
+        </div>
+
+        <!-- 전술 칸 그리드 -->
+        <div class="tactics-grid">
+          ${buttonsHtml}
+        </div>
+
+        <!-- 전술 추가 & 삭제 액션 바 -->
+        <div class="tactics-grid-bottom">
+          <button class="tactics-action-bar-btn add-btn" onclick="addNewTacticItem('${activeCat.id}', ${matchId})" title="현재 탭에 새 세부 전술 번호 추가">
+            <span style="font-size:15px; font-weight:900; line-height:1;">+</span>
+            <span>전술 추가</span>
+          </button>
+          <button class="tactics-action-bar-btn del-btn" onclick="openTacticDeleteModal('${activeCat.id}', ${matchId})" title="현재 탭의 전술 번호 삭제">
+            <span style="font-size:13px; line-height:1;">🗑️</span>
+            <span>전술 삭제</span>
+          </button>
+        </div>
+
+        <!-- 하단 상태 바 및 리셋/수정 버튼 -->
+        <div class="tactics-footer">
+          <span>💡 터치 시 사라지고, 모두 터치하면 자동 복구돼요</span>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
+            <button class="tactics-reset-btn" onclick="openCategoryManageModal('${activeCat.id}', ${matchId})" title="현재 탭 이름 변경 또는 삭제">
+              🏷️ 탭 편집
+            </button>
+            <button class="tactics-reset-btn" onclick="openTacticRenameModal('${activeCat.id}', ${matchId})" title="현재 탭의 세부 전술 이름 변경 및 추가/삭제">
+              ✏️ 세부 전술 편집
+            </button>
+            <button class="tactics-reset-btn" onclick="resetTacticTab(${matchId}, '${activeCat.id}')" title="현재 탭의 전술을 모두 다시 표시합니다">
+              ↺ 전체 다시 표시
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   // ---------- render: matches tab ----------
   function renderMatches(){
     const div = state.div;
@@ -1298,47 +1938,8 @@
       const isDone = r.p!=null;
       const hasMyTeam = isMyTeam(m.p) || isMyTeam(m.g) || isMyTeam(m.b);
       const isExpanded = state.expandedPlayerMatch[div] === m.id;
-      const displayPlayers = (state.roster[div] && state.roster[div][m.id]) ? state.roster[div][m.id] : [];
       const colors = colorsOf(div, m.id);
-      const defaultSchool = isMyTeam(m.p) ? m.p : isMyTeam(m.g) ? m.g : isMyTeam(m.b) ? m.b : m.p;
-
-      let psRows = displayPlayers.map(pl => {
-        const ms = state.playerStats[div][m.id];
-        const ps = (ms && ms[pl.no]) ? ms[pl.no] : {op:0,adp:0,dp:0};
-        const schoolText = pl.school ? `<span class="ps-school">(${pl.school})</span>` : '';
-        return `
-          <div class="ps-row">
-            <div class="ps-row-header">
-              <div class="ps-info">
-                <span class="ps-no">#${pl.no}</span>
-                <span class="ps-name">${pl.name}</span>
-                ${schoolText}
-              </div>
-              <button class="del-player-btn" onclick="deleteMatchPlayer(${m.id}, ${pl.no})" title="삭제">✕</button>
-            </div>
-            <div class="ps-stats">
-              <div class="ps-stat-group op-g">
-                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'op', -1)">−</button>
-                <span class="ps-val" id="pval_${m.id}_${pl.no}_op">${ps.op}</span>
-                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'op', 1)">+</button>
-                <span class="ps-label">공격</span>
-              </div>
-              <div class="ps-stat-group adp-g">
-                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'adp', -1)">−</button>
-                <span class="ps-val" id="pval_${m.id}_${pl.no}_adp">${ps.adp}</span>
-                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'adp', 1)">+</button>
-                <span class="ps-label">협력</span>
-              </div>
-              <div class="ps-stat-group dp-g">
-                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'dp', -1)">−</button>
-                <span class="ps-val" id="pval_${m.id}_${pl.no}_dp">${ps.dp}</span>
-                <button class="ps-step-btn" onclick="changePlayerStat(${m.id}, ${pl.no}, 'dp', 1)">+</button>
-                <span class="ps-label">수비</span>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      const mt = getMatchTactics(div, m.id);
 
       html += `
         <div class="match-card ${isDone?'done':''} ${hasMyTeam?'has-noam':''}">
@@ -1355,32 +1956,18 @@
           ${teamRow(colors[2], m.b, s.b, r.b, div, m.id, 2)}
           ${isDone ? `<div class="match-foot"><button class="clear-btn" data-clear="${m.id}">점수 지우기</button></div>` : ''}
 
-          <button class="roster-toggle" onclick="togglePlayerStats(${m.id})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-            선수 기록 / 선수 추가 ${displayPlayers.length > 0 ? `(${displayPlayers.length}명)` : ''}
+          <button class="roster-toggle" onclick="toggleTactics(${m.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            <span>전술 로테이션 & 메모</span>
+            <span class="tactics-summary-pill" id="tactics_pill_${m.id}" style="${mt.current ? 'display:inline-flex; margin-left:8px; padding:2px 8px; border-radius:999px; background:rgba(242,180,65,0.18); border:1px solid var(--gold); color:var(--gold); font-size:11px;' : 'display:none;'}">
+              ${mt.current ? `현재: ${mt.current}` : ''}
+            </span>
           </button>
 
-          <div class="player-stats-area ${isExpanded ? '' : 'hidden'}" id="ps_area_${m.id}">
-            <div class="match-add-card">
-              <div class="match-add-title">
-                <span>선수 추가</span>
-                <span style="font-size:10px; color:var(--text-faint);">학교 선택:</span>
-              </div>
-              <div class="school-quick-chips">
-                <button class="sq-chip" onclick="fillSchoolInput(${m.id}, '${m.p}')">${m.p}</button>
-                <button class="sq-chip" onclick="fillSchoolInput(${m.id}, '${m.g}')">${m.g}</button>
-                <button class="sq-chip" onclick="fillSchoolInput(${m.id}, '${m.b}')">${m.b}</button>
-              </div>
-              <div class="add-player-row">
-                <input class="num-input" type="text" inputmode="numeric" placeholder="번호" id="matchAddNo_${m.id}" maxlength="3" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
-                <input class="name-input" type="text" placeholder="선수 이름" id="matchAddName_${m.id}" maxlength="10" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
-                <input class="school-input" type="text" placeholder="학교명" id="matchAddSchool_${m.id}" value="${defaultSchool}" maxlength="15" onkeydown="if(event.key==='Enter') addMatchPlayer(${m.id})">
-                <button class="add-player-btn" onclick="addMatchPlayer(${m.id})" title="등록">+</button>
-              </div>
+          <div class="player-stats-area ${isExpanded ? '' : 'hidden'}" id="tactics_area_${m.id}">
+            <div id="tactics_box_wrap_${m.id}">
+              ${renderTacticsBox(div, m.id)}
             </div>
-
-            <div class="ps-title">선수별 기록 현황 (${displayPlayers.length}명)</div>
-            ${displayPlayers.length > 0 ? psRows : '<div style="font-size:11.5px; color:var(--text-faint); padding:10px 0; text-align:center;">등록된 선수가 없습니다. 위에서 선수를 추가해주세요.</div>'}
 
             <div class="match-memo-wrap">
               <div class="match-memo-title">
@@ -1694,6 +2281,427 @@
     render();
   };
 
+  // ---------- tactics action handlers ----------
+  window.toggleTactics = function(matchId){
+    const div = state.div;
+    const mId = Number(matchId);
+    if(state.expandedPlayerMatch[div] === mId){
+      state.expandedPlayerMatch[div] = null;
+    } else {
+      state.expandedPlayerMatch[div] = mId;
+    }
+    const el = document.getElementById(`tactics_area_${mId}`);
+    if(el){
+      el.classList.toggle('hidden');
+    }
+  };
+
+  window.selectTacticTab = function(matchId, tabKey){
+    const div = state.div;
+    const mId = Number(matchId);
+    const mt = getMatchTactics(div, mId);
+    mt.activeTab = tabKey;
+    saveTactics(div);
+    updateTacticsUI(mId);
+  };
+
+  window.clickTactic = function(matchId, tabKey, itemId){
+    const div = state.div;
+    const mId = Number(matchId);
+    const mt = getMatchTactics(div, mId);
+    const cats = getTacticCategories(div);
+    const cat = cats.find(c => c.id === tabKey);
+    if(!cat) return;
+
+    const it = cat.items.find(i => i.id === itemId);
+    const itemName = it ? it.name : `${itemId}번`;
+
+    // 1. 현재 전술로 표시 (예: "기본 3번" 또는 "기본 페이크")
+    const isDefault = (itemName === `${itemId}번`);
+    mt.current = isDefault ? `${cat.label} ${itemId}번` : `${cat.label} ${itemId}번 · ${itemName}`;
+
+    // 2. 터치된 것만 없어지게 (숨김 목록에 추가)
+    if(!mt.hidden[tabKey]) mt.hidden[tabKey] = [];
+    if(!mt.hidden[tabKey].includes(itemId)){
+      mt.hidden[tabKey].push(itemId);
+    }
+
+    // 3. 해당 탭의 모든 전술 번호가 터치되었으면 모두 전술이 다 나타나게
+    if(mt.hidden[tabKey].length >= cat.items.length){
+      mt.hidden[tabKey] = [];
+    }
+
+    saveTactics(div);
+    updateTacticsUI(mId);
+  };
+
+  window.resetTacticTab = function(matchId, tabKey){
+    const div = state.div;
+    const mId = Number(matchId);
+    const mt = getMatchTactics(div, mId);
+    if(mt.hidden && mt.hidden[tabKey]){
+      mt.hidden[tabKey] = [];
+      saveTactics(div);
+      updateTacticsUI(mId);
+    }
+  };
+
+  // ---------- 탭(카테고리) 추가 및 설정 ----------
+  window.addNewTacticCategory = function(matchId){
+    const div = state.div;
+    const name = prompt('새로운 전술 탭 이름을 입력하세요 (예: 공격, 수비, 특별전술):');
+    if(!name || !name.trim()) return;
+
+    const cats = getTacticCategories(div);
+    const newId = 'cat_' + Date.now();
+    cats.push({
+      id: newId,
+      label: name.trim(),
+      items: [
+        { id: 1, name: '1번' },
+        { id: 2, name: '2번' },
+        { id: 3, name: '3번' }
+      ]
+    });
+    saveTacticCategories(div);
+    selectTacticTab(matchId, newId);
+  };
+
+  window.openCategoryManageModal = function(catId, matchId){
+    const div = state.div;
+    const cats = getTacticCategories(div);
+    const cat = cats.find(c => c.id === catId);
+    if(!cat) return;
+
+    const canDelete = cats.length > 1;
+
+    const modalHtml = `
+      <div class="tactics-modal-backdrop" id="tacticsRenameModal" onclick="if(event.target===this) closeTacticRenameModal();">
+        <div class="tactics-modal-content" style="max-width:380px;">
+          <div class="tactics-modal-header">
+            <div class="tactics-modal-title">
+              <span>🏷️</span>
+              <span>전술 탭 편집</span>
+            </div>
+            <button class="tactics-modal-close" onclick="closeTacticRenameModal()">✕</button>
+          </div>
+          <div class="tactics-modal-body">
+            <div class="tactics-modal-desc">
+              현재 선택된 전술 탭의 이름을 수정할 수 있습니다.
+            </div>
+            <div style="margin-top:8px;">
+              <input type="text" class="tactics-rename-input" id="cat_label_input"
+                value="${cat.label}" maxlength="10" placeholder="탭 이름 (예: 기본, 11점, 수비 등)"
+                style="width:100%; font-size:14px; font-weight:700;"
+                onkeydown="if(event.key==='Enter') saveCategoryManageModal('${catId}', ${matchId})">
+            </div>
+          </div>
+          <div class="tactics-modal-footer">
+            ${canDelete ? `<button class="tactics-modal-btn danger" onclick="deleteTacticCategory('${catId}', ${matchId})" style="color:var(--red);">이 탭 삭제</button>` : '<div></div>'}
+            <div style="display:flex; gap:6px;">
+              <button class="tactics-modal-btn secondary" onclick="closeTacticRenameModal()">취소</button>
+              <button class="tactics-modal-btn primary" onclick="saveCategoryManageModal('${catId}', ${matchId})">저장</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    closeTacticRenameModal();
+    const divEl = document.createElement('div');
+    divEl.id = 'tacticsModalContainer';
+    divEl.innerHTML = modalHtml;
+    document.body.appendChild(divEl);
+
+    setTimeout(() => {
+      const inp = document.getElementById('cat_label_input');
+      if(inp) { inp.focus(); inp.select(); }
+    }, 80);
+  };
+
+  window.saveCategoryManageModal = function(catId, matchId){
+    const div = state.div;
+    const cats = getTacticCategories(div);
+    const cat = cats.find(c => c.id === catId);
+    if(!cat) return;
+
+    const inp = document.getElementById('cat_label_input');
+    const val = inp ? inp.value.trim() : '';
+    if(val){
+      cat.label = val;
+      saveTacticCategories(div);
+    }
+    closeTacticRenameModal();
+    updateTacticsUI(matchId);
+  };
+
+  window.deleteTacticCategory = function(catId, matchId){
+    const div = state.div;
+    const cats = getTacticCategories(div);
+    if(cats.length <= 1){
+      alert('최소 1개의 전술 탭은 유지되어야 합니다.');
+      return;
+    }
+    const cat = cats.find(c => c.id === catId);
+    if(!confirm(`'${cat ? cat.label : ''}' 탭과 세부 전술들을 모두 삭제할까요?`)) return;
+
+    state.tacticCategories[div] = cats.filter(c => c.id !== catId);
+    saveTacticCategories(div);
+
+    const mt = getMatchTactics(div, matchId);
+    if(mt.activeTab === catId){
+      mt.activeTab = state.tacticCategories[div][0].id;
+      saveTactics(div);
+    }
+    closeTacticRenameModal();
+    updateTacticsUI(matchId);
+  };
+
+  // ---------- 세부 전술 항목 추가 및 삭제 ----------
+  window.addNewTacticItem = function(catId, matchId){
+    const div = state.div;
+    const cats = getTacticCategories(div);
+    const cat = cats.find(c => c.id === catId);
+    if(!cat) return;
+
+    const maxId = cat.items.reduce((max, it) => Math.max(max, it.id), 0);
+    const newId = maxId + 1;
+    cat.items.push({ id: newId, name: `${newId}번` });
+    saveTacticCategories(div);
+    updateTacticsUI(matchId);
+  };
+
+  window.deleteTacticItem = function(catId, itemId, matchId, reopenModalType = null){
+    const div = state.div;
+    const cats = getTacticCategories(div);
+    const cat = cats.find(c => c.id === catId);
+    if(!cat) return;
+    if(cat.items.length <= 1){
+      alert('최소 1개의 세부 전술은 유지되어야 합니다.');
+      return;
+    }
+    cat.items = cat.items.filter(it => it.id !== itemId);
+    saveTacticCategories(div);
+
+    // 숨김 목록 및 현재 전술 동기화
+    const mt = getMatchTactics(div, matchId);
+    if(mt.hidden && mt.hidden[catId]){
+      mt.hidden[catId] = mt.hidden[catId].filter(id => id !== itemId);
+    }
+    if(mt.current && mt.current.includes(`${cat.label} ${itemId}번`)){
+      mt.current = null;
+    }
+    saveTactics(div);
+
+    if(reopenModalType === 'rename'){
+      openTacticRenameModal(catId, matchId);
+    } else if(reopenModalType === 'delete'){
+      openTacticDeleteModal(catId, matchId);
+    } else {
+      closeTacticRenameModal();
+    }
+    updateTacticsUI(matchId);
+  };
+
+  // ---------- 세부 전술 삭제 모달 ----------
+  window.openTacticDeleteModal = function(catId, matchId){
+    const div = state.div;
+    const cats = getTacticCategories(div);
+    const cat = cats.find(c => c.id === catId);
+    if(!cat) return;
+    if(cat.items.length <= 1){
+      alert('현재 탭에 전술이 1개뿐이어서 더 이상 삭제할 수 없습니다.');
+      return;
+    }
+
+    const lastItem = cat.items[cat.items.length - 1];
+
+    let rowsHtml = '';
+    cat.items.forEach(it => {
+      rowsHtml += `
+        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-3); border:1px solid var(--line-soft); border-radius:8px; padding:7px 12px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="tactics-rename-badge" style="min-width:36px; text-align:center;">${it.id}번</div>
+            <span style="font-weight:700; font-size:13.5px; color:var(--text);">${it.name}</span>
+          </div>
+          <button class="tactics-modal-btn danger" onclick="if(confirm('\\'${cat.label} ${it.name}\\' 전술을 삭제할까요?')) { deleteTacticItem('${catId}', ${it.id}, ${matchId}, (${cat.items.length} > 2 ? 'delete' : null)); }" style="padding:4px 10px; font-size:11.5px; color:#F87171; border-color:rgba(239,68,68,0.4);">
+            🗑️ 삭제
+          </button>
+        </div>
+      `;
+    });
+
+    const modalHtml = `
+      <div class="tactics-modal-backdrop" id="tacticsRenameModal" onclick="if(event.target===this) closeTacticRenameModal();">
+        <div class="tactics-modal-content" style="max-width:380px;">
+          <div class="tactics-modal-header">
+            <div class="tactics-modal-title">
+              <span>🗑️</span>
+              <span>[${cat.label}] 전술 번호 삭제</span>
+            </div>
+            <button class="tactics-modal-close" onclick="closeTacticRenameModal()">✕</button>
+          </div>
+          <div class="tactics-modal-body">
+            <div class="tactics-modal-desc" style="margin-bottom:12px;">
+              삭제할 전술 번호를 선택하세요. (현재 총 ${cat.items.length}개)
+            </div>
+
+            <!-- 마지막 번호 즉시 삭제 버튼 -->
+            <button class="tactics-modal-btn danger" onclick="if(confirm('\\'${cat.label} ${lastItem.name}\\'(마지막 번호)을 삭제할까요?')) { deleteTacticItem('${catId}', ${lastItem.id}, ${matchId}, (${cat.items.length} > 2 ? 'delete' : null)); }" style="width:100%; justify-content:center; padding:10px 0; margin-bottom:14px; font-size:13px; font-weight:800; background:rgba(239,68,68,0.12); border:1.5px solid #EF4444; color:#FCA5A5; cursor:pointer;">
+              ⚡ 마지막 전술 (${lastItem.name}) 바로 삭제
+            </button>
+
+            <div style="font-size:11px; font-weight:800; color:var(--text-faint); margin-bottom:6px; letter-spacing:0.5px;">전체 전술 목록에서 선택 삭제:</div>
+            <div style="max-height:220px; overflow-y:auto; padding-right:2px;">
+              ${rowsHtml}
+            </div>
+          </div>
+          <div class="tactics-modal-footer">
+            <div></div>
+            <button class="tactics-modal-btn secondary" onclick="closeTacticRenameModal()">닫기</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    closeTacticRenameModal();
+    const divEl = document.createElement('div');
+    divEl.id = 'tacticsModalContainer';
+    divEl.innerHTML = modalHtml;
+    document.body.appendChild(divEl);
+  };
+
+  // ---------- 세부 전술 편집 모달 (이름 변경 + 세부 추가/삭제) ----------
+  window.openTacticRenameModal = function(catId, matchId){
+    const div = state.div;
+    const cats = getTacticCategories(div);
+    const cat = cats.find(c => c.id === catId);
+    if(!cat) return;
+
+    let rowsHtml = '';
+    cat.items.forEach(it => {
+      const val = (it.name === `${it.id}번`) ? '' : it.name;
+      rowsHtml += `
+        <div class="tactics-rename-row">
+          <div class="tactics-rename-badge">${it.id}번</div>
+          <input type="text" class="tactics-rename-input" id="tactic_item_input_${it.id}"
+            placeholder="${it.id}번 전술 이름 (예: 중앙 공격, 페이크 등)" value="${val}" maxlength="15"
+            onkeydown="if(event.key==='Enter') saveTacticRenameModal('${catId}', ${matchId})">
+          ${cat.items.length > 1 ? `<button class="del-player-btn" onclick="deleteTacticItem('${catId}', ${it.id}, ${matchId}, 'rename')" title="이 전술 삭제" style="color:#F87171; font-size:16px;">✕</button>` : ''}
+        </div>
+      `;
+    });
+
+    const modalHtml = `
+      <div class="tactics-modal-backdrop" id="tacticsRenameModal" onclick="if(event.target===this) closeTacticRenameModal();">
+        <div class="tactics-modal-content">
+          <div class="tactics-modal-header">
+            <div class="tactics-modal-title">
+              <span>✏️</span>
+              <span>[${cat.label}] 세부 전술 편집</span>
+            </div>
+            <button class="tactics-modal-close" onclick="closeTacticRenameModal()">✕</button>
+          </div>
+          <div class="tactics-modal-body">
+            <div class="tactics-modal-desc">
+              경기 중 쉽게 알아볼 수 있도록 <b>${cat.label}</b> 탭의 전술 이름을 지정하고 항목을 추가/삭제하세요. 빈 칸은 원래 번호(${cat.items[0]?cat.items[0].id:1}번...)로 유지됩니다.
+            </div>
+            ${rowsHtml}
+            <div style="margin-top:6px; text-align:center;">
+              <button class="tactics-tab-add-btn" onclick="addNewTacticItem('${catId}', ${matchId}); openTacticRenameModal('${catId}', ${matchId});" style="width:100%; justify-content:center; padding:8px 0;">
+                + 세부 전술 항목 추가
+              </button>
+            </div>
+          </div>
+          <div class="tactics-modal-footer">
+            <button class="tactics-modal-btn danger" onclick="resetTacticNamesToDefault('${catId}', ${matchId})">
+              기본 번호로 초기화
+            </button>
+            <div style="display:flex; gap:6px;">
+              <button class="tactics-modal-btn secondary" onclick="closeTacticRenameModal()">
+                취소
+              </button>
+              <button class="tactics-modal-btn primary" onclick="saveTacticRenameModal('${catId}', ${matchId})">
+                저장 완료
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    closeTacticRenameModal();
+    const divEl = document.createElement('div');
+    divEl.id = 'tacticsModalContainer';
+    divEl.innerHTML = modalHtml;
+    document.body.appendChild(divEl);
+
+    setTimeout(() => {
+      if(cat.items.length > 0){
+        const firstInp = document.getElementById(`tactic_item_input_${cat.items[0].id}`);
+        if(firstInp) firstInp.focus();
+      }
+    }, 80);
+  };
+
+  window.closeTacticRenameModal = function(){
+    const el = document.getElementById('tacticsModalContainer');
+    if(el) el.remove();
+  };
+
+  window.saveTacticRenameModal = function(catId, matchId){
+    const div = state.div;
+    const cats = getTacticCategories(div);
+    const cat = cats.find(c => c.id === catId);
+    if(!cat) return;
+
+    cat.items.forEach(it => {
+      const inp = document.getElementById(`tactic_item_input_${it.id}`);
+      const val = inp ? inp.value.trim() : '';
+      it.name = val ? val : `${it.id}번`;
+    });
+
+    saveTacticCategories(div);
+    closeTacticRenameModal();
+    updateTacticsUI(matchId);
+  };
+
+  window.resetTacticNamesToDefault = function(catId, matchId){
+    const div = state.div;
+    const cats = getTacticCategories(div);
+    const cat = cats.find(c => c.id === catId);
+    if(!cat) return;
+
+    if(confirm(`'${cat.label}' 전술 이름을 모두 기본 번호(1번, 2번...)로 초기화할까요?`)){
+      cat.items.forEach(it => {
+        it.name = `${it.id}번`;
+      });
+      saveTacticCategories(div);
+      closeTacticRenameModal();
+      updateTacticsUI(matchId);
+    }
+  };
+
+  function updateTacticsUI(matchId){
+    const div = state.div;
+    const mId = Number(matchId);
+    const wrapEl = document.getElementById(`tactics_box_wrap_${mId}`);
+    if(wrapEl){
+      wrapEl.innerHTML = renderTacticsBox(div, mId);
+    }
+    // 토글 버튼 상단 배지도 실시간 갱신
+    const pillEl = document.getElementById(`tactics_pill_${mId}`);
+    const mt = getMatchTactics(div, mId);
+    if(pillEl){
+      if(mt.current){
+        pillEl.textContent = `현재: ${mt.current}`;
+        pillEl.style.display = 'inline-flex';
+      } else {
+        pillEl.style.display = 'none';
+      }
+    }
+  }
+
   window.togglePlayerStats = function(matchId){
     const div = state.div;
     const mId = Number(matchId);
@@ -1928,7 +2936,10 @@
       loadTeamColors('boys'), loadTeamColors('girls'), loadTeamColors('midGirls'),
       loadRoster('boys'), loadRoster('girls'), loadRoster('midGirls'),
       loadPlayerStats('boys'), loadPlayerStats('girls'), loadPlayerStats('midGirls'),
-      loadMemos('boys'), loadMemos('girls'), loadMemos('midGirls')
+      loadMemos('boys'), loadMemos('girls'), loadMemos('midGirls'),
+      loadTactics('boys'), loadTactics('girls'), loadTactics('midGirls'),
+      loadTacticNames('boys'), loadTacticNames('girls'), loadTacticNames('midGirls'),
+      loadTacticCategories('boys'), loadTacticCategories('girls'), loadTacticCategories('midGirls')
     ]);
     render();
 
@@ -1946,6 +2957,9 @@
       await loadRoster(state.div);
       await loadPlayerStats(state.div);
       await loadMemos(state.div);
+      await loadTactics(state.div);
+      await loadTacticNames(state.div);
+      await loadTacticCategories(state.div);
       render();
     }, 7000);
   }

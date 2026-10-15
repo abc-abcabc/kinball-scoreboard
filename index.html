@@ -322,14 +322,14 @@
   .status-chip.done{ background: rgba(82,209,138,0.15); color: var(--green); }
 
   .team-row{
-    display:grid; grid-template-columns: 16px 1fr 74px 46px; align-items:center; gap:10px;
-    padding: 9px 4px; border-bottom: 1px solid var(--line-soft);
+    display:grid; grid-template-columns: 18px 1fr 74px 46px; align-items:center; gap:8px;
+    padding: 8px 4px; border-bottom: 1px solid var(--line-soft);
   }
   .team-row:last-of-type{ border-bottom:none; }
 
   .team-badge-btn{
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border-radius: 4px;
     display: inline-block;
     flex: none;
@@ -380,9 +380,45 @@
   .swatch.PINK{ background: var(--pink); }
   .swatch.GRAY{ background: var(--gray-team); }
   .swatch.BLACK{ background: var(--black-team); border:1px solid var(--black-team-line); }
-  .team-name{ font-size:13.5px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:5px; min-width:0; }
+  .team-name{ font-size:15px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:4px; min-width:0; }
   .team-name .tn{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .team-name .star{ color:var(--gold); font-size:12px; flex:none; }
+  .team-name .star{ color:var(--gold); font-size:14px; flex:none; margin-right:2px; }
+  .team-name-input{
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text);
+    background: transparent;
+    border: 1.5px solid transparent;
+    border-radius: 6px;
+    padding: 4px 6px;
+    outline: none;
+    transition: all 0.15s ease;
+  }
+  .team-name-input:hover{
+    background: var(--surface-2);
+    border-color: var(--line);
+  }
+  .team-name-input:focus{
+    background: var(--surface-3);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(242, 180, 65, 0.25);
+  }
+  [data-theme="light"] .team-name-input{
+    color: #191F28;
+  }
+  [data-theme="light"] .team-name-input:hover{
+    background: #F9FAFB;
+    border-color: #E5E8EB;
+  }
+  [data-theme="light"] .team-name-input:focus{
+    background: #FFFFFF;
+    border-color: #3182F6;
+    box-shadow: 0 0 0 2px rgba(49, 130, 246, 0.2);
+  }
   .team-tag{ font-size:9.5px; font-weight:800; color:var(--text-faint); letter-spacing:0.5px; }
 
   .score-input{
@@ -630,11 +666,12 @@
     50% { transform: scale(1.3); opacity: 0.75; }
   }
   .tactics-current-val {
-    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 800;
     font-size: 18px;
     color: #FFFBEB;
-    letter-spacing: 0.4px;
-    line-height: 1.2;
+    letter-spacing: 0.6px;
+    line-height: 1.25;
     text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
     white-space: nowrap;
     overflow: hidden;
@@ -679,11 +716,12 @@
     text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
   }
   .tactics-next-val {
-    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 800;
     font-size: 18px;
     color: #F0F9FF;
-    letter-spacing: 0.4px;
-    line-height: 1.2;
+    letter-spacing: 0.6px;
+    line-height: 1.25;
     text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
     white-space: nowrap;
     overflow: hidden;
@@ -753,6 +791,7 @@
   }
   .tactics-tabs {
     flex: 1;
+    min-width: 0;
     display: flex;
     gap: 6px;
     background: var(--surface-3);
@@ -825,19 +864,29 @@
     color: #1a140a;
     border-style: solid;
   }
+  .tactics-tab-add-btn.edit-btn {
+    border: 1px solid var(--line);
+    background: var(--surface-3);
+    color: var(--text-dim);
+  }
+  .tactics-tab-add-btn.edit-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(242, 180, 65, 0.15);
+  }
 
-  /* 전술 버튼 칸 그리드 */
+  /* 전술 버튼 칸 그리드 - 한 줄에 7개가 넉넉하게 들어가는 최적 대형 사이즈 */
   .tactics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-    gap: 8px;
-    margin-bottom: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+    gap: 7px;
+    margin-bottom: 14px;
   }
 
   .tactic-btn {
-    height: 52px;
-    border-radius: 10px;
-    border: 1.5px solid var(--line);
+    height: 72px;
+    border-radius: 14px;
+    border: 2px solid var(--line);
     background: var(--surface);
     color: var(--text);
     cursor: pointer;
@@ -845,16 +894,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1px;
-    transition: transform 0.12s ease, opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    padding: 4px 6px;
+    transition: transform 0.12s ease, opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.18);
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    position: relative;
   }
   .tactic-btn:hover {
     border-color: var(--gold);
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(242,180,65,0.22);
+    box-shadow: 0 8px 18px rgba(242,180,65,0.32);
   }
   .tactic-btn:active {
     transform: scale(0.92);
@@ -862,25 +912,126 @@
     color: #1a140a;
   }
   .tactic-btn .tactic-num {
-    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
-    font-size: 18px;
-    line-height: 1.1;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    line-height: 1.15;
+    max-width: 98%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    padding: 0 1px;
+    letter-spacing: 0.8px;
+    transition: opacity 0.15s ease;
+  }
+  .tactic-btn.has-custom .tactic-num {
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: 1px;
   }
   .tactic-btn .tactic-sub {
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 9.5px;
-    font-weight: 600;
-    color: var(--text-faint);
+    display: none;
   }
-  .tactic-btn:active .tactic-sub {
-    color: #1a140a;
+
+  /* 1. 이미 누른 전술: 없어지지 않고 다른 색으로 색칠되어 글자가 보이지 않음 (다시 눌러도 살아나지 않음) */
+  .tactic-btn.tactic-used {
+    background: #19232D !important;
+    border: 1.5px solid #28394B !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3) !important;
+    cursor: default !important;
+    transform: none !important;
+    pointer-events: none; /* 2번 눌러도 다시 살아나지 않도록 클릭 완전 무시 */
+  }
+  .tactic-btn.tactic-used .tactic-num {
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+  [data-theme="light"] .tactic-btn.tactic-used {
+    background: #CBD5E1 !important;
+    border: 1.5px solid #94A3B8 !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.06) !important;
+  }
+
+  /* 2. 지금 누를 수 있는 전술 (현재 차례인 맨 왼쪽 전술) */
+  .tactic-btn.tactic-active-next {
+    border: 2px solid var(--gold) !important;
+    box-shadow: 0 0 12px rgba(242, 180, 65, 0.38) !important;
+    animation: nextPulse 1.8s infinite ease-in-out;
+  }
+  [data-theme="light"] .tactic-btn.tactic-active-next {
+    border: 2px solid #3182F6 !important;
+    box-shadow: 0 0 12px rgba(49, 130, 246, 0.35) !important;
+  }
+  @keyframes nextPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(242, 180, 65, 0.28); }
+    50% { box-shadow: 0 0 16px rgba(242, 180, 65, 0.6); }
+  }
+
+  /* 3. 오른쪽 대기 전술 (아직 차례가 아님 - 클릭 불가 및 실수 방지) */
+  .tactic-btn.tactic-locked {
+    opacity: 0.42;
+    cursor: not-allowed;
+    border-color: var(--line-soft);
+    background: rgba(22, 31, 40, 0.5);
+    box-shadow: none;
+  }
+  .tactic-btn.tactic-locked:hover {
+    transform: none;
+    border-color: var(--line-soft);
+    box-shadow: none;
+  }
+  .tactic-btn.tactic-locked:active {
+    transform: none;
+    background: rgba(22, 31, 40, 0.5);
+  }
+  [data-theme="light"] .tactic-btn.tactic-locked {
+    background: #F1F3F5;
+    opacity: 0.45;
+  }
+
+  /* 순서 오류 경고 흔들림 애니메이션 */
+  @keyframes tacticShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+  }
+  .tactic-btn.tactic-shake {
+    animation: tacticShake 0.35s ease-in-out !important;
+    border-color: var(--red) !important;
+  }
+
+  /* 전술 순서 토스트 안내 */
+  .tactic-order-toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(14, 20, 27, 0.94);
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .tactic-order-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   .tactics-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 6px;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 8px;
     border-top: 1px dashed var(--line-soft);
     font-size: 11px;
     color: var(--text-faint);
@@ -889,16 +1040,18 @@
     background: var(--surface-3);
     border: 1px solid var(--line);
     border-radius: 6px;
-    padding: 4px 10px;
+    padding: 5px 10px;
     color: var(--text-dim);
     font-family: 'Noto Sans KR', sans-serif;
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
   .tactics-reset-btn:hover {
     border-color: var(--gold);
@@ -925,16 +1078,8 @@
     border-color: var(--gold-dim);
     background: linear-gradient(135deg, rgba(242,180,65,0.06), var(--surface));
   }
-  .tactic-btn .tactic-num {
-    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
-    font-size: 16px;
-    line-height: 1.15;
-    max-width: 90%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
-    padding: 0 2px;
+  .tactic-btn.has-custom .tactic-num {
+    font-size: 17px;
   }
 
   @keyframes tacticPopIn {
@@ -1021,8 +1166,9 @@
   .tactics-rename-badge {
     width: 46px;
     flex: none;
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
     color: var(--gold);
     text-align: center;
   }
@@ -1092,13 +1238,13 @@
     margin-top:10px; padding-top:10px; border-top:1px dashed var(--line-soft);
   }
   .match-memo-title{
-    font-size:11.5px; font-weight:700; color:var(--text-dim); margin-bottom:6px;
+    font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:6px;
     display:flex; align-items:center; justify-content:space-between;
   }
   .match-memo-input{
-    width:100%; height:52px; border-radius:8px; border:1.5px solid var(--line);
-    background:var(--surface-2); color:var(--text); font-family:'Noto Sans KR';
-    font-size:12px; padding:8px 10px; outline:none; resize:none; line-height:1.4;
+    width:100%; min-height:86px; height:86px; border-radius:8px; border:1.5px solid var(--line);
+    background:var(--surface-2); color:var(--text); font-family:'Noto Sans KR', sans-serif;
+    font-size:13px; padding:10px 12px; outline:none; resize:vertical; line-height:1.5;
   }
   .match-memo-input:focus{ border-color:var(--gold); background:var(--surface-3); }
 
@@ -1298,9 +1444,10 @@
 (function(){
   "use strict";
 
-  const MY_TEAMS = ["강릉 노암초", "강릉 경포중"];
+  const MY_TEAMS = ["강릉 노암초", "강릉 경포중", "(강원) 경포중학교", "경포중학교", "경포중"];
   function isMyTeam(name){
-    return MY_TEAMS.includes(name);
+    if(!name) return false;
+    return name.includes("경포중") || name.includes("노암");
   }
 
   const DATA = {
@@ -1331,20 +1478,39 @@
       ]
     },
     midGirls: {
-      label: "중등 여자부",
+      label: "중등 여자부 (1경기장)",
       matches: [
-        {id:1, label:"중등여자 1경기", time:"9/5(토) 13:45~14:00", p:"동해 묵호중", g:"춘천 가정중", b:"태백 함태중"},
-        {id:2, label:"중등여자 2경기", time:"9/5(토) 14:00~14:15", p:"강릉 경포중", g:"홍천 홍천여중", b:"동해 묵호중"},
-        {id:3, label:"중등여자 3경기", time:"9/5(토) 14:15~14:30", p:"춘천 가정중", g:"태백 함태중", b:"강릉 경포중"},
-        {id:4, label:"중등여자 4경기", time:"9/5(토) 14:30~14:45", p:"홍천 홍천여중", g:"동해 묵호중", b:"춘천 가정중"},
-        {id:5, label:"중등여자 5경기", time:"9/5(토) 14:45~15:00", p:"태백 함태중", g:"강릉 경포중", b:"홍천 홍천여중"}
+        {id:1, label:"#1-1", time:"11/7(토) 09:00~09:20", p:"(울산) 울산제일중학교", g:"(광주) 금당중학교", b:"(인천) 구월여자중학교"},
+        {id:2, label:"#1-2", time:"11/7(토) 09:20~09:40", p:"(경남) 충렬여자중학교", g:"(전남) 보성여자중학교", b:"(대구) 사수중학교"},
+        {id:3, label:"#1-3", time:"11/7(토) 09:40~10:00", p:"(강원) 경포중학교", g:"(충남) 서산여자중학교", b:"(경북) 옥계동부중학교"},
+        {id:4, label:"#1-4", time:"11/7(토) 10:00~10:20", p:"(대전) 충남여자중학교", g:"(충북) 속리산중학교", b:"(세종) 한솔중학교"},
+        {id:5, label:"#1-5", time:"11/7(토) 10:20~10:40", p:"(경기) 화성중학교", g:"(제주) 신창중학교", b:"(울산) 울산제일중학교"},
+        {id:6, label:"#1-6", time:"11/7(토) 10:40~11:00", p:"(서울) 방화중학교", g:"(인천) 구월여자중학교", b:"(경남) 충렬여자중학교"},
+        {id:7, label:"#1-7", time:"11/7(토) 11:00~11:20", p:"(부산) 해연중학교", g:"(대구) 사수중학교", b:"(강원) 경포중학교"},
+        {id:8, label:"#1-8", time:"11/7(토) 11:20~11:40", p:"(광주) 금당중학교", g:"(경북) 옥계동부중학교", b:"(대전) 충남여자중학교"},
+        {id:9, label:"#1-9", time:"11/7(토) 11:40~12:00", p:"(전남) 보성여자중학교", g:"(세종) 한솔중학교", b:"(경기) 화성중학교"},
+        {id:10, label:"#1-10", time:"11/7(토) 12:00~12:20", p:"(충남) 서산여자중학교", g:"(울산) 울산제일중학교", b:"(서울) 방화중학교"},
+        {id:11, label:"#1-11", time:"11/7(토) 12:20~12:40", p:"(충북) 속리산중학교", g:"(경남) 충렬여자중학교", b:"(부산) 해연중학교"},
+        {id:12, label:"#1-12", time:"11/7(토) 12:40~13:00", p:"(제주) 신창중학교", g:"(강원) 경포중학교", b:"(광주) 금당중학교"},
+        {id:13, label:"#1-13", time:"11/7(토) 13:00~13:20", p:"(인천) 구월여자중학교", g:"(대전) 충남여자중학교", b:"(전남) 보성여자중학교"},
+        {id:14, label:"#1-14", time:"11/7(토) 13:20~13:40", p:"(대구) 사수중학교", g:"(경기) 화성중학교", b:"(충남) 서산여자중학교"},
+        {id:15, label:"#1-15", time:"11/7(토) 13:40~14:00", p:"(경북) 옥계동부중학교", g:"(서울) 방화중학교", b:"(충북) 속리산중학교"},
+        {id:16, label:"#1-16", time:"11/7(토) 14:00~14:20", p:"(세종) 한솔중학교", g:"(부산) 해연중학교", b:"(제주) 신창중학교"},
+        {id:17, label:"#1-17 (준결승 1)", time:"11/7(토) 15:10~15:30", p:"예선 1위", g:"예선 6위", b:"예선 9위"},
+        {id:18, label:"#1-18 (준결승 2)", time:"11/7(토) 15:30~15:50", p:"예선 2위", g:"예선 5위", b:"예선 8위"},
+        {id:19, label:"#1-19 (준결승 3)", time:"11/7(토) 15:50~16:10", p:"예선 3위", g:"예선 4위", b:"예선 7위"},
+        {id:20, label:"#1-20 (결승)", time:"11/7(토) 16:30~17:30", p:"준결승 1 (1위)", g:"준결승 2 (1위)", b:"준결승 3 (1위)"}
       ]
     }
   };
 
   function teamsOf(div){
     const set = [];
-    DATA[div].matches.forEach(m => { [m.p,m.g,m.b].forEach(t => { if(!set.includes(t)) set.push(t); }); });
+    DATA[div].matches.forEach(m => {
+      [m.p,m.g,m.b].forEach(t => {
+        if(t && !t.includes("예선 ") && !t.includes("준결승 ") && !set.includes(t)) set.push(t);
+      });
+    });
     return set;
   }
   DATA.boys.teams = teamsOf("boys");
@@ -1365,6 +1531,7 @@
     scores: { boys: {}, girls: {}, midGirls: {} },   // {matchId: {p,g,b}}
     times: { boys: {}, girls: {}, midGirls: {} },    // {matchId: "시간 문자열"} — 사용자가 직접 수정 가능
     teamColors: { boys: {}, girls: {}, midGirls: {} }, // {matchId: ['PINK', 'GRAY', 'BLACK']}
+    teamNames: { boys: {}, girls: {}, midGirls: {} },  // {matchId: {p,g,b}} 학교명 수정 지원
     simMatch: { boys: null, girls: null, midGirls: null },
     simScore: { boys: {}, girls: {}, midGirls: {} },  // {matchId: {p,g,b}} local what-if, per division
     sheetMatch: { boys: 1, girls: 1, midGirls: 1 },  // selected match in sheet tab
@@ -1394,6 +1561,14 @@
   function timeOf(div, matchId, fallback){
     const t = state.times[div][matchId];
     return (t!==undefined && t!==null) ? t : (fallback || '');
+  }
+
+  function teamNameOf(div, matchId, key, fallback){
+    const ct = state.teamNames && state.teamNames[div] && state.teamNames[div][matchId];
+    if(ct && ct[key] !== undefined && ct[key] !== null && String(ct[key]).trim() !== ''){
+      return String(ct[key]).trim();
+    }
+    return fallback || '';
   }
 
   // ---------- Firebase Configuration & Cloud Sync ----------
@@ -1509,6 +1684,17 @@
   function saveTeamColors(div){
     store.set("tcolors:" + div, JSON.stringify(state.teamColors[div]));
     scheduleCloudPush("teamColors", div);
+  }
+
+  async function loadTeamNames(div){
+    try{
+      const res = await store.get("tnames_custom:" + div);
+      if(res && res.value){ state.teamNames[div] = JSON.parse(res.value); }
+    }catch(e){}
+  }
+  function saveTeamNames(div){
+    store.set("tnames_custom:" + div, JSON.stringify(state.teamNames[div]));
+    scheduleCloudPush("teamNames", div);
   }
 
   async function loadScores(div){
@@ -1640,6 +1826,7 @@
             scores: state.scores,
             times: state.times,
             teamColors: state.teamColors,
+            teamNames: state.teamNames,
             roster: state.roster,
             playerStats: state.playerStats,
             memos: state.memos,
@@ -1660,6 +1847,7 @@
           { name: 'scores', keyPrefix: 'scores:' },
           { name: 'times', keyPrefix: 'times:' },
           { name: 'teamColors', keyPrefix: 'tcolors:' },
+          { name: 'teamNames', keyPrefix: 'tnames_custom:' },
           { name: 'roster', keyPrefix: 'roster:' },
           { name: 'playerStats', keyPrefix: 'pstats:' },
           { name: 'memos', keyPrefix: 'memos:' },
@@ -1734,22 +1922,43 @@
     return { p: pts(vals[0]), g: pts(vals[1]), b: pts(vals[2]) };
   }
 
+  function getEffectiveTeams(div){
+    const set = [];
+    DATA[div].matches.forEach(m => {
+      const p = teamNameOf(div, m.id, 'p', m.p);
+      const g = teamNameOf(div, m.id, 'g', m.g);
+      const b = teamNameOf(div, m.id, 'b', m.b);
+      [p, g, b].forEach(t => {
+        if(t && !t.includes("예선 ") && !t.includes("준결승 ") && !set.includes(t)) set.push(t);
+      });
+    });
+    return set;
+  }
+
   function standingsFor(div){
-    const teams = DATA[div].teams;
+    const teams = getEffectiveTeams(div);
     const matches = DATA[div].matches;
     const scores = state.scores[div];
     const tbl = {};
     teams.forEach(t => tbl[t] = { team:t, win:0, pts:0, played:0 });
 
     matches.forEach(m => {
+      // 결선 토너먼트 경기(예: 중등 여자부 17~20경기)는 예선 리그 순위 집계에서 제외
+      if(div === 'midGirls' && m.id >= 17) return;
       const s = scores[m.id];
       if(!s) return;
       const r = calcPoints(s.p, s.g, s.b);
       if(r.p==null) return;
+      const pName = teamNameOf(div, m.id, 'p', m.p);
+      const gName = teamNameOf(div, m.id, 'g', m.g);
+      const bName = teamNameOf(div, m.id, 'b', m.b);
       const sp = Number(s.p), sg = Number(s.g), sb = Number(s.b);
-      tbl[m.p].win += r.p; tbl[m.p].pts += sp; tbl[m.p].played++;
-      tbl[m.g].win += r.g; tbl[m.g].pts += sg; tbl[m.g].played++;
-      tbl[m.b].win += r.b; tbl[m.b].pts += sb; tbl[m.b].played++;
+      if(!tbl[pName]) tbl[pName] = { team:pName, win:0, pts:0, played:0 };
+      if(!tbl[gName]) tbl[gName] = { team:gName, win:0, pts:0, played:0 };
+      if(!tbl[bName]) tbl[bName] = { team:bName, win:0, pts:0, played:0 };
+      tbl[pName].win += r.p; tbl[pName].pts += sp; tbl[pName].played++;
+      tbl[gName].win += r.g; tbl[gName].pts += sg; tbl[gName].played++;
+      tbl[bName].win += r.b; tbl[bName].pts += sb; tbl[bName].played++;
     });
 
     const list = Object.values(tbl);
@@ -1834,20 +2043,42 @@
       `;
     }).join('');
 
-    // 전술 번호 버튼 그리드 생성
+    // 미사용 아이템 중 맨 왼쪽 (가장 인덱스가 낮은) 아이템 찾기
+    const nextClickableItem = activeCat.items.find(it => !hiddenList.includes(it.id));
+
+    // 전술 번호 버튼 그리드 생성: 사라지지 않고 제자리에 유지
     let buttonsHtml = '';
     activeCat.items.forEach(it => {
-      if(!hiddenList.includes(it.id)){
-        const hasCustom = (it.name !== `${it.id}번`);
-        buttonsHtml += `
-          <button class="tactic-btn tactic-pop ${hasCustom ? 'has-custom' : ''}"
-            onclick="clickTactic(${matchId}, '${activeCat.id}', ${it.id})"
-            title="${activeCat.label} ${it.id}번 (${it.name}) 전술 사용">
-            <span class="tactic-num">${it.name}</span>
-            <span class="tactic-sub">${hasCustom ? `${activeCat.label} ${it.id}번` : activeCat.label}</span>
-          </button>
-        `;
+      const isUsed = hiddenList.includes(it.id);
+      const isNext = nextClickableItem && (it.id === nextClickableItem.id);
+      const isLocked = !isUsed && !isNext;
+      const hasCustom = (it.name !== `${it.id}번`);
+
+      const classes = ['tactic-btn'];
+      if(hasCustom) classes.push('has-custom');
+
+      let clickHandler = '';
+      let titleAttr = '';
+
+      if(isUsed){
+        classes.push('tactic-used');
+        clickHandler = `onclick="event.stopPropagation()"`;
+        titleAttr = `사용 완료 (마지막까지 다 진행하면 자동 초기화)`;
+      } else if(isNext){
+        classes.push('tactic-active-next');
+        clickHandler = `onclick="clickTactic(${matchId}, '${activeCat.id}', ${it.id})"`;
+        titleAttr = `${it.name} 전술 사용 (터치)`;
+      } else {
+        classes.push('tactic-locked');
+        clickHandler = `onclick="warnTacticOrder(this)"`;
+        titleAttr = `왼쪽 전술을 먼저 눌러주세요`;
       }
+
+      buttonsHtml += `
+        <button class="${classes.join(' ')}" id="tactic_btn_${matchId}_${it.id}" ${clickHandler} title="${titleAttr}">
+          <span class="tactic-num">${it.name}</span>
+        </button>
+      `;
     });
 
     return `
@@ -1882,6 +2113,9 @@
           <button class="tactics-tab-add-btn" onclick="addNewTacticCategory(${matchId})" title="새 전술 탭 추가">
             + 탭 추가
           </button>
+          <button class="tactics-tab-add-btn edit-btn" onclick="openCategoryManageModal('${activeCat.id}', ${matchId})" title="현재 탭 이름 변경 또는 삭제">
+            🏷️ 탭 편집
+          </button>
         </div>
 
         <!-- 전술 칸 그리드 -->
@@ -1889,24 +2123,15 @@
           ${buttonsHtml}
         </div>
 
-        <!-- 전술 추가 & 삭제 액션 바 -->
-        <div class="tactics-grid-bottom">
-          <button class="tactics-action-bar-btn add-btn" onclick="addNewTacticItem('${activeCat.id}', ${matchId})" title="현재 탭에 새 세부 전술 번호 추가">
-            <span style="font-size:15px; font-weight:900; line-height:1;">+</span>
-            <span>전술 추가</span>
-          </button>
-          <button class="tactics-action-bar-btn del-btn" onclick="openTacticDeleteModal('${activeCat.id}', ${matchId})" title="현재 탭의 전술 번호 삭제">
-            <span style="font-size:13px; line-height:1;">🗑️</span>
-            <span>전술 삭제</span>
-          </button>
-        </div>
-
-        <!-- 하단 상태 바 및 리셋/수정 버튼 -->
+        <!-- 하단 상태 바 및 전술 관리 버튼 -->
         <div class="tactics-footer">
-          <span>💡 터치 시 사라지고, 모두 터치하면 자동 복구돼요</span>
+          <span>💡 왼쪽부터 순서대로 터치하면 색칠돼요 (모두 누르면 자동 초기화)</span>
           <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
-            <button class="tactics-reset-btn" onclick="openCategoryManageModal('${activeCat.id}', ${matchId})" title="현재 탭 이름 변경 또는 삭제">
-              🏷️ 탭 편집
+            <button class="tactics-reset-btn" onclick="addNewTacticItem('${activeCat.id}', ${matchId})" title="현재 탭에 새 세부 전술 번호 추가" style="color:var(--gold); border-color:rgba(242,180,65,0.4); background:rgba(242,180,65,0.08);">
+              + 전술 추가
+            </button>
+            <button class="tactics-reset-btn" onclick="openTacticDeleteModal('${activeCat.id}', ${matchId})" title="현재 탭의 전술 번호 삭제" style="color:var(--red); border-color:rgba(255,107,107,0.35); background:rgba(255,107,107,0.06);">
+              🗑️ 전술 삭제
             </button>
             <button class="tactics-reset-btn" onclick="openTacticRenameModal('${activeCat.id}', ${matchId})" title="현재 탭의 세부 전술 이름 변경 및 추가/삭제">
               ✏️ 세부 전술 편집
@@ -1936,7 +2161,10 @@
       const s = state.scores[div][m.id] || {p:"",g:"",b:""};
       const r = calcPoints(s.p, s.g, s.b);
       const isDone = r.p!=null;
-      const hasMyTeam = isMyTeam(m.p) || isMyTeam(m.g) || isMyTeam(m.b);
+      const pName = teamNameOf(div, m.id, 'p', m.p);
+      const gName = teamNameOf(div, m.id, 'g', m.g);
+      const bName = teamNameOf(div, m.id, 'b', m.b);
+      const hasMyTeam = isMyTeam(pName) || isMyTeam(gName) || isMyTeam(bName);
       const isExpanded = state.expandedPlayerMatch[div] === m.id;
       const colors = colorsOf(div, m.id);
       const mt = getMatchTactics(div, m.id);
@@ -1951,9 +2179,9 @@
             </div>
             <div class="status-chip ${isDone?'done':'wait'}">${isDone?'완료':'입력 대기'}</div>
           </div>
-          ${teamRow(colors[0], m.p, s.p, r.p, div, m.id, 0)}
-          ${teamRow(colors[1], m.g, s.g, r.g, div, m.id, 1)}
-          ${teamRow(colors[2], m.b, s.b, r.b, div, m.id, 2)}
+          ${teamRow(colors[0], pName, s.p, r.p, div, m.id, 0, 'p')}
+          ${teamRow(colors[1], gName, s.g, r.g, div, m.id, 1, 'g')}
+          ${teamRow(colors[2], bName, s.b, r.b, div, m.id, 2, 'b')}
           ${isDone ? `<div class="match-foot"><button class="clear-btn" data-clear="${m.id}">점수 지우기</button></div>` : ''}
 
           <button class="roster-toggle" onclick="toggleTactics(${m.id})">
@@ -1974,7 +2202,7 @@
                 <span>경기 메모</span>
                 <span style="font-size:10px; color:var(--text-faint);">자동 저장</span>
               </div>
-              <textarea class="match-memo-input" placeholder="전술 메모, 특이사항, 파울/주의사항 메모..."
+              <textarea class="match-memo-input" rows="3" placeholder="전술 메모, 특이사항, 파울/주의사항 메모..."
                 data-memodiv="${div}" data-memomatch="${m.id}">${state.memos[div][m.id] || ''}</textarea>
             </div>
           </div>
@@ -1984,9 +2212,8 @@
     return html;
   }
 
-  function teamRow(color, name, val, pts, div, matchId, teamIdx){
+  function teamRow(color, name, val, pts, div, matchId, teamIdx, key){
     const isMy = isMyTeam(name);
-    const key = teamIdx===0?'p':teamIdx===1?'g':'b';
     const winClass = pts===10 ? 'win' : '';
     const ptsClass = pts===10?'p10':pts===6?'p6':pts===2?'p2':'';
     const colorName = color==='PINK'?'핑크':color==='GRAY'?'그레이':'블랙';
@@ -1995,7 +2222,13 @@
         <button class="team-badge-btn ${color}" onclick="cycleTeamColor(${matchId}, ${teamIdx})" title="클릭하여 팀 색상 변경 (현재: ${colorName})"></button>
         <div class="team-name">
           ${isMy?'<span class="star">★</span>':''}
-          <span class="tn">${name}</span>
+          <input type="text" class="team-name-input"
+            value="${name}"
+            placeholder="학교명 입력"
+            data-teamdiv="${div}"
+            data-teammatch="${matchId}"
+            data-teamkey="${key}"
+            title="클릭하여 학교명 수정">
         </div>
         <input class="score-input ${winClass}" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="-"
           value="${val===undefined || val===null ? '' : val}"
@@ -2038,14 +2271,22 @@
   function renderStrategy(){
     const div = state.div;
     const matches = DATA[div].matches;
-    const noamGames = matches.filter(m => isMyTeam(m.p) || isMyTeam(m.g) || isMyTeam(m.b));
+    const noamGames = matches.filter(m => {
+      const p = teamNameOf(div, m.id, 'p', m.p);
+      const g = teamNameOf(div, m.id, 'g', m.g);
+      const b = teamNameOf(div, m.id, 'b', m.b);
+      return isMyTeam(p) || isMyTeam(g) || isMyTeam(b);
+    });
     if(noamGames.length===0){
       return `<div class="empty-note">이 부문에는 관심 팀 경기가 없습니다.</div>`;
     }
 
     const list = standingsFor(div);
     const noamRow = list.find(r => isMyTeam(r.team));
-    const targetTeamName = noamRow ? noamRow.team : (isMyTeam(noamGames[0].p)?noamGames[0].p:isMyTeam(noamGames[0].g)?noamGames[0].g:noamGames[0].b);
+    const firstP = teamNameOf(div, noamGames[0].id, 'p', noamGames[0].p);
+    const firstG = teamNameOf(div, noamGames[0].id, 'g', noamGames[0].g);
+    const firstB = teamNameOf(div, noamGames[0].id, 'b', noamGames[0].b);
+    const targetTeamName = noamRow ? noamRow.team : (isMyTeam(firstP)?firstP:isMyTeam(firstG)?firstG:firstB);
 
     if(state.simMatch[div]==null){
       state.simMatch[div] = noamGames.find(m => {
@@ -2058,16 +2299,19 @@
     }
     const curId = state.simMatch[div];
     const curMatch = noamGames.find(m => m.id===curId);
+    const curP = teamNameOf(div, curMatch.id, 'p', curMatch.p);
+    const curG = teamNameOf(div, curMatch.id, 'g', curMatch.g);
+    const curB = teamNameOf(div, curMatch.id, 'b', curMatch.b);
 
     // init sim score for this match if absent
     if(!state.simScore[div][curId]){
       const actual = state.scores[div][curId];
       state.simScore[div][curId] = actual && actual.p!=="" ? {...actual} :
-        { p: isMyTeam(curMatch.p)?9:6, g: isMyTeam(curMatch.g)?9:6, b: isMyTeam(curMatch.b)?9:6 };
+        { p: isMyTeam(curP)?9:6, g: isMyTeam(curG)?9:6, b: isMyTeam(curB)?9:6 };
     }
     const sim = state.simScore[div][curId];
     const r = calcPoints(sim.p, sim.g, sim.b);
-    const noamKey = isMyTeam(curMatch.p)?'p':isMyTeam(curMatch.g)?'g':'b';
+    const noamKey = isMyTeam(curP)?'p':isMyTeam(curG)?'g':'b';
     const noamSimPts = r[noamKey];
 
     // projected total: sum of team's *other* completed matches + this simulated match
@@ -2077,7 +2321,9 @@
       const s = state.scores[div][m.id];
       if(s && s.p!=="" && s.p!=null){
         const rr = calcPoints(s.p,s.g,s.b);
-        const k = isMyTeam(m.p)?'p':isMyTeam(m.g)?'g':'b';
+        const p = teamNameOf(div, m.id, 'p', m.p);
+        const g = teamNameOf(div, m.id, 'g', m.g);
+        const k = isMyTeam(p)?'p':isMyTeam(g)?'g':'b';
         otherWin += rr[k];
       }
     });
@@ -2116,9 +2362,9 @@
 
       <div class="sim-card">
         <div class="sim-title">${curMatch.label} · ${timeOf(div, curMatch.id, curMatch.time) || '시간 미정'} — 점수를 조정해 결과를 예상해보세요</div>
-        ${simTeamRow(colorsOf(div, curId)[0], curMatch.p, sim.p, r.p, div, curId, 'p', 0)}
-        ${simTeamRow(colorsOf(div, curId)[1], curMatch.g, sim.g, r.g, div, curId, 'g', 1)}
-        ${simTeamRow(colorsOf(div, curId)[2], curMatch.b, sim.b, r.b, div, curId, 'b', 2)}
+        ${simTeamRow(colorsOf(div, curId)[0], curP, sim.p, r.p, div, curId, 'p', 0)}
+        ${simTeamRow(colorsOf(div, curId)[1], curG, sim.g, r.g, div, curId, 'g', 1)}
+        ${simTeamRow(colorsOf(div, curId)[2], curB, sim.b, r.b, div, curId, 'b', 2)}
 
         <div class="proj-box">
           <div class="proj-item">
@@ -2196,6 +2442,23 @@
         const {timediv, timematch} = e.target.dataset;
         state.times[timediv][timematch] = e.target.value;
         saveTimes(timediv);
+      });
+    });
+    document.querySelectorAll('.team-name-input').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const {teamdiv, teammatch, teamkey} = e.target.dataset;
+        if(!state.teamNames[teamdiv]) state.teamNames[teamdiv] = {};
+        if(!state.teamNames[teamdiv][teammatch]) state.teamNames[teamdiv][teammatch] = {};
+        state.teamNames[teamdiv][teammatch][teamkey] = e.target.value;
+        saveTeamNames(teamdiv);
+      });
+      inp.addEventListener('keydown', e => {
+        if(e.key === 'Enter'){
+          e.target.blur();
+        }
+      });
+      inp.addEventListener('blur', () => {
+        render();
       });
     });
     document.querySelectorAll('.match-memo-input').forEach(inp => {
@@ -2313,26 +2576,58 @@
     const cat = cats.find(c => c.id === tabKey);
     if(!cat) return;
 
-    const it = cat.items.find(i => i.id === itemId);
+    if(!mt.hidden[tabKey]) mt.hidden[tabKey] = [];
+
+    // [중요] 왼쪽에서 오른쪽으로만 누를 수 있도록 순서 강제 검증
+    const nextItem = cat.items.find(i => !mt.hidden[tabKey].includes(i.id));
+    if(!nextItem || nextItem.id !== itemId){
+      const btn = document.getElementById(`tactic_btn_${mId}_${itemId}`);
+      window.warnTacticOrder(btn);
+      return;
+    }
+
+    const it = nextItem;
     const itemName = it ? it.name : `${itemId}번`;
 
     // 1. 현재 전술로 표시 (예: "기본 3번" 또는 "기본 페이크")
     const isDefault = (itemName === `${itemId}번`);
     mt.current = isDefault ? `${cat.label} ${itemId}번` : `${cat.label} ${itemId}번 · ${itemName}`;
 
-    // 2. 터치된 것만 없어지게 (숨김 목록에 추가)
-    if(!mt.hidden[tabKey]) mt.hidden[tabKey] = [];
-    if(!mt.hidden[tabKey].includes(itemId)){
-      mt.hidden[tabKey].push(itemId);
-    }
+    // 2. 사용 완료 목록에 추가 (버튼이 사라지지 않고 다른 색으로 색칠됨)
+    mt.hidden[tabKey].push(itemId);
 
-    // 3. 해당 탭의 모든 전술 번호가 터치되었으면 모두 전술이 다 나타나게
+    // 3. 해당 탭의 모든 전술 번호가 터치되었으면 모두 초기화 (다시 왼쪽부터 순환 시작)
     if(mt.hidden[tabKey].length >= cat.items.length){
       mt.hidden[tabKey] = [];
     }
 
     saveTactics(div);
     updateTacticsUI(mId);
+  };
+
+
+  // 오른쪽 버튼을 먼저 눌렀을 때의 경고 안내 및 애니메이션
+  let tacticToastTimer = null;
+  window.warnTacticOrder = function(btnEl){
+    if(btnEl){
+      btnEl.classList.remove('tactic-shake');
+      void btnEl.offsetWidth; // 리플로우 강제
+      btnEl.classList.add('tactic-shake');
+      setTimeout(() => { btnEl.classList.remove('tactic-shake'); }, 400);
+    }
+    let toastEl = document.getElementById('tacticOrderToast');
+    if(!toastEl){
+      toastEl = document.createElement('div');
+      toastEl.id = 'tacticOrderToast';
+      toastEl.className = 'tactic-order-toast';
+      toastEl.textContent = '👈 왼쪽 전술부터 순서대로 눌러주세요';
+      document.body.appendChild(toastEl);
+    }
+    toastEl.classList.add('show');
+    clearTimeout(tacticToastTimer);
+    tacticToastTimer = setTimeout(() => {
+      toastEl.classList.remove('show');
+    }, 1800);
   };
 
   window.resetTacticTab = function(matchId, tabKey){
@@ -2934,6 +3229,7 @@
       loadScores('boys'), loadScores('girls'), loadScores('midGirls'),
       loadTimes('boys'), loadTimes('girls'), loadTimes('midGirls'),
       loadTeamColors('boys'), loadTeamColors('girls'), loadTeamColors('midGirls'),
+      loadTeamNames('boys'), loadTeamNames('girls'), loadTeamNames('midGirls'),
       loadRoster('boys'), loadRoster('girls'), loadRoster('midGirls'),
       loadPlayerStats('boys'), loadPlayerStats('girls'), loadPlayerStats('midGirls'),
       loadMemos('boys'), loadMemos('girls'), loadMemos('midGirls'),
@@ -2941,6 +3237,21 @@
       loadTacticNames('boys'), loadTacticNames('girls'), loadTacticNames('midGirls'),
       loadTacticCategories('boys'), loadTacticCategories('girls'), loadTacticCategories('midGirls')
     ]);
+
+    // 여중부(midGirls) 11/7 새 대진표 반영 (이전 임시 5경기 캐시 마이그레이션)
+    if(localStorage.getItem('kb_midgirls_draw_version') !== '20261107_v1'){
+      state.scores.midGirls = {};
+      state.times.midGirls = {};
+      state.teamNames.midGirls = {};
+      state.memos.midGirls = {};
+      state.tactics.midGirls = {};
+      localStorage.setItem('kb_midgirls_draw_version', '20261107_v1');
+      saveScores('midGirls');
+      saveTimes('midGirls');
+      saveTeamNames('midGirls');
+      saveMemos('midGirls');
+      saveTactics('midGirls');
+    }
     render();
 
     // 2. Connect to Firebase Firestore for real-time cloud sync
@@ -2954,6 +3265,7 @@
       await loadScores(state.div);
       await loadTimes(state.div);
       await loadTeamColors(state.div);
+      await loadTeamNames(state.div);
       await loadRoster(state.div);
       await loadPlayerStats(state.div);
       await loadMemos(state.div);

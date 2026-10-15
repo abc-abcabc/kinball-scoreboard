@@ -2022,7 +2022,16 @@
     }
 
     const hiddenList = (mt.hidden && Array.isArray(mt.hidden[activeCat.id])) ? mt.hidden[activeCat.id] : [];
-    const usedId = hiddenList.length > 0 ? hiddenList[hiddenList.length - 1] : null;
+    let usedId = hiddenList.length > 0 ? hiddenList[hiddenList.length - 1] : null;
+
+    // 마지막 번호까지 눌렸다면 모두 가려진 것 없이 처음부터 다시 시작하도록 복구
+    if(activeCat.items.length > 0 && usedId !== null){
+      const lastItem = activeCat.items[activeCat.items.length - 1];
+      if(lastItem && usedId === lastItem.id){
+        usedId = null;
+        mt.hidden[activeCat.id] = [];
+      }
+    }
 
     // 다음 누를 차례인 아이템 (순환 로테이션)
     let nextIndex = 0;
@@ -2037,8 +2046,7 @@
     // 다음 전술 (NEXT) 텍스트 계산
     let nextTacticDisplay = '없음';
     if(nextClickableItem){
-      const isLoop = (usedId !== null && nextIndex === 0 && activeCat.items.length > 1);
-      nextTacticDisplay = `${activeCat.label} ${nextClickableItem.name}${isLoop ? ' (루프)' : ''}`;
+      nextTacticDisplay = `${activeCat.label} ${nextClickableItem.name}`;
     }
 
     // 탭 바 HTML 생성 (동적 탭 렌더링)
@@ -2130,7 +2138,7 @@
 
         <!-- 하단 상태 바 및 전술 관리 버튼 -->
         <div class="tactics-footer">
-          <span>💡 다음 전술 터치 시 이전 전술은 다시 살아나요 (순환 로테이션)</span>
+          <span>💡 차례대로 터치하고, 마지막까지 누르면 모두 복구되어 다시 시작돼요</span>
           <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
             <button class="tactics-reset-btn" onclick="addNewTacticItem('${activeCat.id}', ${matchId})" title="현재 탭에 새 세부 전술 번호 추가" style="color:var(--gold); border-color:rgba(242,180,65,0.4); background:rgba(242,180,65,0.08);">
               + 전술 추가
@@ -2610,8 +2618,14 @@
     const isDefault = (itemName === `${itemId}번`);
     mt.current = isDefault ? `${cat.label} ${itemId}번` : `${cat.label} ${itemId}번 · ${itemName}`;
 
-    // 2. 2번을 누르면 1번은 다시 살아나게: 방금 누른 번호만 단독으로 색칠 유지
-    mt.hidden[tabKey] = [itemId];
+    // 2. 마지막까지 누르면 모두 가려진 것 없이 초기화 (다시 시작하는 느낌으로 복구!)
+    const isLastItem = (nextIndex === cat.items.length - 1);
+    if(isLastItem){
+      mt.hidden[tabKey] = [];
+    } else {
+      // 마지막 전까지는 방금 누른 번호만 단독으로 색칠 유지 (이전 번호는 다시 살아남)
+      mt.hidden[tabKey] = [itemId];
+    }
 
     saveTactics(div);
     updateTacticsUI(mId);

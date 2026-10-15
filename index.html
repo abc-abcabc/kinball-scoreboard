@@ -2022,15 +2022,23 @@
     }
 
     const hiddenList = (mt.hidden && Array.isArray(mt.hidden[activeCat.id])) ? mt.hidden[activeCat.id] : [];
-    const remainingItems = activeCat.items.filter(it => !hiddenList.includes(it.id));
-    const remainingCount = remainingItems.length;
+    const usedId = hiddenList.length > 0 ? hiddenList[hiddenList.length - 1] : null;
 
-    // 다음 전술 (NEXT) 계산
+    // 다음 누를 차례인 아이템 (순환 로테이션)
+    let nextIndex = 0;
+    if(usedId !== null && activeCat.items.length > 0){
+      const curIdx = activeCat.items.findIndex(it => it.id === usedId);
+      if(curIdx >= 0){
+        nextIndex = (curIdx + 1) % activeCat.items.length;
+      }
+    }
+    const nextClickableItem = activeCat.items.length > 0 ? activeCat.items[nextIndex] : null;
+
+    // 다음 전술 (NEXT) 텍스트 계산
     let nextTacticDisplay = '없음';
-    if(remainingItems.length > 0){
-      nextTacticDisplay = `${activeCat.label} ${remainingItems[0].name}`;
-    } else if(activeCat.items.length > 0){
-      nextTacticDisplay = `${activeCat.label} ${activeCat.items[0].name} (루프)`;
+    if(nextClickableItem){
+      const isLoop = (usedId !== null && nextIndex === 0 && activeCat.items.length > 1);
+      nextTacticDisplay = `${activeCat.label} ${nextClickableItem.name}${isLoop ? ' (루프)' : ''}`;
     }
 
     // 탭 바 HTML 생성 (동적 탭 렌더링)
@@ -2043,13 +2051,10 @@
       `;
     }).join('');
 
-    // 미사용 아이템 중 맨 왼쪽 (가장 인덱스가 낮은) 아이템 찾기
-    const nextClickableItem = activeCat.items.find(it => !hiddenList.includes(it.id));
-
-    // 전술 번호 버튼 그리드 생성: 사라지지 않고 제자리에 유지
+    // 전술 번호 버튼 그리드 생성: 방금 누른 번호만 색칠되고 이전 번호는 다시 살아남
     let buttonsHtml = '';
     activeCat.items.forEach(it => {
-      const isUsed = hiddenList.includes(it.id);
+      const isUsed = (it.id === usedId);
       const isNext = nextClickableItem && (it.id === nextClickableItem.id);
       const isLocked = !isUsed && !isNext;
       const hasCustom = (it.name !== `${it.id}번`);
@@ -2063,7 +2068,7 @@
       if(isUsed){
         classes.push('tactic-used');
         clickHandler = `onclick="event.stopPropagation()"`;
-        titleAttr = `사용 완료 (마지막까지 다 진행하면 자동 초기화)`;
+        titleAttr = `방금 사용된 전술 (다음 전술 터치 시 다시 복구됩니다)`;
       } else if(isNext){
         classes.push('tactic-active-next');
         clickHandler = `onclick="clickTactic(${matchId}, '${activeCat.id}', ${it.id})"`;
@@ -2071,7 +2076,7 @@
       } else {
         classes.push('tactic-locked');
         clickHandler = `onclick="warnTacticOrder(this)"`;
-        titleAttr = `왼쪽 전술을 먼저 눌러주세요`;
+        titleAttr = `순서대로 다음 전술(${nextClickableItem ? nextClickableItem.name : ''})을 먼저 눌러주세요`;
       }
 
       buttonsHtml += `
@@ -2125,7 +2130,7 @@
 
         <!-- 하단 상태 바 및 전술 관리 버튼 -->
         <div class="tactics-footer">
-          <span>💡 왼쪽부터 순서대로 터치하면 색칠돼요 (모두 누르면 자동 초기화)</span>
+          <span>💡 다음 전술 터치 시 이전 전술은 다시 살아나요 (순환 로테이션)</span>
           <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
             <button class="tactics-reset-btn" onclick="addNewTacticItem('${activeCat.id}', ${matchId})" title="현재 탭에 새 세부 전술 번호 추가" style="color:var(--gold); border-color:rgba(242,180,65,0.4); background:rgba(242,180,65,0.08);">
               + 전술 추가
@@ -2574,39 +2579,46 @@
     const mt = getMatchTactics(div, mId);
     const cats = getTacticCategories(div);
     const cat = cats.find(c => c.id === tabKey);
-    if(!cat) return;
+    if(!cat || !cat.items || cat.items.length === 0) return;
 
-    if(!mt.hidden[tabKey]) mt.hidden[tabKey] = [];
+    if(!mt.hidden) mt.hidden = {};
+    if(!Array.isArray(mt.hidden[tabKey])) mt.hidden[tabKey] = [];
 
-    // [중요] 왼쪽에서 오른쪽으로만 누를 수 있도록 순서 강제 검증
-    const nextItem = cat.items.find(i => !mt.hidden[tabKey].includes(i.id));
+    // 현재 사용 중인 번호 (이전 터치 번호)
+    const curUsedId = mt.hidden[tabKey].length > 0 ? mt.hidden[tabKey][mt.hidden[tabKey].length - 1] : null;
+
+    // 다음에 눌러야 할 아이템 계산 (순환 로테이션)
+    let nextIndex = 0;
+    if(curUsedId !== null){
+      const curIdx = cat.items.findIndex(it => it.id === curUsedId);
+      if(curIdx >= 0){
+        nextIndex = (curIdx + 1) % cat.items.length;
+      }
+    }
+    const nextItem = cat.items[nextIndex];
+
+    // [순서 강제 검증] 다음 순서인 아이템만 터치 허용
     if(!nextItem || nextItem.id !== itemId){
       const btn = document.getElementById(`tactic_btn_${mId}_${itemId}`);
       window.warnTacticOrder(btn);
       return;
     }
 
-    const it = nextItem;
-    const itemName = it ? it.name : `${itemId}번`;
+    const itemName = nextItem.name || `${itemId}번`;
 
-    // 1. 현재 전술로 표시 (예: "기본 3번" 또는 "기본 페이크")
+    // 1. 현재 전술로 표시 (예: "기본 2번" 또는 "기본 2번 · 3대")
     const isDefault = (itemName === `${itemId}번`);
     mt.current = isDefault ? `${cat.label} ${itemId}번` : `${cat.label} ${itemId}번 · ${itemName}`;
 
-    // 2. 사용 완료 목록에 추가 (버튼이 사라지지 않고 다른 색으로 색칠됨)
-    mt.hidden[tabKey].push(itemId);
-
-    // 3. 해당 탭의 모든 전술 번호가 터치되었으면 모두 초기화 (다시 왼쪽부터 순환 시작)
-    if(mt.hidden[tabKey].length >= cat.items.length){
-      mt.hidden[tabKey] = [];
-    }
+    // 2. 2번을 누르면 1번은 다시 살아나게: 방금 누른 번호만 단독으로 색칠 유지
+    mt.hidden[tabKey] = [itemId];
 
     saveTactics(div);
     updateTacticsUI(mId);
   };
 
 
-  // 오른쪽 버튼을 먼저 눌렀을 때의 경고 안내 및 애니메이션
+  // 순서에 맞지 않는 버튼을 눌렀을 때의 경고 안내 및 애니메이션
   let tacticToastTimer = null;
   window.warnTacticOrder = function(btnEl){
     if(btnEl){
@@ -2620,9 +2632,9 @@
       toastEl = document.createElement('div');
       toastEl.id = 'tacticOrderToast';
       toastEl.className = 'tactic-order-toast';
-      toastEl.textContent = '👈 왼쪽 전술부터 순서대로 눌러주세요';
       document.body.appendChild(toastEl);
     }
+    toastEl.textContent = '👈 순서대로 다음 전술(파란 테두리)을 눌러주세요';
     toastEl.classList.add('show');
     clearTimeout(tacticToastTimer);
     tacticToastTimer = setTimeout(() => {
@@ -2634,11 +2646,12 @@
     const div = state.div;
     const mId = Number(matchId);
     const mt = getMatchTactics(div, mId);
-    if(mt.hidden && mt.hidden[tabKey]){
+    if(mt.hidden){
       mt.hidden[tabKey] = [];
-      saveTactics(div);
-      updateTacticsUI(mId);
     }
+    mt.current = '';
+    saveTactics(div);
+    updateTacticsUI(mId);
   };
 
   // ---------- 탭(카테고리) 추가 및 설정 ----------

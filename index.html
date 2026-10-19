@@ -1525,6 +1525,22 @@
     ];
   }
 
+  // 전술 항목 번호를 항상 1번부터 N번(마지막 번호)까지 연속되도록 재색인(Re-indexing)
+  function reindexTacticCategory(cat){
+    if(!cat || !Array.isArray(cat.items)) return;
+    cat.items.forEach((it, idx) => {
+      const newId = idx + 1;
+      const oldName = (it.name || '').trim();
+      // 이전 이름이 비어있거나, '숫자번' 형태(예: '1번', '4번', '20번')였다면 새 번호에 맞게 'newId번'으로 갱신
+      if(!oldName || /^[0-9]+번$/.test(oldName)){
+        it.name = `${newId}번`;
+      } else {
+        it.name = oldName;
+      }
+      it.id = newId;
+    });
+  }
+
   let state = {
     div: "boys",
     tab: "matches",
@@ -1788,6 +1804,7 @@
       if(res && res.value){
         const parsed = JSON.parse(res.value);
         if(Array.isArray(parsed) && parsed.length > 0){
+          parsed.forEach(c => reindexTacticCategory(c));
           state.tacticCategories[div] = parsed;
         }
       }
@@ -1864,6 +1881,9 @@
               : (data[`${name}.${d}`] !== undefined ? data[`${name}.${d}`] : undefined);
 
             if(remoteVal !== undefined){
+              if(name === 'tacticCategories' && Array.isArray(remoteVal)){
+                remoteVal.forEach(c => reindexTacticCategory(c));
+              }
               const remoteStr = JSON.stringify(remoteVal);
               const localStr = JSON.stringify(state[name][d] || {});
 
@@ -1993,6 +2013,8 @@
         });
       }
     }
+    // 항상 1번부터 N번(마지막 번호)까지 연속되도록 재색인 보장
+    state.tacticCategories[div].forEach(cat => reindexTacticCategory(cat));
     return state.tacticCategories[div];
   }
 
@@ -2021,6 +2043,27 @@
       mt.activeTab = activeCat.id;
     }
 
+    // 현재 표시된 mt.current가 범위를 초과하는 큰 번호(예: 과거에 누적된 20번 등)인 경우 현재 탭의 올바른 번호로 자동 보정
+    if(mt.current && mt.current.startsWith(activeCat.label + ' ') && activeCat.items.length > 0){
+      const numMatch = mt.current.match(/([0-9]+)번/);
+      if(numMatch){
+        const parsedNum = Number(numMatch[1]);
+        if(parsedNum > activeCat.items.length || parsedNum < 1){
+          const parts = mt.current.split(' · ');
+          const customName = parts[1] || '';
+          let matched = customName ? activeCat.items.find(it => it.name === customName) : null;
+          if(!matched){
+            matched = activeCat.items[0];
+          }
+          if(matched){
+            const isDef = (matched.name === `${matched.id}번`);
+            mt.current = isDef ? `${activeCat.label} ${matched.id}번` : `${activeCat.label} ${matched.id}번 · ${matched.name}`;
+            saveTactics(div);
+          }
+        }
+      }
+    }
+
     const hiddenList = (mt.hidden && Array.isArray(mt.hidden[activeCat.id])) ? mt.hidden[activeCat.id] : [];
     let usedId = hiddenList.length > 0 ? hiddenList[hiddenList.length - 1] : null;
 
@@ -2046,7 +2089,8 @@
     // 다음 전술 (NEXT) 텍스트 계산
     let nextTacticDisplay = '없음';
     if(nextClickableItem){
-      nextTacticDisplay = `${activeCat.label} ${nextClickableItem.name}`;
+      const nextName = (nextClickableItem.name && nextClickableItem.name.trim()) ? nextClickableItem.name.trim() : `${nextClickableItem.id}번`;
+      nextTacticDisplay = `${activeCat.label} ${nextName}`;
     }
 
     // 탭 바 HTML 생성 (동적 탭 렌더링)
@@ -2065,7 +2109,8 @@
       const isUsed = (it.id === usedId);
       const isNext = nextClickableItem && (it.id === nextClickableItem.id);
       const isLocked = !isUsed && !isNext;
-      const hasCustom = (it.name !== `${it.id}번`);
+      const displayName = (it.name && it.name.trim()) ? it.name.trim() : `${it.id}번`;
+      const hasCustom = (displayName !== `${it.id}번`);
 
       const classes = ['tactic-btn'];
       if(hasCustom) classes.push('has-custom');
@@ -2080,7 +2125,7 @@
       } else if(isNext){
         classes.push('tactic-active-next');
         clickHandler = `onclick="clickTactic(${matchId}, '${activeCat.id}', ${it.id})"`;
-        titleAttr = `${it.name} 전술 사용 (터치)`;
+        titleAttr = `${displayName} 전술 사용 (터치)`;
       } else {
         classes.push('tactic-locked');
         clickHandler = `onclick="warnTacticOrder(this)"`;
@@ -2089,7 +2134,7 @@
 
       buttonsHtml += `
         <button class="${classes.join(' ')}" id="tactic_btn_${matchId}_${it.id}" ${clickHandler} title="${titleAttr}">
-          <span class="tactic-num">${it.name}</span>
+          <span class="tactic-num">${displayName}</span>
         </button>
       `;
     });
@@ -2612,7 +2657,7 @@
       return;
     }
 
-    const itemName = nextItem.name || `${itemId}번`;
+    const itemName = (nextItem.name && nextItem.name.trim()) ? nextItem.name.trim() : `${itemId}번`;
 
     // 1. 현재 전술로 표시 (예: "기본 2번" 또는 "기본 2번 · 3대")
     const isDefault = (itemName === `${itemId}번`);
@@ -2786,9 +2831,10 @@
     const cat = cats.find(c => c.id === catId);
     if(!cat) return;
 
-    const maxId = cat.items.reduce((max, it) => Math.max(max, it.id), 0);
-    const newId = maxId + 1;
+    reindexTacticCategory(cat);
+    const newId = cat.items.length + 1;
     cat.items.push({ id: newId, name: `${newId}번` });
+    reindexTacticCategory(cat);
     saveTacticCategories(div);
     updateTacticsUI(matchId);
   };
@@ -2803,15 +2849,13 @@
       return;
     }
     cat.items = cat.items.filter(it => it.id !== itemId);
+    reindexTacticCategory(cat);
     saveTacticCategories(div);
 
-    // 숨김 목록 및 현재 전술 동기화
+    // 숨김 목록 및 현재 전술 동기화 (번호가 당겨지므로 로테이션 상태 초기화)
     const mt = getMatchTactics(div, matchId);
     if(mt.hidden && mt.hidden[catId]){
-      mt.hidden[catId] = mt.hidden[catId].filter(id => id !== itemId);
-    }
-    if(mt.current && mt.current.includes(`${cat.label} ${itemId}번`)){
-      mt.current = null;
+      mt.hidden[catId] = [];
     }
     saveTactics(div);
 
@@ -2836,23 +2880,26 @@
       return;
     }
 
+    reindexTacticCategory(cat);
     const lastItem = cat.items[cat.items.length - 1];
 
     let rowsHtml = '';
     cat.items.forEach(it => {
+      const displayName = (it.name && it.name.trim()) ? it.name.trim() : `${it.id}번`;
       rowsHtml += `
         <div style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-3); border:1px solid var(--line-soft); border-radius:8px; padding:7px 12px; margin-bottom:6px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <div class="tactics-rename-badge" style="min-width:36px; text-align:center;">${it.id}번</div>
-            <span style="font-weight:700; font-size:13.5px; color:var(--text);">${it.name}</span>
+            <span style="font-weight:700; font-size:13.5px; color:var(--text);">${displayName}</span>
           </div>
-          <button class="tactics-modal-btn danger" onclick="if(confirm('\\'${cat.label} ${it.name}\\' 전술을 삭제할까요?')) { deleteTacticItem('${catId}', ${it.id}, ${matchId}, (${cat.items.length} > 2 ? 'delete' : null)); }" style="padding:4px 10px; font-size:11.5px; color:#F87171; border-color:rgba(239,68,68,0.4);">
+          <button class="tactics-modal-btn danger" onclick="if(confirm('\\'${cat.label} ${displayName}\\' 전술을 삭제할까요?')) { deleteTacticItem('${catId}', ${it.id}, ${matchId}, (${cat.items.length} > 2 ? 'delete' : null)); }" style="padding:4px 10px; font-size:11.5px; color:#F87171; border-color:rgba(239,68,68,0.4);">
             🗑️ 삭제
           </button>
         </div>
       `;
     });
 
+    const lastDisplayName = (lastItem.name && lastItem.name.trim()) ? lastItem.name.trim() : `${lastItem.id}번`;
     const modalHtml = `
       <div class="tactics-modal-backdrop" id="tacticsRenameModal" onclick="if(event.target===this) closeTacticRenameModal();">
         <div class="tactics-modal-content" style="max-width:380px;">
@@ -2869,8 +2916,8 @@
             </div>
 
             <!-- 마지막 번호 즉시 삭제 버튼 -->
-            <button class="tactics-modal-btn danger" onclick="if(confirm('\\'${cat.label} ${lastItem.name}\\'(마지막 번호)을 삭제할까요?')) { deleteTacticItem('${catId}', ${lastItem.id}, ${matchId}, (${cat.items.length} > 2 ? 'delete' : null)); }" style="width:100%; justify-content:center; padding:10px 0; margin-bottom:14px; font-size:13px; font-weight:800; background:rgba(239,68,68,0.12); border:1.5px solid #EF4444; color:#FCA5A5; cursor:pointer;">
-              ⚡ 마지막 전술 (${lastItem.name}) 바로 삭제
+            <button class="tactics-modal-btn danger" onclick="if(confirm('\\'${cat.label} ${lastDisplayName}\\'(마지막 번호)을 삭제할까요?')) { deleteTacticItem('${catId}', ${lastItem.id}, ${matchId}, (${cat.items.length} > 2 ? 'delete' : null)); }" style="width:100%; justify-content:center; padding:10px 0; margin-bottom:14px; font-size:13px; font-weight:800; background:rgba(239,68,68,0.12); border:1.5px solid #EF4444; color:#FCA5A5; cursor:pointer;">
+              ⚡ 마지막 전술 (${lastDisplayName}) 바로 삭제
             </button>
 
             <div style="font-size:11px; font-weight:800; color:var(--text-faint); margin-bottom:6px; letter-spacing:0.5px;">전체 전술 목록에서 선택 삭제:</div>
@@ -2900,9 +2947,11 @@
     const cat = cats.find(c => c.id === catId);
     if(!cat) return;
 
+    reindexTacticCategory(cat);
+
     let rowsHtml = '';
     cat.items.forEach(it => {
-      const val = (it.name === `${it.id}번`) ? '' : it.name;
+      const val = (!it.name || it.name.trim() === `${it.id}번`) ? '' : it.name.trim();
       rowsHtml += `
         <div class="tactics-rename-row">
           <div class="tactics-rename-badge">${it.id}번</div>
@@ -2926,7 +2975,7 @@
           </div>
           <div class="tactics-modal-body">
             <div class="tactics-modal-desc">
-              경기 중 쉽게 알아볼 수 있도록 <b>${cat.label}</b> 탭의 전술 이름을 지정하고 항목을 추가/삭제하세요. 빈 칸은 원래 번호(${cat.items[0]?cat.items[0].id:1}번...)로 유지됩니다.
+              경기 중 쉽게 알아볼 수 있도록 <b>${cat.label}</b> 탭의 전술 이름을 지정하고 항목을 추가/삭제하세요. 빈 칸은 원래 번호(1번, 2번...)로 유지됩니다.
             </div>
             ${rowsHtml}
             <div style="margin-top:6px; text-align:center;">
@@ -2977,12 +3026,13 @@
     const cat = cats.find(c => c.id === catId);
     if(!cat) return;
 
-    cat.items.forEach(it => {
+    cat.items.forEach((it, idx) => {
       const inp = document.getElementById(`tactic_item_input_${it.id}`);
       const val = inp ? inp.value.trim() : '';
-      it.name = val ? val : `${it.id}번`;
+      it.name = val ? val : `${idx + 1}번`;
     });
 
+    reindexTacticCategory(cat);
     saveTacticCategories(div);
     closeTacticRenameModal();
     updateTacticsUI(matchId);
@@ -2995,9 +3045,12 @@
     if(!cat) return;
 
     if(confirm(`'${cat.label}' 전술 이름을 모두 기본 번호(1번, 2번...)로 초기화할까요?`)){
-      cat.items.forEach(it => {
-        it.name = `${it.id}번`;
+      cat.items.forEach((it, idx) => {
+        const num = idx + 1;
+        it.id = num;
+        it.name = `${num}번`;
       });
+      reindexTacticCategory(cat);
       saveTacticCategories(div);
       closeTacticRenameModal();
       updateTacticsUI(matchId);
